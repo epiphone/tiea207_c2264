@@ -1,0 +1,105 @@
+TIEA207 1. ja 2. synopsis
+Ryhmä RaiPe WaTen
+
+
+1. synopsis
+
+
+Aihe:
+
+- Kotimaan kaukoliikenteen hintavertailusovellus (Juna/bussi/autoilu)
+
+Kohderyhmä:
+
+- Hintatietoiset joukkoliikenteen ystävät
+- Tiukalla budjetilla matkaa tekevät
+
+Käyttötapaukset:
+
+- Käyttäjä selvittää pitäisikö lähteä reissuun junalla, bussilla vai autolla - mikä on halvin/nopein?
+- Käyttäjä tarkistaa lähtöpäivänsä juna-/bussiaikataulun.
+- Käyttäjä selvittää minä päivänä/mihin aikaan olisi halvinta matkustaa junalla/bussilla tietty väli.
+- Käyttäjä löytää itselleen sopivan matkan, ja siirtyy MH:n/VR:n sivulle palvelun tarjoaman linkin kautta.
+- Käyttäjä tahtoo tarkistaa tämän hetkisen polttoaineen keskihinnan. (Toissijainen)
+
+Tavoite:
+
+- Tarjota käyttäjälle nopea ja kätevä hinta/aikatauluvertailu-softa
+- Sovellus, joka pystyy suoriutumaan em. käyttötapauksista.
+- Toteuttaa sovellukseen helppokäyttöinen ja miellyttävä käyttöliittymä
+
+Teknologioita:
+
+- Palvelimella Python + web.py-framework
+- HTML/Javascript-client, apuna Bootstrap
+- Hostaus Google App Enginellä
+- Skreippaukseen lxml-kirjasto
+- Tietokantaa ei tarvita, välimuistipalvelin löytyy App Enginestä
+- Versionhallinta Githubissa https://github.com/epiphone/tiea207_c2264
+
+
+
+2. synopsis
+
+- Lyhyet syklit, muutama inkrementti, vai vesiputous?
+    * Jaetaan sovellus osiin, joiden toteuttamisesta vastaa aina yksi henkilö.
+    * Tehtävien jakamisesta sovitaan yhdessä ryhmän kesken.
+    * Sovitaan yhteisistä rajapinnoista, joita komponentit toteuttavat.
+    * Osia voidaan tarvittaessa yhdenmukaistaa porukalla osan “valmistumisen”  jälkeen.
+
+- Mitä viestintätapoja käytetään?
+
+    * Ryhmän sisäinen viestintä tapahtuu Facebookiin perustetun ryhmän kautta, kun myös ohjaajat on huomioitava, käytetään korpin sähköpostilistaa.
+
+- Kuka vastaa viestinnästä ryhmän sisällä/ohjaajien suuntaan?
+
+    * Lasse Wallden
+
+- Roolit, käytättekö projektipäällikköä, jolla viestintävastuu?
+
+    * Lasse Wallden
+
+- Miten tietoa hallinnoidaan?
+
+    * Github
+
+- Tehtävien tunnistaminen: missä tieto tunnistetuista tehtävistä säilytetään?
+
+    * Ryhmän keskeinen Asana (todo-sovellus)
+    * Valkotaulu
+
+- Kuka hallinnoi tehtäviä (päivittää listaa)?
+
+    * Kaikki lisää keksiessään listaan tehtäviä, jotka hyväksytään yhdessä viimeistään seuraavassa tapaamisessa
+
+- Miten ja milloin tehtäviä jaetaan?
+
+    * Tehtävät jaetaan viikoittaisissa tapaamisissa
+
+- Missä säilytetään tieto tehtävistä, jotka parhaillaan työn alla?
+
+    * Asana ja tussitaulu
+
+- Arvioidaanko projektin vaiheille tai tehtäville työmääriä?
+
+    * Ei
+
+- Kuinka usein tehtävien edistymisestä raportoidaan ryhmän sisällä?
+
+    * Aina kun edistymistä tapahtuu
+
+- Kuinka usein ryhmän jäsenet vähintään tapaavat? Onko siis
+ryhmäpalavereja ohjauspalaverien lisäksi?
+
+    * Pyritään tapaamaan ainakin kerran viikossa ohjauspalaverien lisäksi. Maanantait klo 9-10
+
+- Mitä dokumentoidaan? Kirjoitetaanko ohjaustapaamisista ja/tai
+ryhmän palavereista muistio? Mitä sovelluksen suunnittelun osalta
+dokumentoidaan?
+
+    * Ohjaustapaamisista kirjoitetaan jonkinlaiset muistiot, ryhmätapaamisista ylläpidetään muistiota
+    johon merkitään oleellisimmat asiat.
+
+- Miten toimitaan jos tulee ongelmia (riskit)?
+
+    * Ongelmatilanne pyritään ensin ratkaisemaan ryhmänsisäisesti, mutta mikäli tämä osoittautuu hyödyttömäksi, käännytään ohjaajien puoleen.
