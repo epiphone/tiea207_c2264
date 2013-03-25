@@ -1,0 +1,91 @@
+    # -*- coding:utf-8 -*-
+    # Matkahuollon aikataulu Ruaputin.
+    # Juuso Tenhunen 20.3.2013
+     
+    from lxml import html
+    import re
+     
+     
+    def main():
+        """Skreipataan siskonmakkarakeiton ravintoarvot.
+     
+       HUOM! T?llaiset kommentit eli docstringit saa tulkissa n?kyville
+       komennolla "help(main)". Esim. lxml:n dokumentteja voisi tutkia komennolla
+       "help(lxml)", ja kaikki lxml-moduulin funktiot n?kyv?t komennolla
+       "dir(lxml)".
+       """
+        lahto = "kuopio"
+        #jyväskylä = jyv%E4skyl%E4
+        saapu = "jyv%E4skyl%E4"
+        paiva = "25"
+        kk = "3"
+        vuosi = "2013"
+       
+        url = "http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName="+lahto+"&arrivalStopAreaName="+saapu+"&allSchedules=0&departureDay="+paiva+"&departureMonth="+kk+"&departureYear="+vuosi+"&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0"
+        #url = "http://www.fineli.fi/food.php?foodid=7617&lang=fi"
+     
+        # Haetaan html-tiedosto, luodaan lxml-olio:
+        try:
+            root = html.parse(url)
+        except IOError:
+            print "Skreippaaminen ep?onnistui"
+            return
+     
+        # Valitaan sivulta tietyt tr-elementit, n?m? selvi?v?t sivun l?hdekoodia
+        # tutkimalla. Esim. Chromen kehitysty?kalut tai Firefoxin Firebug-lis?osa
+        # + pythonilla interaktiivisessa tulkissa testaileminen auttavat t?ss?.
+        # Elementtej? voi valita eri tavoin, t?ss? k?ytet??n xpath-merkkauskielt?,
+        # josta l?ytyy dokumentaatiota mm. t??lt?: http://www.w3schools.com/xpath/
+       
+    #   price = root.xpath("//*[@id="searchcriteria"]/table/tbody/tr[3]/td[3]/table/tbody/tr[1]/td/table[2]/tbody/tr[2]/td[11]")
+        rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[2]//tr")
+        #rows = root.xpath("//table[2]//td[2]//tr[last()]//tr")
+       
+        #child = price.getchildren()
+        #teksti = price.text_content()
+       
+        #print teksti
+        #print price
+     
+        for row in rows[1:]:
+    #        if row.attrib["class"] in ["th3"]:
+    #            continue
+       
+            children = row.getchildren()
+            if len(children) == 7:
+                linja = children[6].text_content()
+                dura = children[5].text_content()
+                print "%s | %s" % (dura.strip(), " ".join(linja.split()))
+                continue
+               
+            depart = children[1].text_content()
+            arriv = children[3].text_content()
+            dock = children[4].text_content()
+            dura = children[5].text_content()
+            linja = children[6].text_content()
+            price = children[10].text_content()
+            print "%s | %s | %s | %s | %s | %s" % (depart, arriv, dock, dura, linja, price)
+        # Tulostetaan poimitut tiedot:
+       
+     
+    #    for row in rows:
+            # Jos elementin luokka ei ole "odd" tai "even", skipataan:
+    #        if not row.attrib["class"] in ["odd", "even"]:
+    #            continue
+     
+            # Poimitaan ravintoaineen nimi, pitoisuus ja yksikk? rivielementin
+            # lapsielementeist?:
+    #        children = row.getchildren()
+            # text_content() poimii elementin ja kaikkien lapsielementtien tekstit
+    #        name = children[0].text_content()
+            # text poimii vain elementin oman tekstin; t?ss? korvataan my?s "\xa0"
+            # eli html-v?lily?nti normaalilla v?lily?nnill?
+    #        quantity = children[1].text.replace(u"\xa0", " ")
+    #        unit = children[2].text.replace(u"\xa0", " ")
+     
+            # Tulostetaan poimitut tiedot:
+    #        print "%s: %s %s" % (name, quantity, unit)
+     
+     
+    if __name__ == "__main__":
+        main()
