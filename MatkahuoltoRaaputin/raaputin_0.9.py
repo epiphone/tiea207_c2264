@@ -102,9 +102,9 @@ def ErrorMsg(errRows):
 def main():
     """skreipataan Matkahuollon sivuilta aikataulut"""
     
-    lahto = "lahti"
+    lahto = "kuopio"
     #jyväskylä = jyv%E4skyl%E4
-    saapu = "kuopio"
+    saapu = "jyv%E4skyl%E4"
     paiva = "24"
     kk = "4"
     vuosi = "2013"
@@ -147,11 +147,11 @@ def main():
         for matka in matkatLista:
             matka.tulosta()
     
-            print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            print "X NYT SITTE KAIKKI SUURUUSJÄRKÄÄN!!!! X"
-            print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \n"
+        print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        print "X NYT SITTE KAIKKI SUURUUSJÄRKÄÄN!!!! X"
+        print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \n"
     
-            HintaJarjestys(matkatLista)
+        HintaJarjestys(matkatLista)
 
 
         for matka in matkatLista:
