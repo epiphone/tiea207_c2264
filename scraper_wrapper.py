@@ -1,5 +1,6 @@
 # -*-coding:utf-8-*-
-# Skreippaajien rajapinta
+# Moduuli käärii eri skreipperit yhteisen rajapinnan alle.
+
 
 import mh_scraper
 import vr_scraper
