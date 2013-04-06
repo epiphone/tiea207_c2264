@@ -25,9 +25,10 @@ class Scraper:
           tarjoajan sivuilta.
         """
 
-        # TODO skreippaa
+        # Tähän skreippaukset.
 
-        # Esimerkki paluuarvosta, AINAKIN nämä tiedot tulisi löytyä:
+        # Esimerkki paluuarvosta, kun skreippaaminen onnistuu ja yhteyksiä löytyy.
+        # AINAKIN nämä tiedot tulisi löytyä:
         return [
             # 1. yhteys
             {"lahtoaika": "2013-04-05 16:59",
@@ -62,3 +63,19 @@ class Scraper:
         Esimerkin 1. yhteys on siis sellainen yhteys, joka lähtee 16:59,
         saapuu 22:22, ja jossa vaihdetaan junaa ja odotellaan 10min Tampereella
         """
+
+        # Jos skreippaaminen epäonnistuu siinä vaiheessa kun html:ää haetaan,
+        # (html.load(url)) laukeaa poikkeus joten sitä ei tarvitse erikseen käsitellä.
+
+        # Jos sivu latautuu, mutta annettua lähtö- tai saapumispaikkaa ei löydy,
+        # tai paikka tulee tarkentaa, voitaisiin palauttaa esim. tällainen arvo:
+
+        return {
+            "virhe": "mista",  # mista/mihin/mitä muita virheitä voi tulla?
+            "ehdotukset": ["jyväskylä", "syväskylä"]
+        }
+
+        # Jos skreippaaminen onnistuu mutta yhteyksiä ei löydy,
+        # palautetaan tyhjiöarvo
+
+        return None
