@@ -48,7 +48,7 @@ def main():
 
         # Tulostetaan poimitut tiedot:
         print "%s: %s %s" % (name, quantity, unit)
-
+        ht
 
 if __name__ == "__main__":
     main()
