@@ -1,10 +1,6 @@
 # -*-coding:utf-8-*-
 # Pohja skreipperin toteuttamiselle.
 
-import datetime
-ajat_voisivat_olla_esim_tallaisia_olioita = datetime.datetime.now()
-
-
 class Scraper:
     def __init__(self):
         """Konstruktori"""
@@ -31,23 +27,24 @@ class Scraper:
         # AINAKIN nämä tiedot tulisi löytyä:
         return [
             # 1. yhteys
-            {"lahtoaika": "2013-04-05 16:59",
-            "saapumisaika": "2013-04-05 22:22",
+            {"lahtoaika": "16:59",
+            "saapumisaika": "22:22",
             "mista": "jyväskylä",
             "mihin": "helsinki",
+            "kesto": "05:30",
             "hinta": [28.84, 33.93, None],  # VR:llä on eri hintaluokkia: Ennakko, Perus, Kampanja. Matkahuollolla ei tarvitse palauttaa ku yks arvo.
             "vaihdot": [
                 # 1. vaihtoyhteys
-                {"lahtoaika": "2013-04-05 16:59",
-                "saapumisaika": "2013-04-05 20:00",
+                {"lahtoaika": "16:59",
+                "saapumisaika": "20:00",
                 "mista": "jyväskylä",
                 "mihin": "tampere",
                 "tyyppi": "Pikajuna",      # Pikajuna/Pendolino/InterCity/Lähijuna/muu? Matkahuollolla pika/perus/muu?
                 "tunnus": "Pikajuna 123"}, # VR:llä junan nimi, matkahuollolla esim. "pika Rovaniemi - Helsinki"
 
                 # 2. vaihtoyhteys
-                {"lahtoaika": "2013-04-05 20:10",
-                "saapumisaika": "2013-04-05 22:22",
+                {"lahtoaika": "20:10",
+                "saapumisaika": "22:22",
                 "mista": "tampere",
                 "mihin": "helsinki",
                 "tyyppi": "Pendolino",
