@@ -62,18 +62,8 @@ class AutoScraper:
         return [
             {"lahtoaika": "2013-04-05 16:59",
             "saapumisaika": "2013-04-05 22:22",
-            "mista": "jyväskylä",
-            "mihin": "helsinki",
-            "hinta": [28.84, 33.93, None],
-            "vaihdot": [
-                {"lahtoaika": "2013-04-05 16:59",
-                "saapumisaika": "2013-04-05 20:00",
-                "mista": "jyväskylä",
-                "mihin": "tampere",
-                "tunnus": "Pikavuoro"}],
-                "tyyppi": "Pikavuoro Jyväskylä - Helsinki",
-               "url": "http://linkki-ostosivulle.fi"
-            }
+            "km":356,
+
         ]
 
 
