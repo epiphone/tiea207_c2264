@@ -44,8 +44,9 @@ class Haku:
             auto, ale)
         return tulos
 
+app = web.application(urls, globals(), autoreload=False)
+web.config.debug = True
+gae_app = app.gaerun()  # Tämä takaa App Engine-yhteensopivuuden
 
 if __name__ == "__main__":
-    app = web.application(urls, globals(), True)
-    web.config.debug = True
     app.run()
