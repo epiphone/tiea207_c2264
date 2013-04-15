@@ -34,16 +34,30 @@ def muodosta_url():
         return urli
 
 def selvita_hinnat(hinnat):
-
-    print hinnat[0].text_content()
-
+    lista_hinnoista = list()
+    
     for hinta in hinnat:
         elementit = hinta.getchildren()
-        hinnan_label = elementit[0].text.encode('utf-8')[:-5]
+        hinnan_label = elementit[0].text_content()[:-2]
+        lista_hinnoista.append(hinnan_label)
 
-        print hinnan_label
+    return lista_hinnoista
 
-    return "15,50"
+def hae_vaihtojen_tiedot(testit):
+
+    for testi in testit:
+        indeksi = testi[0].text_content()
+        laika = testi[1][0].text_content()
+        lpaikka = testi[1][1].text_content()
+        saika = testi[2][0].text_content()
+        spaikka = testi[2][1].text_content()
+        juna_ruma = " ".join(testi[3].text_content())
+        juna = juna_ruma.replace(" ", "").split()
+
+        tuloste = "Yhteys NRO: %s | Lahtoaika: %s | Lahtopaikka: %s | Saapumisaika: %s | Saapumispaikka: %s | Juna: %s %s |"
+        print tuloste % (indeksi, laika, lpaikka, saika, spaikka, juna[1], juna[2])
+    
+    return "Kesken"
 
 
 def main():
@@ -59,6 +73,8 @@ def main():
     rows = root.xpath("//table[@id='buyTrip_1']/tbody")
 
     for row in rows:
+        print "******************************************************************************"
+        print " "
         yleiset = row.getchildren()[0].getchildren()  # Yhteyden yleiset tiedot
 
         laika = yleiset[0].text.strip()
@@ -69,11 +85,21 @@ def main():
         #hinnan_paikka = yleiset[4].getchildren()
         #hinta = hinnan_paikka[0].text.encode('utf-8')[:-5]
         # **************************************************
-        hinta = selvita_hinnat(row.xpath("/tr[1]/td[contains(@class, 'ticketOption')]"))
+        hinta = selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"))
         #hinta = row.find_class("ticketOption*")
         tuloste = "Lahtoaika: %s | Saapumisaika: %s | Vaihtoja: %s | Kesto: %s | Hinta: %s"
         
         print tuloste % (laika, saika, vaihtoja, kesto, hinta)
+
+        if vaihtoja != "-":
+            hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1])
+            #print " ".join(row.xpath("tr[2]")[0].text_content().split())
+            #print "Jippii!"
+            #print testia
+
+        print " "
+            
+
 
 if __name__ == "__main__":
     main()
