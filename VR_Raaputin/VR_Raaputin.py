@@ -48,6 +48,11 @@ def muodosta_url():
         webbrowser.open_new(urli)
         return urli
 
+def selvita_halvin(hinnat):
+    return "15,50"
+
+
+
 def main():
 
     
@@ -55,8 +60,8 @@ def main():
 
     #Pienten muutosten testaamisen nopeuttamiseksi, urlin muodostaminen on poissa käytöstä, ja käytössä on vakio url
     #urli = muodosta_url(mista, minne, lahto_tunnit, lahto_minuutit, lahto_pvm, luokka, lahto_vai_saapuminen)
-    urli = muodosta_url()
-    #urli = "https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic.fromStationVR=Kerava&basic.toStationVR=Tampere&basic.oneWay=true&basic.departureDate.hours=10&basic.departureDate.mins=10&basic.departureDate.date=31.07.2013&basic.outwardTimeSelection=false&basic.returnDate.hours=10&basic.returnDate.mins=10&basic.returnDate.date=31.07.2013&basic.returnTimeSelection=true&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode="
+    #urli = muodosta_url()
+    urli = "https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic.fromStationVR=Kerava&basic.toStationVR=Tampere&basic.oneWay=true&basic.departureDate.hours=10&basic.departureDate.mins=10&basic.departureDate.date=31.07.2013&basic.outwardTimeSelection=false&basic.returnDate.hours=10&basic.returnDate.mins=10&basic.returnDate.date=31.07.2013&basic.returnTimeSelection=true&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode="
     root = html.parse(avaaja.open(urli))
 
     rows = root.xpath("//table[@id='buyTrip_1']/tbody")
@@ -68,9 +73,12 @@ def main():
         saika = yleiset[1].text.strip()
         vaihtoja = yleiset[2].text.strip()
         kesto = yleiset[3].text.strip()
-        hinnan_paikka = yleiset[4].getchildren()
-        #print hinnan_paikka
-        hinta = hinnan_paikka[0].text.encode('utf-8')[:-5]
+        #***** Ekan hinnan selvitys ja tulostaminen ****
+        #hinnan_paikka = yleiset[4].getchildren()
+        #hinta = hinnan_paikka[0].text.encode('utf-8')[:-5]
+        # **************************************************
+        hinta = selvita_halvin(row.find_class("ticketOption"))
+
 
         tuloste = "Lahtoaika: %s | Saapumisaika: %s | Vaihtoja: %s | Kesto: %s | Hinta: %s"
         print tuloste % (laika, saika, vaihtoja, kesto, hinta)
