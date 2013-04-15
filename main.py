@@ -33,11 +33,11 @@ class Haku:
         juna, bussi, auto = inp.juna, inp.bussi, inp.auto
 
         # Validoitaan parametrit:
-        if mista is None or mihin is None:
+        if not mista or not mihin:
             return "Lähtö- ja saapumispaikka tulee määrittää."  # TODO
         if not ale in range(7):
             return "Virheellinen alennusluokka."  # TODO
-        if laika is None and saika is None:
+        if not laika or not saika:
             return "Joko lähtöaika tai saapumisaika tulee määrittää."  # TODO
 
         tulos = scraper.hae_matka(mista, mihin, laika, saika, bussi, juna,

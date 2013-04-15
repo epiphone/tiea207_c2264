@@ -5,7 +5,32 @@
 # import mh_scraper
 # import vr_scraper
 # import auto_scraper
+import logging
 from thread_helper import do_threaded_work
+try:
+    from google.appengine.api import memcache
+except ImportError:
+    logging.info("App Enginen apia ei löydetty")
+
+    class Memcache:
+        """dummy-luokka sovelluksen testaamiseksi ilman GAE:a"""
+        def __init__(self):
+            self.store = {}
+
+        def get(self, key):
+            '''Returns requested key'''
+            if key in self.store:
+                return self.store[key]["value"]
+            else:
+                return None
+
+        def set(self, key, value, expires=None):
+            '''Set value to memcache'''
+            self.store[key] = {"value": value, "expires": expires}
+
+        def add(self, key, value, expires=None):
+            '''Set value to memcache'''
+            self.store[key] = {"value": value, "expires": expires}
 
 
 class VRScraper:
@@ -88,8 +113,12 @@ class ScraperWrapper:
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
         bussi=True, juna=True, auto=True, alennusluokka=0):
         """Palauttaa valitulle matkalle eri yhteydet."""
+        # assert saapumisaika
+
         def f(scraper):
-            # TODO: tsekkaa cache
+
+            if scraper is self.mh_scraper:
+                tulos = memcache.get("mh_" + )
             return scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
             # TODO: aseta cache
 
