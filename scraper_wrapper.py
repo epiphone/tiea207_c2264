@@ -113,14 +113,24 @@ class ScraperWrapper:
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
         bussi=True, juna=True, auto=True, alennusluokka=0):
         """Palauttaa valitulle matkalle eri yhteydet."""
-        # assert saapumisaika
+        assert lahtoaika is not None or saapumisaika is not None
+        pvm = lahtoaika or saapumisaika
+        pvm = pvm.split()[0]
 
         def f(scraper):
 
             if scraper is self.mh_scraper:
-                tulos = memcache.get("mh_" + )
-            return scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
-            # TODO: aseta cache
+                tulos = memcache.get("mh_" + pvm)
+            if tulos is not None:
+                logging.info("Löytyi välimuistista mh_" + pvm)
+                return tulos
+            # # TODO: muut cachet
+
+            tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
+
+            if scraper is self.mh_scraper:
+                memcache.set("mh_" + pvm, tulos)
+            return tulos
 
         scraperit = zip(self.scraperit, [juna, bussi, auto])
         scraperit = [s for s, b in scraperit if b]

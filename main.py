@@ -37,7 +37,7 @@ class Haku:
             return "Lähtö- ja saapumispaikka tulee määrittää."  # TODO
         if not ale in range(7):
             return "Virheellinen alennusluokka."  # TODO
-        if not laika or not saika:
+        if not laika and not saika:
             return "Joko lähtöaika tai saapumisaika tulee määrittää."  # TODO
 
         tulos = scraper.hae_matka(mista, mihin, laika, saika, bussi, juna,
