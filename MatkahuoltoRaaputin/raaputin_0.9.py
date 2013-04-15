@@ -8,15 +8,17 @@ from lxml import html
 
 matkatLista = []
 
-lahto = "Ähtäri"
-#HUOM Ä=%C4, ä=%E4, Ö
-#jyväskylä = jyv%E4skyl%E4
-saapu = "Hämeenkyrö"
+lahto = "Kuopio"
+saapu = "Siilinjärvi"
 paiva = "24"
 kk = "4"
 vuosi = "2013"
+# 0 = peruslippu
+# 1 = Opiskelijat, Varusmiehet, Sivarit, Lapset -50%
+# 2 = Eläkeläiset, Lehdistö, SLAHS:n jäsenet, Nuoriso -30%
+lippu_tyyppi = 1
 
-def TeeMatka(rows):
+def tee_matka(rows):
     """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina taulukkoon attribuuttien kera"""
     for i, row in enumerate(rows[1:]):       
 
@@ -47,8 +49,8 @@ def TeeMatka(rows):
                  'lahtoaika': children[1].text_content(),
                  'saapumisaika': children[3].text_content(),
                  'laituri': children[4].text_content(),
-                 'kesto': children[5].text_content(),
-                 'hinta': children[10].text_content(),
+                 'kesto': keston_vaihto(children[5].text_content()),
+                 'hinta': laske_hinta(children[10].text_content(), children[6].text_content().split()[0]),
                  'vaihto_lkm': 0,
                  'vaihdot': [
                              # 1. vaihtoyhteys
@@ -64,7 +66,7 @@ def TeeMatka(rows):
 
         matkatLista.append(matka)
         
-def Tulosta_Lista():
+def tulosta_lista():
     """Tulostetaan Matkalista"""
     for matka in matkatLista:
         print "----------------------------------------------------------------"
@@ -77,7 +79,8 @@ def Tulosta_Lista():
         print "----------------------------------------------------------------"
         print "\n"
         
-def AakkosVaihto(nimi):
+def aakkos_vaihto(nimi):
+    """Vaihtaa Ääkköset urlin vaatimiin muotoihin"""
     uusi_nimi = nimi.replace('ä', "%E4")
     uusi_nimi = uusi_nimi.replace('Ä', "%C4")
     uusi_nimi = uusi_nimi.replace('ö', "%D6")
@@ -86,26 +89,59 @@ def AakkosVaihto(nimi):
     uusi_nimi = uusi_nimi.replace('Å', "%C5")
     return uusi_nimi
 
+def keston_vaihto(aika):
+    """Vaihtaa matkan keston HHh MMmin = HH:MM (esim 5h 15min = 05:15)"""
+    kesto = aika.split()
+    tunti = kesto[0].replace("h", "")
+    
+    if len(tunti) == 1:
+        tunti = "0"+tunti
+    
+    minuutti = kesto[-1].replace("min","")
+    
+    if len(minuutti) == 1:
+        minuutti = "0" + minuutti
+        
+    return tunti + ":" + minuutti
 
-def HintaJarjestys(lista):
-    """Järjestetään lista hinnan mukaan nousevaan järjestykseen"""
+def laske_hinta(alkup_hinta, linja):
+    """Vaihtaa matkan hinnan sen mukaan, mikä hintaluokka on kyseessä (normaali, -50%, -30% etc..) VIELÄ KESKEN"""
+    try:
+        hinta = float(alkup_hinta.replace(",", "."))
+    except ValueError:
+        return 0
+    else:
+        if lippu_tyyppi == 0:
+            return hinta
+    
+        if lippu_tyyppi == 1:
+            if linja == "vakio" and hinta < 15.50:
+                return str(hinta) + " (TODO: taulukko)"
+            if linja == "pika" and hinta < 18.80:
+                return str(hinta) + " (TODO: taulukko)"
+        
+            uusihinta = hinta/2
+        
+            return uusihinta
+        
+        if lippu_tyyppi == 2:
+            if linja == "vakio" and hinta < 15.50:
+                return str(hinta) + " (TODO: taulukko)"
+            if linja == "pika" and hinta < 18.80:
+                return str(hinta) + " (TODO: taulukko)"
+        
+            uusihinta = hinta - (hinta*0.3)
+        
+            return uusihinta
 
-    for vertmatka in lista:
-        for matka in lista:
-            if vertmatka.depart == matka.depart:
-                continue
-            if vertmatka.price < matka.price:
-
-                vertmatka.swap(matka)
-
-def ErrorMsg(errRows):
+def error_msg(errRows):
     """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
     print errRows[1].text_content().strip()
 
 def main():
     """skreipataan Matkahuollon sivuilta aikataulut"""
 
-    url = "http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName="+AakkosVaihto(lahto)+"&arrivalStopAreaName="+AakkosVaihto(saapu)+"&allSchedules=0&departureDay="+paiva+"&departureMonth="+kk+"&departureYear="+vuosi+"&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0"
+    url = "http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName="+aakkos_vaihto(lahto)+"&arrivalStopAreaName="+aakkos_vaihto(saapu)+"&allSchedules=0&departureDay="+paiva+"&departureMonth="+kk+"&departureYear="+vuosi+"&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0"
 
     # Haetaan html-tiedosto, luodaan lxml-olio:
     try:
@@ -120,16 +156,16 @@ def main():
     #Jos haku tuottaa error-boxin, haetaan sen errorin nimi, eikä tehdä enää muuta
     if errRow.attrib["class"] in ["error_wrapper"]:
         print "Can't see shit captain!"
-        ErrorMsg(errRows)
+        error_msg(errRows)
 
     #jos hakuvirhettä ei tule, jatketaan normaalisti
     else:
 
         rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[2]//tr")
 
-        TeeMatka(rows)
+        tee_matka(rows)
 
-        Tulosta_Lista()
+        tulosta_lista()
 
 if __name__ == "__main__":
     main()
