@@ -137,3 +137,15 @@ def keston_vaihto(aika):
 def error_msg(errRows):
     """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
     print errRows[1].text_content().strip()
+    
+def hae_hinnat(url):
+    """haetaan kaikki matkan hinnat ja sijoitetaan ne dictionaryyn"""
+    rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[last()]//tr")
+    
+    hinta = {}
+    
+    for row in rows[2:3]: #ei huomioda kahta ekaa eikä kolmea viimeistä?
+        
+        children = row.getchildren()
+        
+        hinta[children[0].text_content()] = children[2].text_content()
