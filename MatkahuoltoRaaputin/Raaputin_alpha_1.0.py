@@ -137,36 +137,3 @@ def keston_vaihto(aika):
 def error_msg(errRows):
     """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
     print errRows[1].text_content().strip()
-
-def main():
-    """skreipataan Matkahuollon sivuilta aikataulut"""
-
-    url = "http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName="+aakkos_vaihto(lahto)+"&arrivalStopAreaName="+aakkos_vaihto(saapu)+"&allSchedules=0&departureDay="+paiva+"&departureMonth="+kk+"&departureYear="+vuosi+"&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0"
-
-    # Haetaan html-tiedosto, luodaan lxml-olio:
-    try:
-        root = html.parse(url)
-    except IOError:
-        print "Skreippaaminen epäonnistui"
-        return
-
-    errRows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//div[1]")
-    errRow = errRows[0]
-
-    #Jos haku tuottaa error-boxin, haetaan sen errorin nimi, eikä tehdä enää muuta
-    if errRow.attrib["class"] in ["error_wrapper"]:
-        print "Can't see shit captain!"
-        error_msg(errRows)
-
-    #jos hakuvirhettä ei tule, jatketaan normaalisti
-    else:
-
-        rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[2]//tr")
-
-        tee_matka(rows)
-
-        tulosta_lista()
-
-if __name__ == "__main__":
-    main()
-
