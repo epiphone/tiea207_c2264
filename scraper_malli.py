@@ -1,24 +1,35 @@
 # -*-coding:utf-8-*-
 # Pohja skreipperin toteuttamiselle.
 
-class Scraper:
-    def __init__(self):
-        """Konstruktori"""
-        pass
 
-    def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None,
-        max_tulokset=3, alennusluokka=0):
+class Scraper:
+    def laske_alennus(hinnat, alennusluokka):
+        """HUOM! Tämä vain VR:lle.
+
+        - hinnat on lista kolmesta eri hinnasta (mahdollisesti None)
+        - alennusluokka on kokonaisluku
+        - palautetaan listana alennusluokan mukaiset hinnat.
+
+        Jos alennuksia saa vain peruslipuista, voi hinnat-parametrin korvata
+        liukulukutyyppisellä hinta-parametrilla, samoin myös paluuarvossa.
+        """
+
+        # TODO toteutus tähän
+
+        return None
+
+    def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None):
         """Palauttaa valitulle matkalle löytyneet yhteydet.
 
-        - Lähtö- ja saapumisajat ovat datetime-olioita.
+        - Lähtö- ja saapumisajat ovat merkkijonoja muodossa "YYYY-mm-dd HH:MM".
         - lahtoaika- ja saapumisaika-parametreista vain toinen on käytössä.
-        - max_tulokset määrittää montako tulosta palautetaan; palautetaan
-          aina x kappaletta yhteyksiä, jotka ovat lähinnä annettua aikaehtoa.
         - alennusluokan ei tulisi vaikuttaa siihen mitä sivua skreipataan;
           haetaan lippujen hinnat aina tarjoajan sivulta oletusalennusluokalla,
           ja muokataan hintoja palvelimella annetun alennusluokan mukaan
           --> vältytään turhalta skreippaamiselta. Alennusehdot pitää selvittää
           tarjoajan sivuilta.
+        - ...tosin matkahuollolta voidaan joutua skreippaamaan kaikki hinnat
+          mystisten hintasääntöjen takia.
         """
 
         # Tähän skreippaukset.
@@ -69,7 +80,7 @@ class Scraper:
 
         return {
             "virhe": "mista",  # mista/mihin/mitä muita virheitä voi tulla?
-            "ehdotukset": ["jyväskylä", "syväskylä"]
+            "ehdotukset": ["jyväskylä", "syväskylä"]  # antaako VR edes ehdotuksia?
         }
 
         # Jos skreippaaminen onnistuu mutta yhteyksiä ei löydy,

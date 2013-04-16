@@ -40,9 +40,9 @@ class Haku:
         if not laika and not saika:
             return "Joko lähtöaika tai saapumisaika tulee määrittää."  # TODO
 
-        tulos = scraper.hae_matka(mista, mihin, laika, saika, bussi, juna,
+        matkat = scraper.hae_matka(mista, mihin, laika, saika, bussi, juna,
             auto, ale)
-        return tulos
+        return render.results(matkat=matkat)
 
 app = web.application(urls, globals(), autoreload=False)
 web.config.debug = True

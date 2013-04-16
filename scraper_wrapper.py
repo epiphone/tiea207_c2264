@@ -31,6 +31,7 @@ except ImportError:
         def add(self, key, value, expires=None):
             '''Set value to memcache'''
             self.store[key] = {"value": value, "expires": expires}
+    memcache = Memcache()
 
 
 class VRScraper:
@@ -41,6 +42,7 @@ class VRScraper:
             "saapumisaika": "2013-04-05 22:22",
             "mista": "jyväskylä",
             "mihin": "helsinki",
+            "kesto": "04:23",
             "hinta": [28.84, 33.93, None],
             "vaihdot": [
                 {"lahtoaika": "2013-04-05 16:59",
@@ -69,6 +71,7 @@ class MHScraper:
             "saapumisaika": "2013-04-05 22:22",
             "mista": "jyväskylä",
             "mihin": "helsinki",
+            "kesto": "04:23",
             "hinta": [28.84, 33.93, None],
             "vaihdot": [
                 {"lahtoaika": "2013-04-05 16:59",
@@ -118,25 +121,36 @@ class ScraperWrapper:
         pvm = pvm.split()[0]
 
         def f(scraper):
-
+            """Apufunktio, joka tarkistaa välimuistin ja hakee tarvittaessa
+            uuden tuloksen skreipperiltä."""
+            # Määritetään skreipperistä riippuva välimuistin avain:
             if scraper is self.mh_scraper:
-                tulos = memcache.get("mh_" + pvm)
+                tyyppi = "bussi"
+                cache_avain = "mh_" + pvm
+            elif scraper is self.vr_scraper:
+                # Tälle ei tule paljoa osumia, parempi vaihtoehto?
+                tyyppi = "juna"
+                cache_avain = "vr_" + mista + mihin + pvm
+            else:
+                tyyppi = "auto"
+                cache_avain = "auto_" + mista + mihin
+
+            tulos = memcache.get(cache_avain)
             if tulos is not None:
-                logging.info("Löytyi välimuistista mh_" + pvm)
-                return tulos
-            # # TODO: muut cachet
+                logging.info("Cache hit, key:" + cache_avain)
+                return tulos, tyyppi
 
             tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
+            memcache.set(cache_avain, tulos)
+            return tulos, tyyppi
 
-            if scraper is self.mh_scraper:
-                memcache.set("mh_" + pvm, tulos)
-            return tulos
-
-        scraperit = zip(self.scraperit, [juna, bussi, auto])
-        scraperit = [s for s, b in scraperit if b]
-
-        results = do_threaded_work(scraperit, f)
-        return results
+        # Palautetaan vain halutut matkustusvaihtoehdot:
+        matkat = do_threaded_work(self.scraperit, f)
+        lokaalit = locals()
+        matkat = {tyyppi: matka for matka, tyyppi in matkat if lokaalit[tyyppi]}
+        return matkat
 
 
+# Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()
+a = "asd"
