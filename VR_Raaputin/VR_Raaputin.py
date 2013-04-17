@@ -8,13 +8,12 @@
 #   * Lähijuniin ei näy ekassa paikassa hintaa... -> Erroria skreipatessa
 #   * Hakuehdoilla ei löydy vuoroja
 #   * Syöte ei ole validi
-#- Ääkköset
 #- VR ei yhdistä alennuksia! Ennakko + Opiskelija = Vain ennakko!
 #- Mukautus rajapintaan
 #- Nyt lopputuloksena tulee vain yhden vaihdon tiedot... Tällänen rakenne ei siis toimi. Suurempi
 #  kokonaisuus tai VAIN tietojen haku aliohjelmilla, mutta niiden lisääminen "Pääohjelmassa"?
 #- Vaihdossa junan tyyppi esille.
-#- 
+#- Tulosteissa ääkköset bugaa vielä 
 
 import urllib2
 from lxml import html
@@ -25,11 +24,22 @@ class VrScraper:
         """Konstruktori"""
         pass
 
+def korjaa_aakkoset(teksti):
+    tulos = teksti.replace("ä", "%C3%A4")
+    tulos = tulos.replace("Ä", "%C3%84")
+    tulos = tulos.replace("ö", "%C3%B6")
+    tulos = tulos.replace("Ö", "&C3%96")
+
+    return tulos
+
 # muodostetaan URL hakuehtojen perusteella, testaamisen vuoksi hakuehdot syötetään käsin
 #def muodosta_url(mista, minne, lahto_tunnit, lahto_minuutit, lahto_pvm, luokka, ajan_tyyppi):
 def muodosta_url(mista, mihin, lahtoaika=None, saapumisaika=None):        
         # Päivämäärä ja aika tulee muodossa "YYYY-MM-DD HH:MM"
         #                                    0123456789012345
+
+        mista = korjaa_aakkoset(mista)
+        mihin = korjaa_aakkoset(mihin)
 
         if lahtoaika:
             print "annettu aika: " + lahtoaika
@@ -65,7 +75,7 @@ def muodosta_url(mista, mihin, lahtoaika=None, saapumisaika=None):
             "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
 
         print "Koitetaan avata URL..."
-        #webbrowser.open_new(urli)
+        webbrowser.open_new(urli)
 
         return urli
 
@@ -83,19 +93,28 @@ def selvita_hinnat(hinnat):
 #Skreipataan vaihtojen tiedot niiden pitämistä HTM-elementeistä
 def hae_vaihtojen_tiedot(testit):
 
+    lista_vaihdoista = []
     for testi in testit:
-        indeksi = testi[0].text_content()
+        vaihdon_tiedot = {}
+        #indeksi = testi[0].text_content()
         laika = testi[1][0].text_content()
+        vaihdon_tiedot['lahtoaika'] = laika
         lpaikka = testi[1][1].text_content()
+        vaihdon_tiedot['lahtopaikka'] = lpaikka
         saika = testi[2][0].text_content()
+        vaihdon_tiedot['saapumisaika'] = saika
         spaikka = testi[2][1].text_content()
+        vaihdon_tiedot['saapumispaikka'] = spaikka
         juna_ruma = " ".join(testi[3].text_content())
         juna = juna_ruma.replace(" ", "").split()
+        vaihdon_tiedot['tunnus'] = juna
+        lista_vaihdoista.append(vaihdon_tiedot)
 
-        tuloste = "Yhteys NRO: %s | Lahtoaika: %s | Lahtopaikka: %s | Saapumisaika: %s | Saapumispaikka: %s | Juna: %s %s |"
-        print tuloste % (indeksi, laika, lpaikka, saika, spaikka, juna[1], juna[2])
+    return lista_vaihdoista
+        #tuloste = "Yhteys NRO: %s | Lahtoaika: %s | Lahtopaikka: %s | Saapumisaika: %s | Saapumispaikka: %s | Juna: %s %s |"
+        #print tuloste % (indeksi, laika, lpaikka, saika, spaikka, juna[1], juna[2])
 
-        print " "
+        #print " "
     
     return "Kesken"
 
@@ -129,6 +148,7 @@ def hae_tiedot(palaute, url, root):
     for row in rows:
         yleiset = row.getchildren()[0].getchildren()  # Yhteyden yleiset tiedot
 
+        #Nyt saadaan vain yhden yhteyden tiedot!!!
         laika = yleiset[0].text.strip()
         palaute['lahtoaika'] = laika
         saika = yleiset[1].text.strip()
@@ -160,63 +180,71 @@ def hae_tiedot(palaute, url, root):
 
 def hae_matka(mista, mihin, lahtoaika=None, saapumisaika=None, max_tulokset=3, alennusluokka=0):
 
-    palaute = {'mista': mista, 'mihin': mihin}
-    print " "
-    print "*****TILANNE hae_matkassa: *****"
-    print palaute
-    print " "
     avaaja = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-    url = muodosta_url(mista, mihin, lahtoaika, saapumisaika)
-    root = html.parse(avaaja.open(url))
-    palaute = hae_tiedot(palaute, url, root)
-
-    return palaute
-
-
-def main():
-    diktionaari = hae_matka("Oulu", "Tampere", "2013-06-05 13:45")
-    print " " 
-    print "****Kaiken jälkeen: *****"
-    print diktionaari
-    print " "
-
-    #*********************************************************************************
-    #avaaja = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
     #Pienten muutosten testaamisen nopeuttamiseksi, urlin muodostaminen on poissa käytöstä, ja käytössä on vakio url
-    #urli = muodosta_url(mista, minne, lahto_tunnit, lahto_minuutit, lahto_pvm, luokka, lahto_vai_saapuminen)
+    urli = muodosta_url(mista, mihin, lahtoaika, saapumisaika)
     #urli = muodosta_url()
     #urli = "https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic.fromStationVR=Kerava&basic.toStationVR=Tampere&basic.oneWay=true&basic.departureDate.hours=10&basic.departureDate.mins=10&basic.departureDate.date=31.07.2013&basic.outwardTimeSelection=false&basic.returnDate.hours=10&basic.returnDate.mins=10&basic.returnDate.date=31.07.2013&basic.returnTimeSelection=true&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode="
-    #root = html.parse(avaaja.open(urli))
+    root = html.parse(avaaja.open(urli))
     #webbrowser.open_new(urli)
 
-    #rows = root.xpath("//table[@id='buyTrip_1']/tbody")
+    rows = root.xpath("//table[@id='buyTrip_1']/tbody")
 
-    #for row in rows:
+    lista_yhteyksista = []
+
+    for row in rows:
+        yhteyden_tiedot = {}
         #print "******************************************************************************"
         #print " "
-        #yleiset = row.getchildren()[0].getchildren()  # Yhteyden yleiset tiedot
-
-        #laika = yleiset[0].text.strip()
-        #saika = yleiset[1].text.strip()
-        #vaihtoja = yleiset[2].text.strip()
-        #kesto = yleiset[3].text.strip()
+        yhteyden_tiedot['mista'] = mista
+        yhteyden_tiedot['mihin'] = mihin
+        yleiset = row.getchildren()[0].getchildren()  # Yhteyden yleiset tiedot
+        laika = yleiset[0].text.strip()
+        yhteyden_tiedot['lahtoaika'] = laika
+        saika = yleiset[1].text.strip()
+        yhteyden_tiedot['saapumisaika'] = saika
+        vaihtoja = yleiset[2].text.strip()
+        yhteyden_tiedot['vaihtoja'] = vaihtoja
+        kesto = yleiset[3].text.strip()
+        yhteyden_tiedot['kesto'] = kesto
         #***** Ekan hinnan selvitys ja tulostaminen ****
         #hinnan_paikka = yleiset[4].getchildren()
         #hinta = hinnan_paikka[0].text.encode('utf-8')[:-5]
         # **************************************************
-        #hinta = selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"))
+        hinta = selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"))
+        yhteyden_tiedot['hinnat'] = hinta
+        lista_yhteyksista.append(yhteyden_tiedot)
         #hinta = row.find_class("ticketOption*")
         #tuloste = "Lahtoaika: %s | Saapumisaika: %s | Vaihtoja: %s | Kesto: %s | Hinta: %s"
         
         #print tuloste % (laika, saika, vaihtoja, kesto, hinta)
         #print " "
 
-        #if vaihtoja != "-":
-            #hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1])
+        if vaihtoja != "-":
+            yhteyden_tiedot['vaihdot'] = hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1])
             #print " ".join(row.xpath("tr[2]")[0].text_content().split())
             #print "Jippii!"
             #print testia
+    return lista_yhteyksista
+
+
+def main():
+    
+    #(mista, mihin, lahtoaika=None, saapumisaika=None, max_tulokset=3, alennusluokka=0)
+    testataanko = raw_input('Käytetäänkö valmista URL-osoitetta? (Y/N)')
+    if testataanko == "N":
+        mista = raw_input('Mista lahdet?')
+        mihin = raw_input('Minne menet?')
+        aika = raw_input('saapumis- vai lahtoaika? (S/L)')
+        if aika == "S":
+            saapumisaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
+            print hae_matka(mista, mihin, saapumisaika, 3, 0)
+        if aika == "L":
+            lahtoaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
+            print hae_matka(mista, mihin, lahtoaika, saapumisaika=None, maxtulokset=3, alennusluokka=0)
+    if testataanko == "Y":
+        print hae_matka("Jyväskylä", "Ähtäri", "2013-06-05 15:50", None, 3, 0)
             
 
 
