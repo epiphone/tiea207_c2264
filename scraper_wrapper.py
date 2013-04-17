@@ -6,6 +6,7 @@
 # import vr_scraper
 # import auto_scraper
 import logging
+from henkiloauto_scraper.auto_scraper import AutoScraper
 from thread_helper import do_threaded_work
 try:
     from google.appengine.api import memcache
@@ -85,17 +86,6 @@ class MHScraper:
         ]
 
 
-class AutoScraper:
-    """Tilapäinen dummy-luokka."""
-    def hae_matka(*args, **kwargs):
-        return {
-            "lahtoaika": "2013-04-05 16:59",
-            "saapumisaika": "2013-04-05 22:22",
-            "km": 356,
-            "url": "http://linkki-kartalle.fi"
-        }
-
-
 class BensaScraper:
     """Tilapäinen dummy-luokka."""
     def hae_hinta(*args, **kwargs):
@@ -117,6 +107,7 @@ class ScraperWrapper:
         bussi=True, juna=True, auto=True, alennusluokka=0):
         """Palauttaa valitulle matkalle eri yhteydet."""
         assert lahtoaika is not None or saapumisaika is not None
+        print locals()
         pvm = lahtoaika or saapumisaika
         pvm = pvm.split()[0]
 

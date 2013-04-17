@@ -3,3 +3,4 @@ PVM         TUNNIT      LISÄTIEDOT
 10.4        4           tapaaminen, kopissa, kotona
 15.4        2           kopissa
 16.4        3           kopissa
+17.4        3,5         kopissa
