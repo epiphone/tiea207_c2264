@@ -37,7 +37,6 @@ def muodosta_url(mista, mihin, lahtoaika=None, saapumisaika=None):
     mihin = korjaa_aakkoset(mihin)
 
     if lahtoaika:
-        print "annettu aika: " + lahtoaika
         lahto_pvm = lahtoaika[8:10] + "." + lahtoaika[5:7] + "." + lahtoaika[0:4]
         lahto_tunnit = lahtoaika[11:12]
         lahto_minuutit = lahtoaika[14:15]
@@ -52,13 +51,9 @@ def muodosta_url(mista, mihin, lahtoaika=None, saapumisaika=None):
         "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
         
     if saapumisaika:
-        print "annettu saapumisaika: " + saapumisaika
-        lahto_pvm = saapumisaika[8:9] + "." + saapumisaika[5:6] + "." + saapumisaika[0:4]
-        print lahto_pvm
+        lahto_pvm = saapumisaika[8:10] + "." + saapumisaika[5:7] + "." + saapumisaika[0:4]
         lahto_tunnit = saapumisaika[11:12]
-        print lahto_tunnit
         lahto_minuutit = saapumisaika[14:15]
-        print lahto_minuutit
         ajan_tyyppi_url = "false"
         urli = ("https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic." +
         "fromStationVR=" + mista + 
@@ -147,7 +142,7 @@ def hae_matka(mista, mihin, lahtoaika=None, saapumisaika=None, max_tulokset=3, a
 def main():
     
     #(mista, mihin, lahtoaika=None, saapumisaika=None, max_tulokset=3, alennusluokka=0)
-    testataanko = raw_input('Käytetäänkö valmista URL-osoitetta? (Y/N)')
+    testataanko = raw_input('Käytetaanko valmista URL-osoitetta? (Y/N)')
     if testataanko == "N":
         mista = raw_input('Mista lahdet?')
         mihin = raw_input('Minne menet?')
@@ -159,7 +154,7 @@ def main():
             lahtoaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
             print hae_matka(mista, mihin, lahtoaika, saapumisaika=None, maxtulokset=3, alennusluokka=0)
     if testataanko == "Y":
-        print hae_matka("Jyväskylä", "Ähtäri", "2013-06-05 15:50", None, 3, 0)
+        print hae_matka("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50", 3, 0)
             
 
 
