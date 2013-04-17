@@ -15,45 +15,98 @@ Paluuarvot: lähtöaika, paluuaika, matkan pituus, linkki google mapsiin
 
 from lxml import html
 import urllib
+import datetime
 
 
+class AutoScraper():
+    '''
+        Scraper-luokka, jolla haetaan tietyn reitin tiedot henkilöautolla mentäessä
+    '''
+    
+    
+    
+    def hae_matka(self, mista, mihin, lahtoaika, saapumisaika=None,
+        max_tulokset=3, alennusluokka=0):
+        '''
+            Haetaan matkan tiedot henkilöautolle google mapsin avulla.
+            lahto- ja saapumisaika tulee merkkijonona muodossa "YYYY-MM-DD HH:MM"
+            
+        '''
+        
+        url = self.luo_url(mista, mihin)
+        
+        # Haetaan html-tiedosto, luodaan lxml-olio:
+        root_matka = html.parse(url)
+        
+       
+        reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div//div[1]//span")
+        
+        # Erotellaan kilometrimäärä haetusta merkkijonosta ja muutetaan pilkku pisteeksi
+        matkan_pituus = float(reitti[0].text_content().split()[0].replace(",","."))
+        
+        # Tässä tulee virhe, jos reitti on tarpeeksi lyhytkestoinen, jolloin tunteja ei ole (vain minuutit)
+        # Tutkitaan, onko matkan kesto vain minuutteja (alle tunti) 
+        if (len(reitti[1].text_content().split()) < 3):
+            matkan_kesto =  "00:" + reitti[1].text_content().split()[0]
+        else:
+            matkan_kesto = reitti[1].text_content().split()[0] + ":" + reitti[1].text_content().split()[2]
+        
+        
+        # Muokataan merkkijono sovittuun formaattiin eli muotoon HH:MM
+        if (len(matkan_kesto.split(':')[0]) < 2):
+            matkan_kesto = "0" + matkan_kesto
+            
+        if (len(matkan_kesto.split(':')[1]) < 2):
+            matkan_kesto = matkan_kesto[0:2] + "0" + matkan_kesto[3]
+        
+        
+        
+        matkan_tiedot = {"mista": mista, "mihin": mihin, "kesto": matkan_kesto, "matkanpituus": matkan_pituus,
+                         "url": url}
+        
+        return matkan_tiedot
+        
+        
+    
+
+    def luo_url(self, mista, mihin):
+        ''' Luodaan url, josta haetaan tiedot
+        
+        '''
+        
+        # Dictionary, johon laitetaan lahtopaikka ja saapumispaikka
+        params = {"saddr": mista, "daddr": mihin}
+        
+        
+        #Luodaan url
+        url_matka = "http://maps.google.fi/maps?" + urllib.urlencode(params)
+        
+        #Palautetaan
+        return url_matka
+        
+        
+
+
+
+# Testataan toimiiko luokka
 def main():
     ''' Pääfunktio alkaa tästä '''
-
+   
     #Muuttujia
     lahtopaikka = "Rautalampi"
-    saapumispaikka = "Jyväskylä"
-    matkan_pituus = 0
-
-
-    # Dictionary, johon laitetaan lahtopaikka ja saapumispaikka
-    params = {"saddr": lahtopaikka, "daddr": saapumispaikka}
-
-
-    #Haetaan tästä osoitteesta tietoa, eli Rautalampi-Jyväskylä -väli. Käytetään params-dictionarya
-    url_matka = "http://maps.google.fi/maps?" + urllib.urlencode(params)
-
-
-    # Haetaan html-tiedosto, luodaan lxml-olio:
-    try:
-        root_matka = html.parse(url_matka)
-    except IOError:
-        print "Reitin tietojen skreippaaminen ep�onnistui"
-        return
-
-
-    #"//ol[class='dir-altroute-mult dir-mrgn']//li[1]//div//div[1]"
-
-    reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div//div[1]//span")
-
-
-    matkan_pituus = float(reitti[0].text_content().split()[0].replace(",","."))
-
-    matkan_kesto = reitti[1].text_content()
-
-
-    print "Reitti %s - %s: %s km, %s" % (lahtopaikka, saapumispaikka, matkan_pituus, matkan_kesto)
-
+    saapumispaikka = "Suonenjoki"
+    lahtoaika = datetime.datetime(2013, 4, 16, 12, 20) # klo 12:20
+    
+    auto_scraper = AutoScraper()
+    
+    
+    tiedot = auto_scraper.hae_matka(lahtopaikka, saapumispaikka, lahtoaika, 0, 0, 0)
+    
+    # Tulosetaan tulokset
+    for rivi in tiedot.iteritems():
+        print rivi
+    #print "Reitti %s - %s: %s km, %s" % (lahtopaikka, saapumispaikka, matkan_pituus, matkan_kesto)
+    
 
 
 if __name__ == "__main__":
