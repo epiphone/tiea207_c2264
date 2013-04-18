@@ -133,9 +133,9 @@ def results (matkat):
                 extend_([u'\n'])
         if "auto" in matkat:
             extend_([u'<h2>Autoyhteydet:</h2>\n'])
-            extend_([u'Mist\xe4: ', escape_(matkat["auto"]["mista"], True), u'\n'])
-            extend_([u'Mihin: ', escape_(matkat["auto"]["mihin"], True), u'\n'])
-            extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km\n'])
+            extend_([u'Mist\xe4: ', escape_(matkat["auto"]["mista"], True), u'<br>\n'])
+            extend_([u'Mihin: ', escape_(matkat["auto"]["mihin"], True), u'<br>\n'])
+            extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
             extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
             extend_([u'<br>\n'])
             extend_([u'\n'])

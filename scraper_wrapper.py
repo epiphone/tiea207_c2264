@@ -105,8 +105,15 @@ class ScraperWrapper:
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
         bussi=True, juna=True, auto=True, alennusluokka=0):
         """Palauttaa valitulle matkalle eri yhteydet."""
+        assert mista and mihin
         assert lahtoaika is not None or saapumisaika is not None
-        print "locals:", locals()
+
+        try:
+            mista = mista.encode("utf-8")
+            mihin = mihin.encode("utf-8")
+        except UnicodeDecodeError:
+            pass
+
         pvm = lahtoaika or saapumisaika
         pvm = pvm.split()[0]
 
@@ -114,16 +121,16 @@ class ScraperWrapper:
             """Apufunktio, joka tarkistaa välimuistin ja hakee tarvittaessa
             uuden tuloksen skreipperiltä."""
             # Määritetään skreipperistä riippuva välimuistin avain:
-            # if scraper is self.mh_scraper:
-            #     tyyppi = "bussi"
-            #     cache_avain = "mh_" + pvm
-            # elif scraper is self.vr_scraper:
-            #     # Tälle ei tule paljoa osumia, parempi vaihtoehto?
-            #     tyyppi = "juna"
-            #     cache_avain = "vr_" + mista + mihin + pvm
-            # else:
-            #     tyyppi = "auto"
-            #     cache_avain = "auto_" + mista + mihin
+            if scraper is self.mh_scraper:
+                tyyppi = "bussi"
+                cache_avain = "mh_" + pvm
+            elif scraper is self.vr_scraper:
+                # Tälle ei tule paljoa osumia, parempi vaihtoehto?
+                tyyppi = "juna"
+                cache_avain = "vr_" + mista + mihin + pvm
+            else:
+                tyyppi = "auto"
+                cache_avain = "auto_" + mista + mihin
 
             # tulos = memcache.get(cache_avain)
             # if tulos is not None:
