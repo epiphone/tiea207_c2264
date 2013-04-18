@@ -6,28 +6,42 @@
   <div class="control-group">
     <label class="control-label">Mistä</label>
     <div class="controls">
-        <input class="input" type="text" name="mista" placeholder="Mistä"/>
+        <input class="input" type="text" name="mista" placeholder="Mistä" autocomplete="off" required/>
     </div>
   </div>
 
   <div class="control-group">
     <label class="control-label">Mihin</label>
     <div class="controls">
-      <input type="text" name="mihin" placeholder="Mihin"/>
+      <input type="text" name="mihin" placeholder="Mihin" autocomplete="off" required/>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Lähtöpvm</label>
+    <div class="controls">
+      <input type="text" id="datepicker1" name="lahtopvm"/>
     </div>
   </div>
 
   <div class="control-group">
     <label class="control-label">Lähtöaika</label>
     <div class="controls">
-      <input type="text" name="lahtoaika" placeholder="01.01.2013 02:01"/>
+      <input type="text" name="lahtoaika" placeholder="02:01"/>
     </div>
   </div>
 
   <div class="control-group">
-    <label class="control-label">Mistä</label>
+    <label class="control-label">Saapumispvm</label>
     <div class="controls">
-      <input type="text" name="saapumisaika" placeholder="01.01.2013 02:01"/>
+      <input type="text" id="datepicker2" name="saapumispvm"/>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Saapumisaika</label>
+    <div class="controls">
+      <input type="text" name="saapumisaika" placeholder="02:01"/>
     </div>
   </div>
 
@@ -55,3 +69,20 @@
 </div>
 </div>
 </div>
+
+<script>
+window.onload = function() {
+  // Datepicker
+  var dpSettings = {
+    dateFormat: "dd.mm.yy",
+    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"],
+    defaultDate: null
+  };
+  $$("#datepicker1,#datepicker2").datepicker(dpSettings);
+
+  // Autocomplete
+  var vrAsemat = ['Alavus','Dragsvik','Eläinpuisto - Zoo','Eno','Enontekiö','Espoo','Haapajärvi','Haapamäki','Haarajoki','Hankasalmi','Hanko','Hanko-Pohjoinen','Harjavalta','Haukivuori','Heinävesi','Helsinki','Helsinki airport','Herrala','Hiekkaharju','Hikiä','Humppila','Huopalahti','Hyvinkää','Hämeenlinna','Höljäkkä','Iisalmi','Iittala','Ilmala','Imatra','Inari','Inkeroinen','Inkoo','Isokyrö','Ivalo','Joensuu','Jokela','Joroinen','Jorvas','Joutseno','Juupajoki','Jyväskylä','Jämsä','Järvelä','Järvenpää','Kajaani','Kannelmäki','Kannus','Karjaa','Karkku','Kauhava','Kauklahti','Kauniainen','Kausala','Kemi','Kemijärvi','Kemijärvi bus station','Kera','Kerava','Kerimäki','Kesälahti','Keuruu','Kiilopää','Kilo','Kilpisjärvi','Kirkkonummi','Kitee','Kittilä','Kiuruvesi','Kohtavaara','Koivuhovi','Koivukylä','Kokemäki','Kokkola','Kolari','Kolho','Kontiomäki','Koria','Korso','Kotka','Kotkan Satama','Kouvola','Kuhmo','Kuopio','Kupittaa','Kuusamo','Kylänlahti','Kymi','Kyminlinna','Kyrölä','Käpylä','Lahti','Laihia','Lapinlahti','Lappeenranta','Lappila','Lappohja','Lapua','Lempäälä','Leppävaara','Levi','Lieksa','Lievestuore','Lohja bus station','Loimaa','Louhela','Loviisa bus station','Luoma','Luosto','Lusto','Malmi','Malminkartano','Mankki','Martinlaakso','Masala','Mikkeli','Misi','Mommila','Moscow (Leningradski)','Muhos','Muijala','Muonio','Muurola','Myllykoski','Myllymäki','Myyrmäki','Mäkkylä','Mäntsälä','Mäntyharju','Nastola','Nivala','Nokia','Nummela','Nuppulinna','Nurmes','Oitti','Olos','Orivesi','Orivesi Keskusta','Oulainen','Oulu','Oulunkylä','Paimenportti','Pallastunturi','Paltamo','Parikkala','Parkano','Parola','Pasila','Pello','Perttilä','Petäjävesi','Pieksämäki','Pietarsaari','Pihlajavesi','Pitäjänmäki','Pohjois-Haaga','Pori','Porvoo bus station','Puistola','Pukinmäki','Punkaharju','Purola','Pyhä','Pyhäsalmi','Pännäinen','Pääskylahti','Raahe','Rantasalmi','Rauma','Rekola','Retretti','Riihimäki','Rovaniemi','Ruka','Runni','Ruukki','Ryttylä','Saariselkä','Salla','Sallatunturi','Salo','Santala','Saunakallio','Savio','Savonlinna','Savonlinna bus station','Seinäjoki','Siilinjärvi','Simpele','Siuntio','Skogby','Sodankylä','Sotkamo','St. Petersburg (Finljandski)','St.petersburg (Ladozhki)','Sukeva','Suomu','Suonenjoki','Tahko','Tammisaari','Tampere','Tapanila','Tavastila','Tervajoki','Tervola','Tikkurila','Toijala','Tolsa','Tornio','Tornio bus station','Tornio- Itäinen','Tuomarila','Turenki','Turku','Turku Satama','Tuuri','Tver','Uimaharju','Utajärvi','Utsjoki','Uusikylä','Vaala','Vaasa','Vainikkala','Vainikkala raja','Valimo','Valtimo','Vammala','Vantaankoski','Varkaus','Veikkola','Vihanti','Vihtari','Viiala','Viinijärvi','Villähde','Vilppula','Virkkala','Vuokatti ras th','Vuokatti urheiluopisto th','Vuonislahti','Vuontispirtti','Vyborg','Ylistaro','Ylitornio','Ylivieska','Ähtäri','Äkäslompolo'];
+    $$("input[name='mista'],input[name='mihin']").typeahead({source: vrAsemat});
+}
+</script>
