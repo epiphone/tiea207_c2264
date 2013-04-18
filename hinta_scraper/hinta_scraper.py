@@ -12,6 +12,8 @@ viiden päivän välein nettisivulle.
 
 from lxml import html
 
+import urllib
+
 def hae_hinta():
     '''
         Funktio hakee polttoaineiden keskihinnat (€/litra) polttoaine.net-sivulta.
@@ -25,9 +27,11 @@ def hae_hinta():
     # Haetaan täältä polttoaineen keskihinta
     url_bensa = "http://www.polttoaine.net/"
 
+    site = urllib.urlopen(url_bensa)
+
     # Haetaan html-tiedosto, luodaan lxml-olio. Funktio palauttaa
     # poikkeuksen, jos kaikki ei mene putkeen
-    root_bensa = html.parse(url_bensa)
+    root_bensa = html.parse(site)
 
     # Polttoainehintojen hakeminen (haetaan Polttoaine.net-sivulta)
     # Hinnat ovat järjestyksessä 95E10, 98E, Diesel

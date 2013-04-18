@@ -40,9 +40,11 @@ class AutoScraper():
         # Luodaan url
         url = self.luo_url(mista, mihin)
 
-        # Haetaan html-tiedosto, luodaan lxml-olio. Funktio palauttaa
+        site = urllib.urlopen(url)
+
+        # Haetaan html-tiedosto, luodaan lxml-olio. Funktio itse palauttaa
         # poikkeuksen, jos kaikki ei mene putkeen
-        root_matka = html.parse(url)
+        root_matka = html.parse(site)
 
         # Screipataan tiedot
         reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div//div[1]//span")
