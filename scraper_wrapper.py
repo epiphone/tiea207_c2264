@@ -4,7 +4,6 @@
 # TODO: Nämä käyttöön kun ovat valmiita:
 # import mh_scraper
 # import vr_scraper
-# import auto_scraper
 import logging
 from henkiloauto_scraper.auto_scraper import AutoScraper
 from thread_helper import do_threaded_work
@@ -19,18 +18,18 @@ except ImportError:
             self.store = {}
 
         def get(self, key):
-            '''Returns requested key'''
+            """Returns requested key"""
             if key in self.store:
                 return self.store[key]["value"]
             else:
                 return None
 
         def set(self, key, value, expires=None):
-            '''Set value to memcache'''
+            """Set value to memcache"""
             self.store[key] = {"value": value, "expires": expires}
 
         def add(self, key, value, expires=None):
-            '''Set value to memcache'''
+            """Set value to memcache"""
             self.store[key] = {"value": value, "expires": expires}
     memcache = Memcache()
 
@@ -107,7 +106,7 @@ class ScraperWrapper:
         bussi=True, juna=True, auto=True, alennusluokka=0):
         """Palauttaa valitulle matkalle eri yhteydet."""
         assert lahtoaika is not None or saapumisaika is not None
-        print locals()
+        print "locals:", locals()
         pvm = lahtoaika or saapumisaika
         pvm = pvm.split()[0]
 
@@ -115,24 +114,24 @@ class ScraperWrapper:
             """Apufunktio, joka tarkistaa välimuistin ja hakee tarvittaessa
             uuden tuloksen skreipperiltä."""
             # Määritetään skreipperistä riippuva välimuistin avain:
-            if scraper is self.mh_scraper:
-                tyyppi = "bussi"
-                cache_avain = "mh_" + pvm
-            elif scraper is self.vr_scraper:
-                # Tälle ei tule paljoa osumia, parempi vaihtoehto?
-                tyyppi = "juna"
-                cache_avain = "vr_" + mista + mihin + pvm
-            else:
-                tyyppi = "auto"
-                cache_avain = "auto_" + mista + mihin
+            # if scraper is self.mh_scraper:
+            #     tyyppi = "bussi"
+            #     cache_avain = "mh_" + pvm
+            # elif scraper is self.vr_scraper:
+            #     # Tälle ei tule paljoa osumia, parempi vaihtoehto?
+            #     tyyppi = "juna"
+            #     cache_avain = "vr_" + mista + mihin + pvm
+            # else:
+            #     tyyppi = "auto"
+            #     cache_avain = "auto_" + mista + mihin
 
-            tulos = memcache.get(cache_avain)
-            if tulos is not None:
-                logging.info("Cache hit, key:" + cache_avain)
-                return tulos, tyyppi
+            # tulos = memcache.get(cache_avain)
+            # if tulos is not None:
+            #     logging.info("Cache hit, key:" + cache_avain)
+            #     return tulos, tyyppi
 
             tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
-            memcache.set(cache_avain, tulos)
+            # memcache.set(cache_avain, tulos)
             return tulos, tyyppi
 
         # Palautetaan vain halutut matkustusvaihtoehdot:
@@ -144,4 +143,3 @@ class ScraperWrapper:
 
 # Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()
-a = "asd"

@@ -1,0 +1,9 @@
+#ui-datepicker-div {
+    background-color: white;
+    border: 1px solid lightgray;
+}
+
+.ui-datepicker-current-day {
+    background-color: lightblue;
+}
+

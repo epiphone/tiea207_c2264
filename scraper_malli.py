@@ -46,7 +46,8 @@ class Scraper:
             "hinta": [28.84, 33.93, None],  # VR:llä on eri hintaluokkia: Ennakko, Perus, Kampanja. Matkahuollolla ei tarvitse palauttaa ku yks arvo.
             "vaihdot": [
                 # 1. vaihtoyhteys
-                {"lahtoaika": "16:59",
+                {"palvelut": ["Tupakointitila", "Poreamme"],
+                "lahtoaika": "16:59",
                 "saapumisaika": "20:00",
                 "mista": "jyväskylä",
                 "mihin": "tampere",
