@@ -47,7 +47,13 @@ class AutoScraper():
         # pisteeksi. Tässä tarkistetaan myös, että onnistuiko haku
         # oikeanlaisella tavalla
         try:
-            matkan_pituus = float(reitti[0].text_content().split()[0].
+            # Jos haettu kilometrimäärä on vähintään tuhat, niin otetaan
+            # huomioon tuhansien ja satojen väliin jäävä välilyönti
+            if (len(reitti[0].text_content()) > 6):
+                matkan_pituus = float(reitti[0].text_content().split()[0] +
+                    reitti[0].text_content().split()[1].replace(",", "."))
+            else:
+                matkan_pituus = float(reitti[0].text_content().split()[0].
                                   replace(",", "."))
         except Exception:
             print "Haku ei tuottanut oikeanlaista tulosta"
@@ -103,8 +109,8 @@ def main():
     ''' Pääfunktio alkaa tästä. Tämä on AutoScraper-luokan testausta '''
 
     # Muuttujia
-    lahtopaikka = "Hämeenkyr"
-    saapumispaikka = "Kuopioo"
+    lahtopaikka = "Utsjoki"
+    saapumispaikka = "Hanko"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()
