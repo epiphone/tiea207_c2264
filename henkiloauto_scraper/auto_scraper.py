@@ -22,26 +22,33 @@ class AutoScraper():
         Scraper-luokka, jolla haetaan tietyn reitin tiedot henkilöautolla mentäessä
     '''
 
-    def hae_matka(self, mista, mihin, lahtoaika, saapumisaika=None,
-        max_tulokset=3, alennusluokka=0):
+    def __init__(self):
+        ''' Konstruktori '''
+        pass
+
+    def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None):
         '''
             Haetaan matkan tiedot henkilöautolle google mapsin avulla.
             lahto- ja saapumisaika tulee merkkijonona muodossa "YYYY-MM-DD HH:MM"
-            
+            Matkan kesto palautetaan muodossa "HH:MM"
         '''
 
+        # Luodaan url
         url = self.luo_url(mista, mihin)
 
-        # Haetaan html-tiedosto, luodaan lxml-olio. Funktio palauttaa poikkeuksen, jos
-        # kaikki ei mene putkeen
+        # Haetaan html-tiedosto, luodaan lxml-olio. Funktio palauttaa
+        # poikkeuksen, jos kaikki ei mene putkeen
         root_matka = html.parse(url)
 
+        # Screipataan tiedot
         reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div//div[1]//span")
 
-        # Erotellaan kilometrimäärä haetusta merkkijonosta ja muutetaan pilkku pisteeksi
-        # Tässä tarkistetaan myös että onnistuiko haku oikeanlaisella tavalla
+        # Erotellaan kilometrimäärä haetusta merkkijonosta ja muutetaan pilkku
+        # pisteeksi. Tässä tarkistetaan myös, että onnistuiko haku
+        # oikeanlaisella tavalla
         try:
-            matkan_pituus = float(reitti[0].text_content().split()[0].replace(",", "."))
+            matkan_pituus = float(reitti[0].text_content().split()[0].
+                                  replace(",", "."))
         except Exception:
             print "Haku ei tuottanut oikeanlaista tulosta"
             return
@@ -50,8 +57,8 @@ class AutoScraper():
         if (len(reitti[1].text_content().split()) < 3):
             matkan_kesto = "00:" + reitti[1].text_content().split()[0]
         else:
-            matkan_kesto = reitti[1].text_content().split()[0] + ":" + reitti[1].text_content().split()[2]
-
+            matkan_kesto = (reitti[1].text_content().split()[0] + ":" +
+                reitti[1].text_content().split()[2])
 
         # Muokataan merkkijono sovittuun formaattiin eli muotoon HH:MM
         if (len(matkan_kesto.split(':')[0]) < 2):
@@ -69,12 +76,11 @@ class AutoScraper():
         mihin = paikat[1].text_content()
 
         # Palautettavat tiedot reitistä
-        matkan_tiedot = {"mista": mista, "mihin": mihin, "kesto": matkan_kesto, "matkanpituus": matkan_pituus,
-                         "url": url}
+        matkan_tiedot = {"mista": mista, "mihin": mihin, "kesto": matkan_kesto,
+                         "matkanpituus": matkan_pituus, "url": url}
 
         # Palautetaan tiedot
         return matkan_tiedot
-
 
     def luo_url(self, mista, mihin):
         ''' Luodaan url, josta haetaan tiedot. Tämän tarkoituksena on muokata
@@ -104,9 +110,9 @@ def main():
     auto_scraper = AutoScraper()
 
     tiedot = auto_scraper.hae_matka(lahtopaikka, saapumispaikka, lahtoaika,
-        0, 0, 0)
+        0)
 
-    # Tulosetaan tulokset
+    # Tulostetaan tulokset
     try:
         for rivi in tiedot.iteritems():
             print rivi

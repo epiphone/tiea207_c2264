@@ -4,6 +4,8 @@ Created on 8.4.2013
 
 Scraper, jolla haetaan eri polttoaineiden litrahinnat (95E10, 98E ja
 diesel) Polttoaine.net-sivulta. Haetut hinnat ovat keskihintoja.
+Hinnat ovat edellisen päivän keskihintoja. Hinnat päivitetään
+viiden päivän välein nettisivulle.
 
 @author: Peter R
 '''
@@ -23,16 +25,17 @@ def hae_hinta():
     # Haetaan täältä polttoaineen keskihinta
     url_bensa = "http://www.polttoaine.net/"
 
-    # Haetaan html-tiedosto, luodaan lxml-olio:
-    try:
-        root_bensa = html.parse(url_bensa)
-    except IOError:
-        print "Polttoaineen tietojen skreippaaminen ep�onnistui"
-        return
+    # Haetaan html-tiedosto, luodaan lxml-olio. Funktio palauttaa
+    # poikkeuksen, jos kaikki ei mene putkeen
+    root_bensa = html.parse(url_bensa)
 
     # Polttoainehintojen hakeminen (haetaan Polttoaine.net-sivulta)
     # Hinnat ovat järjestyksessä 95E10, 98E, Diesel
     hinnat = root_bensa.xpath("//table[@id='Halvin_Kallein']//tr[2]//td[position()>2]")
+
+    # Tarkistetaan saatiinko screipattua mitään
+    if (len(hinnat) < 1):
+        print ("Polttoainehintoja ei saatu screipattua")
 
     # Palautetaan haetut hinnat
     return hinnat
