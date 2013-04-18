@@ -13,11 +13,11 @@ class MHScraper:
         """konstruktori"""
         pass
     
-    def tee_matka(self, mista, mihin, lahtoaika=None, saapumusaika=None, alennusluokka=0):
+    def tee_matka(self, mista, mihin, lahtoaika=None, saapumusaika=None):
         """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina taulukkoon attribuuttien kera"""
         
         dd = lahtoaika.split("-")[2]
-        kk = lahtoaika.split("")[1]
+        kk = lahtoaika.split("-")[1]
         vvvv = lahtoaika.split("-")[0]
     
         url = ("http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName=%s"
@@ -95,20 +95,7 @@ class MHScraper:
                     matkatLista.append(matka)
             
             return matkatLista
-        
-def tulosta_lista():
-    """Tulostetaan Matkalista"""
-    for matka in matkatLista:
-        print "----------------------------------------------------------------"
-        print "%s | %s | %s | %s | %s | " % (matka['lahtoaika'], matka['saapumisaika'], matka['laituri'], matka['kesto'], matka['hinta']) + "Vaihtoja: " + str(matka['vaihto_lkm'])
-        
-        for yhteys in matka['vaihdot']:
-            print str(yhteys['vaihto_nro']) + ". VaihtoYhteys"
-            print "--> %s | %s | %s | %s | %s | %s" % (yhteys['lahtoaika'], yhteys['saapumisaika'], yhteys['mista'], yhteys['mihin'], yhteys['tyyppi'], yhteys['tunnus'])
-        
-        print "----------------------------------------------------------------"
-        print "\n"
-        
+
 def aakkos_vaihto(nimi):
     """Vaihtaa Ääkköset urlin vaatimiin muotoihin"""
     uusi_nimi = nimi.replace('ä', "%E4")

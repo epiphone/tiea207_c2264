@@ -9,14 +9,12 @@ from lxml import html
 matkatLista = []
 
 lahto = "Kuopio"
-saapu = "Siilinjärvi"
-paiva = "24"
-kk = "4"
-vuosi = "2013"
+saapu = "Lahti"
+lahtoaika = "2013-04-24-14:59"
 # 0 = peruslippu
 # 1 = Opiskelijat, Varusmiehet, Sivarit, Lapset -50%
 # 2 = Eläkeläiset, Lehdistö, SLAHS:n jäsenet, Nuoriso -30%
-lippu_tyyppi = 1
+lippu_tyyppi = 0
 
 def tee_matka(rows):
     """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina taulukkoon attribuuttien kera"""
@@ -113,35 +111,56 @@ def laske_hinta(alkup_hinta, linja):
     else:
         if lippu_tyyppi == 0:
             return hinta
-    
+        
         if lippu_tyyppi == 1:
             if linja == "vakio" and hinta < 15.50:
                 return str(hinta) + " (TODO: taulukko)"
             if linja == "pika" and hinta < 18.80:
                 return str(hinta) + " (TODO: taulukko)"
-        
+            
             uusihinta = hinta/2
-        
-            return uusihinta
+            
+            return round(uusihinta, 1)
         
         if lippu_tyyppi == 2:
             if linja == "vakio" and hinta < 15.50:
                 return str(hinta) + " (TODO: taulukko)"
             if linja == "pika" and hinta < 18.80:
                 return str(hinta) + " (TODO: taulukko)"
-        
+            
             uusihinta = hinta - (hinta*0.3)
-        
-            return uusihinta
+            
+            return round(uusihinta, 1)
 
 def error_msg(errRows):
     """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
     print errRows[1].text_content().strip()
+    
+def hae_hinnat(url):
+    """haetaan kaikki matkan hinnat ja sijoitetaan ne dictionaryyn"""
+    rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[last()]//tr")
+    
+    hinta = {}
+    
+    for row in rows[2:3]: #ei huomioda kahta ekaa eikä kolmea viimeistä?
+        
+        children = row.getchildren()
+        
+        hinta[children[0].text_content()] = children[2].text_content()
+
 
 def main():
     """skreipataan Matkahuollon sivuilta aikataulut"""
-
-    url = "http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName="+aakkos_vaihto(lahto)+"&arrivalStopAreaName="+aakkos_vaihto(saapu)+"&allSchedules=0&departureDay="+paiva+"&departureMonth="+kk+"&departureYear="+vuosi+"&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0"
+    dd = lahtoaika.split("-")[2]
+    kk = lahtoaika.split("")[1]
+    vvvv = lahtoaika.split("-")[0]
+    
+    url = ("http://www.matkahuolto.info/lippu/fi/connectionsearch?lang=fi&departureStopAreaName=%s"
+               "&arrivalStopAreaName=%s"
+               "&allSchedules=0&departureDay=%s"
+               "&departureMonth=%s"
+               "&departureYear=%s"
+               "&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0") % (lahto, saapu, dd, kk, vvvv)
 
     # Haetaan html-tiedosto, luodaan lxml-olio:
     try:
