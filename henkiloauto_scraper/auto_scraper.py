@@ -10,6 +10,10 @@ Tässä kannattaa käyttää dictionaryja
 @author: Peter R
 
 Paluuarvot: lähtöaika, paluuaika, matkan pituus, linkki google mapsiin
+
+HUOM. huomasin, että jos reitin lähtöpaikka ja määränpää eivät ole
+täysin oikein kirjoitettu, niin tämä saattaa lisätä pari kilometriä lisää
+reitin pituuteen
 '''
 
 from lxml import html
@@ -43,13 +47,14 @@ class AutoScraper():
         # Screipataan tiedot
         reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div//div[1]//span")
 
+
         # Erotellaan kilometrimäärä haetusta merkkijonosta ja muutetaan pilkku
         # pisteeksi. Tässä tarkistetaan myös, että onnistuiko haku
         # oikeanlaisella tavalla
         try:
             # Jos haettu kilometrimäärä on vähintään tuhat, niin otetaan
             # huomioon tuhansien ja satojen väliin jäävä välilyönti
-            if (len(reitti[0].text_content()) > 6):
+            if (len(reitti[0].text_content()) > 7):
                 matkan_pituus = float(reitti[0].text_content().split()[0] +
                     reitti[0].text_content().split()[1].replace(",", "."))
             else:
@@ -74,16 +79,49 @@ class AutoScraper():
             matkan_kesto = matkan_kesto[0:2] + ":0" + matkan_kesto[3]
 
         # Screipataan myös lähtö- ja määräpaikka tietojen palautusta varten
-        paikat = root_matka.xpath("//td[@class='ddw-addr' and position()>1]/div/div[1]")
+        paikat_mista = root_matka.xpath("//div[@oi='wi0']/table/tbody/tr/" +
+                                        "td[@class='ddw-addr']/div/div")
 
-        # Mistä lähdetään
-        mista = paikat[0].text_content()
-        # Mihin mennään
-        mihin = paikat[1].text_content()
+        paikat_mihin = root_matka.xpath("//div[@oi='wi1']/table/tbody/tr/" +
+                                        "td[@class='ddw-addr']/div/div")
+
+        # Jos haetun reitin lähtö- ja määräpaikka ovat jonkin yrityksen tms.
+        # osoitteet, niin haetaan osoitetiedoista oikea paikkakunta
+
+        # Lähtöpaikalle:
+        if (len(paikat_mista) > 1):
+
+            mista = ""
+
+            # Luodaan lista, joka sisältää kaikki merkkijonot screipatun listan
+            # viimeiseltä riviltä
+            lista = paikat_mista[1].text_content().split()
+
+            for i in range(2, len(lista)):
+                mista = mista + lista[i]
+
+        else:
+            mista = paikat_mista[0].text_content()
+
+        # Määränpäälle:
+        if (len(paikat_mihin) > 1):
+
+            mihin = ""
+            # Luodaan lista, joka sisältää kaikki merkkijonot screipatun listan
+            # viimeiseltä riviltä
+            lista = paikat_mihin[1].text_content().split()
+
+            for i in range(2, len(lista)):
+                mihin = mihin + lista[i]
+
+        else:
+            mihin = paikat_mihin[0].text_content()
+
 
         # Palautettavat tiedot reitistä
-        matkan_tiedot = {"mista": mista, "mihin": mihin, "kesto": matkan_kesto,
-                         "matkanpituus": matkan_pituus, "url": url}
+        matkan_tiedot = {"mista": mista, "mihin": mihin,
+                         "kesto": matkan_kesto, "matkanpituus": matkan_pituus,
+                         "url": url}
 
         # Palautetaan tiedot
         return matkan_tiedot
@@ -109,8 +147,8 @@ def main():
     ''' Pääfunktio alkaa tästä. Tämä on AutoScraper-luokan testausta '''
 
     # Muuttujia
-    lahtopaikka = "Utsjoki"
-    saapumispaikka = "Hanko"
+    lahtopaikka = "Suonenjoki"
+    saapumispaikka = "Jyväskyl"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()
@@ -124,8 +162,6 @@ def main():
             print rivi
     except Exception:
         print "Ei tietoja palautettavaksi"
-    # print "Reitti %s - %s: %s km, %s" % (lahtopaikka, saapumispaikka,
-    # matkan_pituus, matkan_kesto)
 
 
 if __name__ == "__main__":
