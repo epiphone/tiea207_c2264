@@ -8,6 +8,33 @@ from datetime import datetime, timedelta
 import re
 
 
+### APUFUNKTIOT ###
+
+
+def formatoi_aika(pvm, aika):
+    """Formatoi päivämäärän (muotoa dd.mm.YYYY) ja ajan
+    muotoon YYYY-mm-dd HH:MM
+
+    >>> formatoi_aika("1.3.2013", "12.40")
+    '2013-03-01 12:40'
+    """
+    ajat = map(int, re.findall("\d+", aika))
+    assert len(ajat) == 2
+    td = timedelta(hours=ajat[0], minutes=ajat[1])
+    dt = datetime.strptime(pvm, LOMAKE_PVM_FORMAATTI) + td
+    return datetime.strftime(dt, SOVELLUS_PVM_FORMAATTI)
+
+
+### TEMPLATE-APUFUNKTIOT ###
+
+# TODO
+
+### GLOBAALIT & ASETUKSET ###
+
+
+LOMAKE_PVM_FORMAATTI = "%d.%m.%Y"
+SOVELLUS_PVM_FORMAATTI = "%Y-%m-%d %H:%M"
+
 urls = (
     "/", "Index",
     "/haku", "Haku"
@@ -15,6 +42,9 @@ urls = (
 
 scraper = ScraperWrapper()
 render = web.template.render("templates/", base="base")
+
+
+### SIVUT ###
 
 
 class Index:
@@ -52,23 +82,6 @@ class Haku:
         matkat = scraper.hae_matka(mista, mihin, laika, saika, bussi, juna,
             auto, ale)
         return render.results(matkat=matkat)
-
-
-def formatoi_aika(pvm, aika):
-    """Formatoi päivämäärän (muotoa dd.mm.YYYY) ja ajan
-    muotoon YYYY-mm-dd HH:MM
-
-    >>> formatoi_aika("1.3.2013", "12.40")
-    '2013-03-01 12:40'
-    """
-    form_mista = "%d.%m.%Y"
-    form_mihin = "%Y-%m-%d %H:%M"
-
-    ajat = map(int, re.findall("\d+", aika))
-    assert len(ajat) == 2
-    td = timedelta(hours=ajat[0], minutes=ajat[1])
-    dt = datetime.strptime(pvm, form_mista) + td
-    return datetime.strftime(dt, form_mihin)
 
 
 app = web.application(urls, globals(), autoreload=False)

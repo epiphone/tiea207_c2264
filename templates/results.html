@@ -8,11 +8,14 @@ $else:
   $if "juna" in matkat:
     <h2>Junayhteydet:</h2>
     $for yhteys in matkat["juna"]:
+      <h3>$loop.index. yhteys:</h3>
       Lähtee: $yhteys["lahtoaika"]<br>
       Saapuu: $yhteys["saapumisaika"]<br>
       Kesto: $yhteys["kesto"]<br>
       Hinta: $yhteys["hinta"][0]<br>
-      Tähän vaihdot yms.<br>
+      Vaihdot:<br>
+      $for vaihto in yhteys["vaihdot"]:
+        $loop.index. vaihto: $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"].split()[-1] - $vaihto["saapumisaika"].split()[-1])<br>
       <br>
 
   $if "bussi" in matkat:
@@ -26,11 +29,14 @@ $else:
       <br>
 
   $if "auto" in matkat:
-    <h2>Autoyhteydet:</h2>
-    Mistä: $matkat["auto"]["mista"]<br>
-    Mihin: $matkat["auto"]["mihin"]<br>
-    Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
-    Kesto: $matkat["auto"]["kesto"]<br>
+    $if matkat["auto"]:
+      <h2>Autoyhteydet:</h2>
+      Mistä: $matkat["auto"]["mista"]<br>
+      Mihin: $matkat["auto"]["mihin"]<br>
+      Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
+      Kesto: $matkat["auto"]["kesto"]<br>
+    $else:
+      Autoyhteyden hakeminen epäonnistui.
     <br>
 
 <a href="/">Takaisin</a>
