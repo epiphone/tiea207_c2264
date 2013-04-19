@@ -22,6 +22,16 @@ class VrScraper:
         """Konstruktori"""
     pass
 
+    def tarkista_pvm(self, lahto, saapuminen):
+        # Ota syötteistä irti tunnit ja muuta inteiksi
+        # Jos lahto_tunti on pienempi kuin saapumistunti päivä on vaihtunut
+        #   Lisää päiviin 1 ja yritä muuntaa datetimeksi, jos error...
+        #       vaihda päiviksi 01, lisää kuukausi yhdellä, jos kk > 12...
+        #           vaihda kuukausiksi 1 ja lisää vuosilukua yhdellä
+        # palauta laskelmoitu pvm muodossa YYYY-MM-DD HH:MM
+        # Mikäli eka iffi ei toteudu, voidaan palauttaa alkuperäinen pvm
+        return "saapuminen"
+
     def muodosta_aika(self, screipattu_aika, annettu_aika):
         # Skreipattu HH:MM  annettu YYYY-MM-DD HH:MM
         #            01234          0123456789012345
@@ -149,6 +159,7 @@ class VrScraper:
             juna = juna_ruma.replace(" ", "").split()
             vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
             vaihdon_tiedot['tyyppi'] = juna[1]
+            vaihdon_tiedot['saapumisaika'] = self.tarkista_pvm(vaihdon_tiedot['lahtoaika'], vaihdon_tiedot['saapumisaika'])
             lista_vaihdoista.append(vaihdon_tiedot)
 
         return lista_vaihdoista
@@ -186,6 +197,7 @@ class VrScraper:
                 hinta = self.selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"))
                 yhteyden_tiedot['hinnat'] = hinta
                 lista_yhteyksista.append(yhteyden_tiedot)
+                yhteyden_tiedot['saapumisaika'] = self.tarkista_pvm(yhteyden_tiedot['lahtoaika'], yhteyden_tiedot['saapumisaika'])
                 if saapumisaika:
                     yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], saapumisaika)
                 if lahtoaika:
