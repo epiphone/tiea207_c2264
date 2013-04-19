@@ -6,6 +6,7 @@
 # Critical:
 #- Mukautus rajapintaan (Done?)
 #- Tulosteissa ääkköset bugaa vielä
+#- Päivämäärät: Vaihtuuko päivä?
 #Optional
 #- urli ostosivulle asti, ei hakutuloksiin
 #- skreippaa palvelut myös
@@ -20,6 +21,14 @@ class VrScraper:
     def __init__(self):
         """Konstruktori"""
     pass
+
+    def muodosta_aika(self, screipattu_aika, annettu_aika):
+        # Skreipattu HH:MM  annettu YYYY-MM-DD HH:MM
+        #            01234          0123456789012345
+        #TODO! Tarkista vaihtuuko päivä!
+        palaute = annettu_aika[0:10] + " " + screipattu_aika
+        print palaute
+        return palaute
 
     def voidaanko_jatkaa(self, sivu):
         lista_virheista = []
@@ -91,7 +100,7 @@ class VrScraper:
             "&basic.outwardTimeSelection=" + ajan_tyyppi_url +
             "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
 
-        webbrowser.open_new(urli)
+        #webbrowser.open_new(urli)
 
         return urli
 
@@ -124,16 +133,16 @@ class VrScraper:
         return lista_hinnoista
 
     # Hakee yhteyden vaihtojen tiedot ja palauttaa ne listana dictionaryja
-    def hae_vaihtojen_tiedot(self, vaihdot):
+    def hae_vaihtojen_tiedot(self, vaihdot, annettu_aika):
         lista_vaihdoista = []
         for vaihto in vaihdot:
             vaihdon_tiedot = {}
             laika = vaihto[1][0].text_content()
-            vaihdon_tiedot['lahtoaika'] = laika
+            vaihdon_tiedot['lahtoaika'] = self.muodosta_aika(laika, annettu_aika)
             lpaikka = vaihto[1][1].text_content()
             vaihdon_tiedot['lahtopaikka'] = lpaikka
             saika = vaihto[2][0].text_content()
-            vaihdon_tiedot['saapumisaika'] = saika
+            vaihdon_tiedot['saapumisaika'] = self.muodosta_aika(saika, annettu_aika)
             spaikka = vaihto[2][1].text_content()
             vaihdon_tiedot['saapumispaikka'] = spaikka
             juna_ruma = " ".join(vaihto[3].text_content())
@@ -163,15 +172,24 @@ class VrScraper:
                 yhteyden_tiedot['mihin'] = mihin
                 yleiset = row.getchildren()[0].getchildren()
                 laika = yleiset[0].text.strip()
-                yhteyden_tiedot['lahtoaika'] = laika
+                if saapumisaika:
+                    yhteyden_tiedot['lahtoaika'] = self.muodosta_aika(laika, saapumisaika)
+                if lahtoaika:
+                    yhteyden_tiedot['lahtoaika'] = self.muodosta_aika(laika, lahtoaika)
                 saika = yleiset[1].text.strip()
-                yhteyden_tiedot['saapumisaika'] = saika
+                if lahtoaika:
+                    yhteyden_tiedot['saapumisaika'] = self.muodosta_aika(saika, lahtoaika)
+                if saapumisaika:
+                    yhteyden_tiedot['saapumisaika'] = self.muodosta_aika(saika, saapumisaika)
                 kesto = yleiset[3].text.strip()
                 yhteyden_tiedot['kesto'] = kesto
                 hinta = self.selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"))
                 yhteyden_tiedot['hinnat'] = hinta
                 lista_yhteyksista.append(yhteyden_tiedot)
-                yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1])
+                if saapumisaika:
+                    yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], saapumisaika)
+                if lahtoaika:
+                    yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], lahtoaika)
 
                 yhteyden_tiedot['url'] = urli
 
