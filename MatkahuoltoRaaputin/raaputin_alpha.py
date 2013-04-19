@@ -5,6 +5,7 @@ Luotu 16.4.2013
 @author: Juuso Tenhunen
 '''
 from lxml import html
+import urllib
 
 matkat_lista = []
 
@@ -16,10 +17,11 @@ class MHScraper:
     
     def hae_matka(self, mista, mihin, lahtoaika=None, saapumusaika=None):
         """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina taulukkoon attribuuttien kera"""
-        
-        dd = lahtoaika.split("-")[2]
-        kk = lahtoaika.split("-")[1]
-        vvvv = lahtoaika.split("-")[0]
+        lahtopaiva = lahtoaika.split(" ")[0]
+
+        dd = lahtopaiva.split("-")[2]
+        kk = lahtopaiva.split("-")[1]
+        vvvv = lahtopaiva.split("-")[0]
     
         url = ("http://www.matkahuolto.info/lippu/fi/"
                "connectionsearch?lang=fi&departureStopAreaName=%s"
@@ -28,10 +30,12 @@ class MHScraper:
                "&departureMonth=%s"
                "&departureYear=%s"
                "&stat=1&extl=1&search.x=-331&search.y=-383&ticketTravelType=0") % (mista, mihin, dd, kk, vvvv)
+               
+        sivu = urllib.urlopen(url)
         
         # Haetaan html-tiedosto, luodaan lxml-olio:
         try:
-            root = html.parse(url)
+            root = html.parse(sivu)
         except IOError:
             print "Skreippaaminen epäonnistui"
             return
