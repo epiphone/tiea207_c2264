@@ -99,7 +99,7 @@ class MHScraper:
 
                 matkat_lista.append(matka)
             
-                return matkat_lista
+            return matkat_lista
 
 def aakkos_vaihto(nimi):
     """Vaihtaa Ääkköset urlin vaatimiin muotoihin"""
