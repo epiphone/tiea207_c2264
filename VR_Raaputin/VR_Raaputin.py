@@ -12,7 +12,6 @@
 
 import urllib2
 from lxml import html
-import webbrowser
 import pprint
 
 
@@ -97,8 +96,6 @@ class VrScraper:
             "&basic.outwardTimeSelection=" + ajan_tyyppi_url +
             "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
 
-        #webbrowser.open_new(urli)
-
         return urli
 
     # Haetaan hinnat HTML-elementeistä, palautetaan listana
@@ -118,7 +115,6 @@ class VrScraper:
                     testi = hinta.text_content().replace(u"€", "")
                     testi = ' '.join(testi.split())
                     testi = testi.replace(",", ".")
-                    print testi
                     lista_hinnoista.append(testi)
                     continue
             else:
@@ -146,7 +142,7 @@ class VrScraper:
             juna = juna_ruma.replace(" ", "").split()
             vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
             vaihdon_tiedot['tyyppi'] = juna[1]
-            vaihdon_tiedot['palvelut'] = "Kaikkee Kivaa :)"
+            vaihdon_tiedot['palvelut'] = ["Kaikkee Kivaa :)", "Ja hauskaa"]
             lista_vaihdoista.append(vaihdon_tiedot)
 
         return lista_vaihdoista
