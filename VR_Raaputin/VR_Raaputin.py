@@ -59,7 +59,9 @@ class VrScraper:
         tulos = teksti.replace("ä", "%C3%A4")
         tulos = tulos.replace("Ä", "%C3%84")
         tulos = tulos.replace("ö", "%C3%B6")
-        tulos = tulos.replace("Ö", "&C3%96")
+        tulos = tulos.replace("Ö", "%C3%96")
+        tulos = tulos.replace("å", "%C3%A5")
+        tulos = tulos.replace("Å", "%C3%85")
 
         return tulos
 
