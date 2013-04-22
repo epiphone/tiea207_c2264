@@ -137,8 +137,11 @@ class ScraperWrapper:
             #     logging.info("Cache hit, key:" + cache_avain)
             #     return tulos, tyyppi
 
-            tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
-            # memcache.set(cache_avain, tulos)
+            try:
+                tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
+                # memcache.set(cache_avain, tulos)
+            except IOError:
+                tulos = {"virhe": "Sivun avaaminen epäonnistui."}
             return tulos, tyyppi
 
         # Palautetaan vain halutut matkustusvaihtoehdot:
