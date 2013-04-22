@@ -7,13 +7,17 @@
 #- Mukautus rajapintaan (Done?)
 #- Tulosteissa ääkköset bugaa vielä
 #- Poikkeuksia, poikkeuksia, poikeuksia....
+#- Mista ja mihin arvot ei parametreista, vaan skreipataan
+#   - h2 class tripheading
+#- Virhepalauteeseen ei VR:än virheilmoituksia, vaan että MISTÄ virhe aiheutui...
+#   - ul-elementit, id:t = fieldsFromError, fieldsToError, fieldsDepartureDateError, fieldsDepartureTimeTypeError
+#   - jos joku ID:llä varustettu löytyy, lisää virhelistaan sijainti
 #Optional
 #- urli ostosivulle asti, ei hakutuloksiin
 
 import urllib2
 from lxml import html
 import pprint
-import webbrowser
 
 
 class VrScraper:
@@ -92,8 +96,6 @@ class VrScraper:
             "&basic.departureDate.date=" + lahto_pvm +
             "&basic.outwardTimeSelection=" + ajan_tyyppi_url +
             "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
-
-        webbrowser.open_new(urli)
 
         return urli
 
