@@ -35,11 +35,17 @@ def hae_hinta():
 
     # Polttoainehintojen hakeminen (haetaan Polttoaine.net-sivulta)
     # Hinnat ovat järjestyksessä 95E10, 98E, Diesel
-    hinnat = root_bensa.xpath("//table[@id='Halvin_Kallein']//tr[2]//td[position()>2]")
+    hinnat_scrape = root_bensa.xpath("//table[@id='Halvin_Kallein']//tr[2]" +
+                              "//td[position()>2]")
 
     # Tarkistetaan saatiinko screipattua mitään
-    if (len(hinnat) < 1):
-        print ("Polttoainehintoja ei saatu screipattua")
+    if (len(hinnat_scrape) < 1):
+        return None
+
+    # Luodaan taulukko, joka sisältää hinnat
+    hinnat = [float(hinnat_scrape[0].text_content()),
+              float(hinnat_scrape[1].text_content()),
+              float(hinnat_scrape[2].text_content())]
 
     # Palautetaan haetut hinnat
     return hinnat
@@ -50,9 +56,9 @@ def main():
     hinnat = hae_hinta()
 
     # Kokeillaan hintojen tulostamista (testausta)
-    print(" 95E10: " + hinnat[0].text_content() + " €/litra")
-    print(" 98E: " + hinnat[1].text_content() + " €/litra")
-    print(" Diesel: " + hinnat[2].text_content() + " €/litra")
+    print(" 95E10: " + str(hinnat[0]) + " €/litra")
+    print(" 98E: " + str(hinnat[1]) + " €/litra")
+    print(" Diesel: " + str(hinnat[2]) + " €/litra")
 
 if __name__ == "__main__":
     main()
