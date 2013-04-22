@@ -120,39 +120,51 @@ def results (matkat):
     else:
         extend_([u'<h1>L\xf6ytyneet yhteydet:</h1>\n'])
         if "juna" in matkat:
-            extend_([u'<h2>Junayhteydet:</h2>\n'])
-            for yhteys in loop.setup(matkat["juna"]):
-                extend_([u'<h3>', escape_(loop.index, True), u'. yhteys:</h3>\n'])
-                extend_([u'L\xe4htee: ', escape_(yhteys["lahtoaika"], True), u'<br>\n'])
-                extend_([u'Saapuu: ', escape_(yhteys["saapumisaika"], True), u'<br>\n'])
-                extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u'<br>\n'])
-                extend_([u'Hinta: ', escape_(yhteys["hinta"][0], True), u'<br>\n'])
-                extend_([u'Vaihdot:<br>\n'])
-                for vaihto in loop.setup(yhteys["vaihdot"]):
-                    extend_([escape_(loop.index, True), u'. vaihto: ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"].split()[-1], True), u' - ', escape_(vaihto["saapumisaika"].split()[-1], True), u')<br>\n'])
-                extend_([u'<br>\n'])
-                extend_([u'\n'])
-        if "bussi" in matkat:
-            extend_([u'<h2>Bussiyhteydet:</h2>\n'])
-            for yhteys in loop.setup(matkat["bussi"]):
-                extend_([u'L\xe4htee: ', escape_(yhteys["lahtoaika"], True), u'<br>\n'])
-                extend_([u'Saapuu: ', escape_(yhteys["saapumisaika"], True), u'<br>\n'])
-                extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u'<br>\n'])
-                extend_([u'Hinta: ', escape_(yhteys["hinta"][0], True), u'<br>\n'])
-                extend_([u'T\xe4h\xe4n vaihdot yms.<br>\n'])
-                extend_([u'<br>\n'])
-                extend_([u'\n'])
-        if "auto" in matkat:
-            if matkat["auto"]:
-                extend_([u'<h2>Autoyhteydet:</h2>\n'])
-                extend_([u'Mist\xe4: ', escape_(matkat["auto"]["mista"], True), u'<br>\n'])
-                extend_([u'Mihin: ', escape_(matkat["auto"]["mihin"], True), u'<br>\n'])
-                extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
-                extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
+            if "virhe" in matkat["juna"]:
+                extend_([u'<h3>Virhe! ', escape_(matkat["juna"]["virhe"], True), u'</h3>\n'])
             else:
-                extend_([u'Autoyhteyden hakeminen ep\xe4onnistui.\n'])
-            extend_([u'<br>\n'])
-            extend_([u'\n'])
+                extend_([u'<h2>Junayhteydet:</h2>\n'])
+                for yhteys in loop.setup(matkat["juna"]):
+                    extend_([u'<h3>', escape_(loop.index, True), u'. yhteys:</h3>\n'])
+                    extend_([u'L\xe4htee: ', escape_(yhteys["lahtoaika"], True), u'<br>\n'])
+                    extend_([u'Saapuu: ', escape_(yhteys["saapumisaika"], True), u'<br>\n'])
+                    extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u'<br>\n'])
+                    extend_([u'Hinta: ', escape_(yhteys["hinta"][0], True), u'<br>\n'])
+                    extend_([u'Vaihdot:<br>\n'])
+                    for vaihto in loop.setup(yhteys["vaihdot"]):
+                        extend_([escape_(loop.index, True), u'. vaihto: ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"].split()[-1], True), u' - ', escape_(vaihto["saapumisaika"].split()[-1], True), u')<br>\n'])
+                    extend_([u'<br>\n'])
+                    extend_([u'\n'])
+        if "bussi" in matkat:
+            if "virhe" in matkat["bussi"]:
+                extend_([u'<h3>Virhe! matkat["bussi"]["virhe"]</h3>\n'])
+            else:
+                extend_([u'<h2>Bussiyhteydet:</h2>\n'])
+                for yhteys in loop.setup(matkat["bussi"]):
+                    extend_([u'L\xe4htee: ', escape_(yhteys["lahtoaika"], True), u'<br>\n'])
+                    extend_([u'Saapuu: ', escape_(yhteys["saapumisaika"], True), u'<br>\n'])
+                    extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u'<br>\n'])
+                    extend_([u'Hinta: ', escape_(yhteys["hinta"][0], True), u'<br>\n'])
+                    extend_([u'T\xe4h\xe4n vaihdot yms.<br>\n'])
+                    extend_([u'<br>\n'])
+                    extend_([u'\n'])
+        if "auto" in matkat:
+            if "virhe" in matkat["auto"]:
+                extend_([u'<h3>Virhe! matkat["auto"]["virhe"]</h3>\n'])
+            else:
+                if matkat["auto"]:
+                    extend_([u'<h2>Autoyhteydet:</h2>\n'])
+                    extend_([u'Mist\xe4: ', escape_(matkat["auto"]["mista"], True), u'<br>\n'])
+                    extend_([u'Mihin: ', escape_(matkat["auto"]["mihin"], True), u'<br>\n'])
+                    extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
+                    extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
+                    if "hinta" in matkat["auto"]:
+                        h1, h2, h3 = matkat["auto"]["hinta"]
+                        extend_([u'Hinnat: <b>', escape_(h1, True), u'</b>\u20ac (95E10), <b>', escape_(h2, True), u'</b>\u20ac (98E), <b>', escape_(h3, True), u'</b>\u20ac (Diesel)<br>\n'])
+                else:
+                    extend_([u'Autoyhteyden hakeminen ep\xe4onnistui.\n'])
+                extend_([u'<br>\n'])
+                extend_([u'\n'])
     extend_([u'<a href="/">Takaisin</a>\n'])
 
     return self
