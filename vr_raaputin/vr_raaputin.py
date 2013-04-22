@@ -6,13 +6,14 @@
 # Critical:
 #- Mukautus rajapintaan (Done?)
 #- Tulosteissa ääkköset bugaa vielä
+#- Poikkeuksia, poikkeuksia, poikeuksia....
 #Optional
 #- urli ostosivulle asti, ei hakutuloksiin
-#- skreippaa palvelut myös
 
 import urllib2
 from lxml import html
 import pprint
+import webbrowser
 
 
 class VrScraper:
@@ -24,13 +25,11 @@ class VrScraper:
         palaute = annettu_aika[0:10] + " " + screipattu_aika
         return palaute
 
-
-
     def voidaanko_jatkaa(self, sivu):
         lista_virheista = []
         rows = sivu.xpath("//ul[@class='errorMessage']")
         for row in rows:
-            lista_virheista.append(row.text_content())
+            lista_virheista.append(row.text_content().replace(" ", "").split())
 
         if len(lista_virheista) < 1:
             lista_virheista.append("True")
@@ -98,6 +97,8 @@ class VrScraper:
             "&basic.outwardTimeSelection=" + ajan_tyyppi_url +
             "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
 
+        webbrowser.open_new(urli)
+
         return urli
 
     # Haetaan hinnat HTML-elementeistä, palautetaan listana
@@ -159,7 +160,6 @@ class VrScraper:
         return lista_vaihdoista
 
     # Hakee matkan tiedot paikasta X paikkaan Y. Palautetaan Dictionaryna, joka sisältää kaiken tarpeellisen tiedon
-    # TODO - Poikkeusten hallintaa. (Validointi ja matkojen löytymättöyys)
     def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None):
         avaaja = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
