@@ -6,7 +6,6 @@
 # Critical:
 #- Mukautus rajapintaan (Done?)
 #- Tulosteissa ääkköset bugaa vielä
-#- Päivämäärät: Vaihtuuko päivä?
 #Optional
 #- urli ostosivulle asti, ei hakutuloksiin
 #- skreippaa palvelut myös
@@ -147,6 +146,7 @@ class VrScraper:
             juna = juna_ruma.replace(" ", "").split()
             vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
             vaihdon_tiedot['tyyppi'] = juna[1]
+            vaihdon_tiedot['palvelut'] = "Kaikkee kivaa :)"
             lista_vaihdoista.append(vaihdon_tiedot)
 
         return lista_vaihdoista
@@ -188,7 +188,6 @@ class VrScraper:
                     yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], saapumisaika)
                 if lahtoaika:
                     yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], lahtoaika)
-
                 yhteyden_tiedot['url'] = urli
 
             return lista_yhteyksista
