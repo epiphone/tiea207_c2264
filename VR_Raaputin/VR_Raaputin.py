@@ -146,7 +146,7 @@ class VrScraper:
             juna = juna_ruma.replace(" ", "").split()
             vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
             vaihdon_tiedot['tyyppi'] = juna[1]
-            vaihdon_tiedot['palvelut'] = "Kaikkee kivaa :)"
+            vaihdon_tiedot['palvelut'] = "Kaikkee Kivaa :)"
             lista_vaihdoista.append(vaihdon_tiedot)
 
         return lista_vaihdoista
@@ -192,7 +192,7 @@ class VrScraper:
 
             return lista_yhteyksista
         else:
-            return virheet
+            return {"virhe": virheet}
 
 
     # Tässä vaiheessa main funktiota käytetään vain käynnistämiseen ja syötteiden testaukseen
