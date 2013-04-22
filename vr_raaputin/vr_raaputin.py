@@ -13,6 +13,7 @@
 import urllib2
 from lxml import html
 import pprint
+import webbrowser
 
 
 class VrScraper:
@@ -66,8 +67,8 @@ class VrScraper:
 
         if lahtoaika:
             lahto_pvm = lahtoaika[8:10] + "." + lahtoaika[5:7] + "." + lahtoaika[0:4]
-            lahto_tunnit = lahtoaika[11:12]
-            lahto_minuutit = lahtoaika[14:15]
+            lahto_tunnit = lahtoaika[11:13]
+            lahto_minuutit = lahtoaika[14:16]
             ajan_tyyppi_url = "true"
             urli = ("https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic." +
             "fromStationVR=" + mista +
@@ -91,6 +92,8 @@ class VrScraper:
             "&basic.departureDate.date=" + lahto_pvm +
             "&basic.outwardTimeSelection=" + ajan_tyyppi_url +
             "&basic.passengerNumbers%5B0%5D.passengerType=84&basic.passengerNumbers%5B0%5D.passengerAmount=1&basic.fiRuGroup=false&basic.campaignCode=")
+
+        webbrowser.open_new(urli)
 
         return urli
 
