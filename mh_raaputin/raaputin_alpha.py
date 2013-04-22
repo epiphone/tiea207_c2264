@@ -100,7 +100,7 @@ class MHScraper:
             
             return matkat_lista
 
-    def aakkos_vaihto(nimi):
+    def aakkos_vaihto(self, nimi):
         """Vaihtaa Ääkköset urlin vaatimiin muotoihin"""
         uusi_nimi = nimi.replace('ä', "%E4")
         uusi_nimi = uusi_nimi.replace('Ä', "%C4")
@@ -110,7 +110,7 @@ class MHScraper:
         uusi_nimi = uusi_nimi.replace('Å', "%C5")
         return uusi_nimi
 
-    def keston_vaihto(aika):
+    def keston_vaihto(self, aika):
         """Vaihtaa matkan keston HHh MMmin = HH:MM (esim 5h 15min = 05:15)"""
         kesto = aika.split()
         tunti = kesto[0].replace("h", "")
@@ -125,11 +125,11 @@ class MHScraper:
         
         return tunti + ":" + minuutti
 
-    def error_msg(err_rows):
+    def error_msg(self, err_rows):
         """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
         return ['virhe: ' + err_rows[1].text_content().strip()]
     
-    def hae_hinnat(url):
+    def hae_hinnat(self, url):
         """haetaan kaikki matkan hinnat ja sijoitetaan ne dictionaryyn"""
     
         root = html.parse(url)
