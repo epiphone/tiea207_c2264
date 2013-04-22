@@ -6,6 +6,7 @@
 # import vr_scraper
 import logging
 from henkiloauto_scraper.auto_scraper import AutoScraper
+from hinta_scraper import hinta_scraper
 from thread_helper import do_threaded_work
 try:
     from google.appengine.api import memcache
@@ -33,6 +34,8 @@ except ImportError:
             self.store[key] = {"value": value, "expires": expires}
     memcache = Memcache()
 
+# Käytetään näitä hintoja, jos hintojen hakeminen epäonnistuu
+HINNAT_BACKUP = [1.638, 1.688, 1.52]
 
 class VRScraper:
     """Tilapäinen dummy-luokka."""
@@ -142,6 +145,11 @@ class ScraperWrapper:
                 # memcache.set(cache_avain, tulos)
             except IOError:
                 tulos = {"virhe": "Sivun avaaminen epäonnistui."}
+
+            if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
+                hinnat = self.hae_bensan_hinnat()
+                pit = tulos["matkanpituus"]
+                tulos["hinta"] = [round(tulos["matkanpituus"] * h, 2) for h in hinnat]
             return tulos, tyyppi
 
         # Palautetaan vain halutut matkustusvaihtoehdot:
@@ -150,6 +158,23 @@ class ScraperWrapper:
         matkat = {tyyppi: matka for matka, tyyppi in matkat if lokaalit[tyyppi]}
         return matkat
 
+    def hae_bensan_hinnat(self):
+        """Hakee bensan hinnat hinta_scraper-moduulia käyttäen."""
+        hinnat = memcache.get("hinnat")
+        if hinnat is not None:
+            # Hinnat löytyivät välimuistista
+            return hinnat
+
+        try:
+            hinnat = hinta_scraper.hae_hinta()
+            if not hinnat:
+                return HINNAT_BACKUP
+        except IOError:
+            logging.info("Bensa-urlin avaaminen epäonnistui")
+            return HINNAT_BACKUP
+
+        memcache.set("hinnat", hinnat, 60 * 60 * 24 * 7)
+        return hinnat
 
 # Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()

@@ -36,16 +36,19 @@ $else:
 
   $if "auto" in matkat:
     $if "virhe" in matkat["auto"]:
+      <h3>Virhe! matkat["auto"]["virhe"]</h3>
+    $else:
       $if matkat["auto"]:
         <h2>Autoyhteydet:</h2>
         Mistä: $matkat["auto"]["mista"]<br>
         Mihin: $matkat["auto"]["mihin"]<br>
         Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
         Kesto: $matkat["auto"]["kesto"]<br>
+        $if "hinta" in matkat["auto"]:
+          $h1, h2, h3 = matkat["auto"]["hinta"]
+          Hinnat: 95E10: $h1, 98E: $h2, Diesel: $h3<br>
       $else:
         Autoyhteyden hakeminen epäonnistui.
       <br>
-    $else:
-      <h3>Virhe! matkat["auto"]["virhe"]</h3>
 
 <a href="/">Takaisin</a>
