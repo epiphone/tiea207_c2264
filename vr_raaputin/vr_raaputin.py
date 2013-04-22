@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 # VR:än sivujen skreipperi.
 # Lasse Wallden & Aleksi Pekkala
-# 17.4.2013
+# 22.4.2013
 #TODO:
 # Critical:
 #- Mukautus rajapintaan (Done?)
@@ -144,7 +144,16 @@ class VrScraper:
             juna = juna_ruma.replace(" ", "").split()
             vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
             vaihdon_tiedot['tyyppi'] = juna[1]
-            vaihdon_tiedot['palvelut'] = ["Kaikkee Kivaa :)", "Ja hauskaa"]
+            lista_palveluista_html = vaihto[5].getchildren()
+            palvelut = []
+            if len(lista_palveluista_html) > 2:
+                lista_palveluista_html.pop(0)
+                lista_palveluista_html.pop(0)
+                for palvelu in lista_palveluista_html:
+                    palvelut.append(palvelu.get('alt'))
+            else:
+                palvelut.append("Ei palveluita")
+            vaihdon_tiedot['palvelut'] = palvelut
             lista_vaihdoista.append(vaihdon_tiedot)
 
         return lista_vaihdoista
