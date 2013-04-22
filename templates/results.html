@@ -45,8 +45,8 @@ $else:
         Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
         Kesto: $matkat["auto"]["kesto"]<br>
         $if "hinta" in matkat["auto"]:
-          $h1, h2, h3 = matkat["auto"]["hinta"]
-          Hinnat: 95E10: $h1, 98E: $h2, Diesel: $h3<br>
+          $ h1, h2, h3 = matkat["auto"]["hinta"]
+          Hinnat: <b>$h1</b>€ (95E10), <b>$h2</b>€ (98E), <b>$h3</b>€ (Diesel)<br>
       $else:
         Autoyhteyden hakeminen epäonnistui.
       <br>

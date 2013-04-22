@@ -149,7 +149,7 @@ class ScraperWrapper:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
                 hinnat = self.hae_bensan_hinnat()
                 pit = tulos["matkanpituus"]
-                tulos["hinta"] = [round(tulos["matkanpituus"] * h, 2) for h in hinnat]
+                tulos["hinta"] = [round(pit * (6.0 / 100.0) * h, 2) for h in hinnat]
             return tulos, tyyppi
 
         # Palautetaan vain halutut matkustusvaihtoehdot:

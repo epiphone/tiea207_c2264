@@ -159,8 +159,8 @@ def results (matkat):
                     extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
                     extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
                     if "hinta" in matkat["auto"]:
-                        extend_([escape_(h1, True), u', h2, h3 = matkat["auto"]["hinta"]\n'])
-                        extend_([u'Hinnat: 95E10: ', escape_(h1, True), u', 98E: ', escape_(h2, True), u', Diesel: ', escape_(h3, True), u'<br>\n'])
+                        h1, h2, h3 = matkat["auto"]["hinta"]
+                        extend_([u'Hinnat: <b>', escape_(h1, True), u'</b>\u20ac (95E10), <b>', escape_(h2, True), u'</b>\u20ac (98E), <b>', escape_(h3, True), u'</b>\u20ac (Diesel)<br>\n'])
                 else:
                     extend_([u'Autoyhteyden hakeminen ep\xe4onnistui.\n'])
                 extend_([u'<br>\n'])
