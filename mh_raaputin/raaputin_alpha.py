@@ -18,7 +18,7 @@ class MHScraper:
         """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina
         taulukkoon attribuuttien kera"""
         
-        paiva = lahtoaika.split("-")[2]
+        paiva = lahtoaika.split("-")[2].split(" ")[0]
         kuuk = lahtoaika.split("-")[1]
         vvvv = lahtoaika.split("-")[0]
     
@@ -29,8 +29,8 @@ class MHScraper:
                "&departureMonth=%s"
                "&departureYear=%s"
                "&stat=1&extl=1&search.x=-331"
-               "&search.y=-383") % (aakkos_vaihto(mista),
-                                    aakkos_vaihto(mihin),
+               "&search.y=-383") % (self.aakkos_vaihto(mista),
+                                    self.aakkos_vaihto(mihin),
                                     paiva, kuuk, vvvv)
         
 
@@ -42,7 +42,7 @@ class MHScraper:
         #Jos haku tuottaa error-boxin, haetaan sen errorin nimi,
         #eikä tehdä enää muuta
         if err_row.attrib["class"] in ["error_wrapper"]:
-            return error_msg(err_rows)
+            return self.error_msg(err_rows)
         
 
         #jos hakuvirhettä ei tule, jatketaan normaalisti
@@ -82,7 +82,7 @@ class MHScraper:
                          'mista': asema_mista,
                          'mihin': asema_mihin,
                          'laituri': children[4].text_content(),
-                         'kesto': keston_vaihto(children[5].text_content()),
+                         'kesto': self.keston_vaihto(children[5].text_content()),
                          'hinta': [children[10].text_content(), children[11].text_content()],
                          'vaihdot': [
                                 # 1. vaihtoyhteys
@@ -143,3 +143,14 @@ class MHScraper:
             children = row.getchildren()
         
             hinta[children[0].text_content()] = children[2].text_content()
+
+""" Testeri vaan            
+def main():
+    
+    scraper = MHScraper()
+    
+    for matka in scraper.hae_matka("Kuopio", "Jyväskylä", "2013-04-24 13:15", None):
+        print matka
+            
+if __name__ == "__main__":
+    main()"""
