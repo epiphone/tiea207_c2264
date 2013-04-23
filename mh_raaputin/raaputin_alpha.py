@@ -18,21 +18,7 @@ class MHScraper:
         """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina
         taulukkoon attribuuttien kera"""
         
-        paiva = lahtoaika.split("-")[2].split(" ")[0]
-        kuuk = lahtoaika.split("-")[1]
-        vvvv = lahtoaika.split("-")[0]
-    
-        url = ("http://www.matkahuolto.info/lippu/fi/"
-               "connectionsearch?lang=fi&departureStopAreaName=%s"
-               "&arrivalStopAreaName=%s"
-               "&allSchedules=0&departureDay=%s"
-               "&departureMonth=%s"
-               "&departureYear=%s"
-               "&stat=1&extl=1&search.x=-331"
-               "&search.y=-383") % (self.aakkos_vaihto(mista),
-                                    self.aakkos_vaihto(mihin),
-                                    paiva, kuuk, vvvv)
-        
+        url = self.tee_url(mista, mihin, lahtoaika, saapumisaika)
 
         root = html.parse(url)
 
@@ -42,14 +28,17 @@ class MHScraper:
         #Jos haku tuottaa error-boxin, haetaan sen errorin nimi,
         #eikä tehdä enää muuta
         if err_row.attrib["class"] in ["error_wrapper"]:
-            return self.error_msg(err_rows)
+            return self.error_msg(err_rows, lahtoaika, saapumisaika)
         
 
         #jos hakuvirhettä ei tule, jatketaan normaalisti
         else:
 
-            rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[2]//tr")
-            mista_mihin = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[1]//tr[2]/td[2]")
+            rows = root.xpath("//table//tr[last()]/td[last()]"
+                              "//tr[1]//table[2]//tr")
+            
+            mista_mihin = root.xpath("//table//tr[last()]/td[last()]"
+                                     "//tr[1]//table[1]//tr[2]/td[2]")
             
             asema_mista = mista_mihin[1].text_content().split("\r\n")[4].strip()
             asema_mihin = mista_mihin[1].text_content().split("\r\n")[8].strip()
@@ -59,20 +48,19 @@ class MHScraper:
                 children = row.getchildren()
 
                 if len(children) == 7:
-                    vaihto = " ".join(children[6].text_content().split())
+                    vaihto = " ".join(children[6].text_content().split()).replace(",","")
                     matkat_lista[-1]['vaihdot'][-1]['saapumisaika'] = vaihto.split()[-1][1:-1].split('-')[0]
-                    matkat_lista[-1]['vaihdot'][-1]['mihin'] = vaihto.split()[0]
+                    matkat_lista[-1]['vaihdot'][-1]['mihin'] = vaihto.split("(")[0]
                     matkat_lista[-1]['vaihdot'].append({'lahtoaika': vaihto.split()[-1][1:-1].split('-')[-1],
                                                        'saapumisaika': matkat_lista[-1]['saapumisaika'],
-                                                       'mista': vaihto.split()[0],
+                                                       'mista': vaihto.split("(")[0],
                                                        'mihin': "",
                                                        'tyyppi': "",
-                                                       'tunnus': "",
-                                                       'vaihto_nro': matkat_lista[-1]['vaihdot'][-1]['vaihto_nro'] + 1})
+                                                       'tunnus': ""})
                     continue
 
                 if children[1].text_content().strip() ==  "":
-                    matkat_lista[-1]['vaihdot'][-1]['mihin'] = mihin
+                    matkat_lista[-1]['vaihdot'][-1]['mihin'] = asema_mihin
                     matkat_lista[-1]['vaihdot'][-1]['tyyppi'] = children[6].text_content().split()[0]
                     matkat_lista[-1]['vaihdot'][-1]['tunnus'] = children[6].text_content()
                     continue
@@ -88,17 +76,42 @@ class MHScraper:
                                 # 1. vaihtoyhteys
                                 {'lahtoaika': children[1].text_content(),
                                  'saapumisaika': children[3].text_content(),
-                                 'mista': mista,
-                                 'mihin': mihin,
+                                 'mista': asema_mista,
+                                 'mihin': asema_mihin,
                                  'tyyppi': children[6].text_content().split()[0],
-                                 'tunnus': children[6].text_content(),
-                                 'vaihto_nro': 1}
+                                 'tunnus': children[6].text_content(),}
                                  ]
                                 }
 
                 matkat_lista.append(matka)
             
             return matkat_lista
+        
+    def tee_url(self, mista, mihin, lahtoaika, saapumisaika):
+        """muodostetaan urli screipattavalle sivulle"""
+        
+        if saapumisaika is None:
+            aika = lahtoaika
+        else:
+            aika = saapumisaika
+ 
+        paiva = aika.split("-")[2].split(" ")[0]
+        kuuk = aika.split("-")[1]
+        vvvv = aika.split("-")[0]
+    
+        url = ("http://www.matkahuolto.info/lippu/fi/"
+               "connectionsearch?lang=fi&departureStopAreaName=%s"
+               "&arrivalStopAreaName=%s"
+               "&allSchedules=0&departureDay=%s"
+               "&departureMonth=%s"
+               "&departureYear=%s"
+               "&stat=1&extl=1&search.x=-331"
+               "&search.y=-383") % (self.aakkos_vaihto(mista),
+                                    self.aakkos_vaihto(mihin),
+                                    paiva, kuuk, vvvv)
+               
+        return url
+        
 
     def aakkos_vaihto(self, nimi):
         """Vaihtaa Ääkköset urlin vaatimiin muotoihin"""
@@ -125,16 +138,28 @@ class MHScraper:
         
         return tunti + ":" + minuutti
 
-    def error_msg(self, err_rows):
+    def error_msg(self, err_rows, lahtoaika, saapumisaika):
         """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
-        return ['virhe: ' + err_rows[1].text_content().strip()]
+        
+        if err_rows[1].text_content().strip() == "Lähtöpaikkaa ei löytynyt. Tarkista lähtöpaikan nimi.":
+            return {'Virhe': 'mista'}
+        
+        if err_rows[1].text_content().strip() == "Määräpaikkaa ei löytynyt. Tarkista määräpaikan nimi.":
+            return {'Virhe': 'mihin'}
+        
+        if err_rows[1].text_content().strip() == "Virheellinen päivämäärä.":
+            if saapumisaika is None:
+                return {'Virhe': 'lahtoaika'}
+            else:
+                return {'Virhe': 'saapumisaika'}
     
     def hae_hinnat(self, url):
         """haetaan kaikki matkan hinnat ja sijoitetaan ne dictionaryyn"""
     
         root = html.parse(url)
     
-        rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table[last()]//tr")
+        rows = root.xpath("//table//tr[last()]/td[last()]"
+                          "//tr[1]//table[last()]//tr")
     
         hinta = {}
     
@@ -143,14 +168,34 @@ class MHScraper:
             children = row.getchildren()
         
             hinta[children[0].text_content()] = children[2].text_content()
-
-""" Testeri vaan            
+           
 def main():
-    
+    """testi main"""
     scraper = MHScraper()
     
-    for matka in scraper.hae_matka("Kuopio", "Jyväskylä", "2013-04-24 13:15", None):
-        print matka
+    for x, matka in enumerate(scraper.hae_matka("Kuopio", "Siilinjärvi",
+                                   "2013-04-24 13:15", None)):
+        print "----------------------------------------------------------------"
+        print str(x+1) + ". Vuoro"
+        print "Mistä: " + matka['mista']
+        print "Mihin: " + matka['mihin']
+        print ("%s | %s | %s | "
+               "%s | %s | ") % (matka['lahtoaika'],
+                                matka['saapumisaika'],
+                                matka['laituri'],
+                                matka['kesto'],
+                                matka['hinta'])
+        
+        for i, yhteys in enumerate(matka['vaihdot']):
+            print str(i+1) + ". VaihtoYhteys"
+            print ("--> %s | %s | %s | "
+            "%s | %s | %s") % (yhteys['lahtoaika'],
+                              yhteys['saapumisaika'],
+                              yhteys['mista'], yhteys['mihin'],
+                              yhteys['tyyppi'], yhteys['tunnus'])
+        
+        print "----------------------------------------------------------------"
+        print "\n"
             
 if __name__ == "__main__":
-    main()"""
+    main()
