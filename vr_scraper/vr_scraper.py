@@ -260,6 +260,7 @@ class VRScraper:
             else:
                 return {"virhe": virheet}
 
+
 def main():
     """
     Mainia käytetään vain toimivuuden testaamiseen. Haku voidaan suorittaa joko valmiilla ehdoilla
