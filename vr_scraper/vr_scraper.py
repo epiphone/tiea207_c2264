@@ -27,8 +27,8 @@ class VRScraper:
 
         Tarkistetaan, onko screpatussa sivussa virheilmoituksia ja lisätään virehiden
         merkintä jokaisesta löytyneestä virhetyypistä.
-
         """
+
         lista_virheista = []
         if sivu.xpath("//ul[@id='fieldsDepartureDateError']") or sivu.xpath("//ul[@id='fieldsDepartureTimeTypeError']"):
             if lahtoaika:
@@ -60,8 +60,8 @@ class VRScraper:
         hinnat, joihin ei saa erikseen lisäalennusta. Alennusluokkien tunnukset
         ovat: 0 = Aikuinen, 1 = Lapsi, 2 = Opiskelija, 3 = Nuoriso, 4 = Eläkeläinen
         5 = Varusmies/Siviilipalvelusmies, 6 = Lehdistö
-
         """
+
         if alennusluokka in [0, 6]:
             return hinnat
         else:
@@ -84,8 +84,8 @@ class VRScraper:
         Muutetaan annetussa merkkijonossa olevat ääkköset seuraavasti:
         ä => %C3%A4, Ä => %C3%84, ö => %C3%B6, Ö => %C3%96 å => %C3%A5
         Å => %C3%85
-
         """
+
         tulos = teksti.replace("ä", "%C3%A4")
         tulos = tulos.replace("Ä", "%C3%84")
         tulos = tulos.replace("ö", "%C3%B6")
@@ -102,8 +102,8 @@ class VRScraper:
            lahto- ja saapumisajasta erotellaan päivämäärä ja minuutit, jonka jälkeen
            kaikki parametrit asetetaan paikoilleen url:än muodostavaan merkkijonoon
            ja palautetaan se.
-
         """
+
         mista = self.korjaa_aakkoset(mista)
         mihin = self.korjaa_aakkoset(mihin)
 
@@ -144,8 +144,8 @@ class VRScraper:
         Näiden lippujen hinnat sijoitetaan palautettavaan listaan seuraavasti:
         [Ennakkolippu, Ekolippu, Joustavalippu]. Mikäli jotakin lippuluokkaa ei ole
         haettuun yhteyteen saatavilla, on lippuluokan hinnan indeksissä arvo None
-
         """
+
         lista_hinnoista = list()
         for hinta in hinnat:
             elementit = hinta.getchildren()
@@ -179,8 +179,8 @@ class VRScraper:
         jokaisesta yhteydestä oma dictionary rakenne, joka sisältää tiedot: lähtöpaikka,
         saapumispaikka, lahtoaika, saapumisaika, junan tunnus, junan tyyppi ja junassa
         olevat palvelut.
-
         """
+
         lista_vaihdoista = []
         for vaihto in vaihdot:
             vaihdon_tiedot = {}
@@ -218,8 +218,8 @@ class VRScraper:
         Avataan hakuehtojen mukaisen url-osoitteen takaa löytyvä HTML-sivu
         käsiteltäväksi, josta sitten raaputetaan kaikki tarpeellinen tieto
         dictionary rakenteeseen, joka palautetaan.
-
         """
+
         avaaja = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
         urli = self.muodosta_url(mista, mihin, lahtoaika, saapumisaika)
@@ -262,11 +262,10 @@ class VRScraper:
 
 def main():
     """
-
     Mainia käytetään vain toimivuuden testaamiseen. Haku voidaan suorittaa joko valmiilla ehdoilla
     tai hakuehdot voidaan syöttää itse käsin.
-
     """
+
     screipperi = VRScraper()
     testataanko = raw_input('Tahdotko itse syottaa hakuehdot? (Y/N)')
     if testataanko == "Y":
