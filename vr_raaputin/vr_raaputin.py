@@ -7,8 +7,6 @@
 #- Mukautus rajapintaan (Done?)
 #- Tulosteissa ääkköset bugaa vielä
 #- Poikkeuksia, poikkeuksia, poikeuksia....
-#- Mista ja mihin arvot ei parametreista, vaan skreipataan
-#   - h2 class tripheading
 #- Virhepalauteeseen ei VR:än virheilmoituksia, vaan että MISTÄ virhe aiheutui...
 #   - ul-elementit, id:t = fieldsFromError, fieldsToError, fieldsDepartureDateError, fieldsDepartureTimeTypeError
 #   - jos joku ID:llä varustettu löytyy, lisää virhelistaan sijainti
@@ -20,16 +18,24 @@ from lxml import html
 import pprint
 
 
-class VrScraper:
+class VRScraper:
     def __init__(self):
         """Konstruktori"""
     pass
 
-    def voidaanko_jatkaa(self, sivu):
+    def voidaanko_jatkaa(self, sivu, lahtoaika=None, saapumisaika=None):
         lista_virheista = []
-        rows = sivu.xpath("//ul[@class='errorMessage']")
-        for row in rows:
-            lista_virheista.append(row.text_content().replace(" ", "").split())
+        if sivu.xpath("//ul[@id='fieldsDepartureDateError']") or sivu.xpath("//ul[@id='fieldsDepartureTimeTypeError']"):
+            if lahtoaika:
+                lista_virheista.append("lahtoaika")
+            else:
+                lista_virheista.append("saapumisaika")
+
+        if sivu.xpath("//ul[@id='fieldsFromError']"):
+            lista_virheista.append("mista")
+
+        if sivu.xpath("//ul[@id='fieldsToError']"):
+            lista_virheista.append("mihin")
 
         if len(lista_virheista) < 1:
             lista_virheista.append("True")
@@ -38,7 +44,7 @@ class VrScraper:
             return lista_virheista
 
     def laske_alennus(self, hinnat, alennusluokka):
-        if alennusluokka == (0 or 6):
+        if alennusluokka in [0, 6]:
             return hinnat
         else:
             if hinnat[1]:
@@ -163,16 +169,19 @@ class VrScraper:
 
         urli = self.muodosta_url(mista, mihin, lahtoaika, saapumisaika)
         root = html.parse(avaaja.open(urli))
-        virheet = self.voidaanko_jatkaa(root)
+        virheet = self.voidaanko_jatkaa(root, lahtoaika, saapumisaika)
 
         if virheet[0] == "True":
             rows = root.xpath("//table[@id='buyTrip_1']/tbody")
             lista_yhteyksista = []
-
+            paikat = root.xpath("//h2[@class='tripheading']")[0].text_content()
+            paikat = paikat.replace(" ", "").split()
+            lahtee = paikat[0]
+            saapuu = paikat[1]
             for row in rows:
                 yhteyden_tiedot = {}
-                yhteyden_tiedot['mista'] = mista
-                yhteyden_tiedot['mihin'] = mihin
+                yhteyden_tiedot['mista'] = lahtee
+                yhteyden_tiedot['mihin'] = saapuu
                 yleiset = row.getchildren()[0].getchildren()
                 laika = yleiset[0].text.strip()
                 yhteyden_tiedot['lahtoaika'] = laika
