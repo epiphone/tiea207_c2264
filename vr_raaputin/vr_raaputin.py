@@ -5,11 +5,8 @@
 #TODO:
 # Critical:
 #- Mukautus rajapintaan (Done?)
-#- Tulosteissa ääkköset bugaa vielä
+#- Tulosteissa ääkköset bugaa vielä...?
 #- Poikkeuksia, poikkeuksia, poikeuksia....
-#- Virhepalauteeseen ei VR:än virheilmoituksia, vaan että MISTÄ virhe aiheutui...
-#   - ul-elementit, id:t = fieldsFromError, fieldsToError, fieldsDepartureDateError, fieldsDepartureTimeTypeError
-#   - jos joku ID:llä varustettu löytyy, lisää virhelistaan sijainti
 #Optional
 #- urli ostosivulle asti, ei hakutuloksiin
 
@@ -36,6 +33,9 @@ class VRScraper:
 
         if sivu.xpath("//ul[@id='fieldsToError']"):
             lista_virheista.append("mihin")
+
+        if sivu.xpath("//span[@class='errorMessage']"):
+            lista_virheista.append(0)
 
         if len(lista_virheista) < 1:
             lista_virheista.append("True")
@@ -91,8 +91,8 @@ class VRScraper:
 
         if saapumisaika:
             lahto_pvm = saapumisaika[8:10] + "." + saapumisaika[5:7] + "." + saapumisaika[0:4]
-            lahto_tunnit = saapumisaika[11:12]
-            lahto_minuutit = saapumisaika[14:15]
+            lahto_tunnit = saapumisaika[11:13]
+            lahto_minuutit = saapumisaika[14:16]
             ajan_tyyppi_url = "false"
             urli = ("https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic." +
             "fromStationVR=" + mista +
@@ -200,12 +200,15 @@ class VRScraper:
 
             return lista_yhteyksista
         else:
-            return {"virhe": virheet}
+            if virheet[0] == 0:
+                return None
+            else:
+                return {"virhe": virheet}
 
 
     # Tässä vaiheessa main funktiota käytetään vain käynnistämiseen ja syötteiden testaukseen
 def main():
-    screipperi = VrScraper()
+    screipperi = VRScraper()
     testataanko = raw_input('Tahdotko itse syottaa hakuehdot? (Y/N)')
     if testataanko == "Y":
         mista = raw_input('Mista lahdet?')
@@ -213,11 +216,11 @@ def main():
         aika = raw_input('saapumis- vai lahtoaika? (S/L)')
         if aika == "S":
             saapumisaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
-            tiedot = screipperi.hae_matka(mista, mihin, saapumisaika)
+            tiedot = screipperi.hae_matka(mista, mihin, None, saapumisaika)
             pprint.pprint(tiedot)
         if aika == "L":
             lahtoaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
-            tiedot = screipperi.hae_matka(mista, mihin, lahtoaika, saapumisaika=None,)
+            tiedot = screipperi.hae_matka(mista, mihin, lahtoaika, None)
             pprint.pprint(tiedot)
     if testataanko == "N":
         tiedot = screipperi.hae_matka("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50",)
