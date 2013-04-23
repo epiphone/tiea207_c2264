@@ -19,6 +19,7 @@ reitin pituuteen
 from lxml import html
 import urllib
 import datetime
+# import json  käytä tätä, jos meinaat tehdä googlen API:lla
 
 
 class AutoScraper():
@@ -37,6 +38,7 @@ class AutoScraper():
             Matkan kesto palautetaan muodossa "HH:MM"
         '''
 
+
         # Luodaan url
         url = self.luo_url(mista, mihin)
 
@@ -46,8 +48,86 @@ class AutoScraper():
         # poikkeuksen, jos kaikki ei mene putkeen
         root_matka = html.parse(site)
 
+        # Tarkistetaan onnistuiko googlemaps löytämään reitin annetuilla
+        # tiedoilla. Jos ei löytynyt, mutta ehdotuksia annettiin, niin
+        # käytetään ehdotuksia hyväksi. Jos ehdotuksia on vain yksi kappale
+        # niin haetaan reitin tiedot uudestaan kyseisellä ehdotuksella.
+        # Jos ehdotuksia on useampi, niin palautetaan nämä virhe-ilmoituksen
+        # kanssa.
+
+        error = root_matka.xpath("//div[@class='dir_warnbox_content']/img/@src")
+
+        # Jos ehdotuksia löytyi
+        if (len(error) > 0):
+
+            uudet_tiedot = root_matka.xpath("//td[@class='ddw-dla']")
+
+            # Jos ehdotus koskee lähtöpaikkaa
+            if (error[0].find("greenA") > -1):
+
+                # Yritetään muuttaa hakuehtona käytettävä lähtöpaikka
+                # ensimmäiseksi annetuksi hakuehdoksi. Jos tämä ei
+                # onnistu, niin palautetaan virhe.
+                try:
+                    mista = uudet_tiedot[0].text_content().split()[0]
+                except Exception:
+                    return {
+                                "virhe": "mistä"
+                                }
+                # Jos ehdotuksia on useampi, niin palautetaan nämä virhe-
+                # ilmoituksen kera
+                if (len(uudet_tiedot) > 1):
+
+                    ehdotukset = []
+
+                    for i in uudet_tiedot:
+                        ehdotukset.append(i.text_content())
+
+                        return {
+                                "virhe": "mistä",
+                                "ehdotukset": ehdotukset
+                                }
+
+            # Jos ehdotus koskee määränpäätä
+            if (error[0].find("greenB") > -1):
+
+                # Yritetään muuttaa hakuehtona käytettävä määränpää
+                # ensimmäiseksi annetuksi hakuehdoksi. Jos tämä ei
+                # onnistu, niin palautetaan virhe.
+                try:
+                    mihin = uudet_tiedot[0].text_content().split()[0]
+                except Exception:
+                    return {
+                                "virhe": "mihin"
+                                }
+
+                # Jos ehdotuksia on useampi, niin palautetaan nämä virhe-
+                # ilmoituksen kera
+                if (len(uudet_tiedot) > 1):
+
+                    ehdotukset = []
+
+                    for i in uudet_tiedot:
+                        ehdotukset.append(i.text_content())
+
+                    return {
+                            "virhe": "mihin",
+                            "ehdotukset": ehdotukset
+                            }
+
+            # Luodaan url uudestaan päivitetyillä tiedoilla
+            url = self.luo_url(mista, mihin)
+            site = urllib.urlopen(url)
+
+
+
+        # Haetaan html-tiedosto, luodaan lxml-olio. Funktio itse palauttaa
+        # poikkeuksen, jos kaikki ei mene putkeen
+        root_matka = html.parse(site)
+
         # Screipataan tiedot
-        reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div//div[1]//span")
+        reitti = root_matka.xpath("//ol[@id='dir_altroutes_body']//li[1]//div" +
+                                  "//div[1]//span")
 
 
         # Erotellaan kilometrimäärä haetusta merkkijonosta ja muutetaan pilkku
@@ -63,8 +143,8 @@ class AutoScraper():
                 matkan_pituus = float(reitti[0].text_content().split()[0].
                                   replace(",", "."))
         except Exception:
-            print "Haku ei tuottanut oikeanlaista tulosta"
-            return
+            # Ei löytynyt yhteyksiä
+            return None
 
         # Tutkitaan, onko matkan kesto vain minuutteja (alle tunti)
         if (len(reitti[1].text_content().split()) < 3):
@@ -149,8 +229,8 @@ def main():
     ''' Pääfunktio alkaa tästä. Tämä on AutoScraper-luokan testausta '''
 
     # Muuttujia
-    lahtopaikka = "Suonenjoki"
-    saapumispaikka = "Jyväskyl"
+    lahtopaikka = "Ivalooo"
+    saapumispaikka = "Kuopio"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()

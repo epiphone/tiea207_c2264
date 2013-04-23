@@ -5,13 +5,8 @@
 #TODO:
 # Critical:
 #- Mukautus rajapintaan (Done?)
-#- Tulosteissa ääkköset bugaa vielä
+#- Tulosteissa ääkköset bugaa vielä...?
 #- Poikkeuksia, poikkeuksia, poikeuksia....
-#- Mista ja mihin arvot ei parametreista, vaan skreipataan
-#   - h2 class tripheading
-#- Virhepalauteeseen ei VR:än virheilmoituksia, vaan että MISTÄ virhe aiheutui...
-#   - ul-elementit, id:t = fieldsFromError, fieldsToError, fieldsDepartureDateError, fieldsDepartureTimeTypeError
-#   - jos joku ID:llä varustettu löytyy, lisää virhelistaan sijainti
 #Optional
 #- urli ostosivulle asti, ei hakutuloksiin
 
@@ -20,16 +15,35 @@ from lxml import html
 import pprint
 
 
-class VrScraper:
+class VRScraper:
     def __init__(self):
         """Konstruktori"""
     pass
 
-    def voidaanko_jatkaa(self, sivu):
+    def voidaanko_jatkaa(self, sivu, lahtoaika=None, saapumisaika=None):
+        """Palauttaa joko listan, jossa mainitaan kaikki virheen aiheuttaneet
+           hakuehdot, merkkijonon 'True' jos virheitä ei ole (eli voidaan jatkaa)
+           tai nolla, joka tarkoittaa ettei yhteyksiä löytnyt
+
+        Tarkistetaan, onko screpatussa sivussa virheilmoituksia ja lisätään virehiden
+        merkintä jokaisesta löytyneestä virhetyypistä.
+        """
+
         lista_virheista = []
-        rows = sivu.xpath("//ul[@class='errorMessage']")
-        for row in rows:
-            lista_virheista.append(row.text_content().replace(" ", "").split())
+        if sivu.xpath("//ul[@id='fieldsDepartureDateError']") or sivu.xpath("//ul[@id='fieldsDepartureTimeTypeError']"):
+            if lahtoaika:
+                lista_virheista.append("lahtoaika")
+            else:
+                lista_virheista.append("saapumisaika")
+
+        if sivu.xpath("//ul[@id='fieldsFromError']"):
+            lista_virheista.append("mista")
+
+        if sivu.xpath("//ul[@id='fieldsToError']"):
+            lista_virheista.append("mihin")
+
+        if sivu.xpath("//span[@class='errorMessage']"):
+            lista_virheista.append(0)
 
         if len(lista_virheista) < 1:
             lista_virheista.append("True")
@@ -38,7 +52,17 @@ class VrScraper:
             return lista_virheista
 
     def laske_alennus(self, hinnat, alennusluokka):
-        if alennusluokka == (0 or 6):
+        """Palauttaa mahdollisen alennuksen mukaiset hinnat
+
+        Tarkistetaan, mihin alennusluokkaan hakija kuuluu, jonka jälkeen lasketaan
+        alennus hinnat listan indekseissä 1 ja 2 oleville hinnoille, mikäli hakija
+        on oikeutettu alennuksiin. Hinnat listan indeksissä 0 on ennakkolippujen
+        hinnat, joihin ei saa erikseen lisäalennusta. Alennusluokkien tunnukset
+        ovat: 0 = Aikuinen, 1 = Lapsi, 2 = Opiskelija, 3 = Nuoriso, 4 = Eläkeläinen
+        5 = Varusmies/Siviilipalvelusmies, 6 = Lehdistö
+        """
+
+        if alennusluokka in [0, 6]:
             return hinnat
         else:
             if hinnat[1]:
@@ -53,8 +77,15 @@ class VrScraper:
 
         return hinnat
 
-    # Korjataan syötteessä olevat ääkköset VR:n haku-urlän kanssa yhteensopivaan muotoon
     def korjaa_aakkoset(self, teksti):
+        """Palauttaa annetun merkkijonon, jossa olevat ääkköset on muutettu
+            VR:än haku-url:ää tukevaan muotoon
+
+        Muutetaan annetussa merkkijonossa olevat ääkköset seuraavasti:
+        ä => %C3%A4, Ä => %C3%84, ö => %C3%B6, Ö => %C3%96 å => %C3%A5
+        Å => %C3%85
+        """
+
         tulos = teksti.replace("ä", "%C3%A4")
         tulos = tulos.replace("Ä", "%C3%84")
         tulos = tulos.replace("ö", "%C3%B6")
@@ -64,8 +95,15 @@ class VrScraper:
 
         return tulos
 
-    # muodostetaan URL syötteen perusteella
     def muodosta_url(self, mista, mihin, lahtoaika=None, saapumisaika=None):
+        """Palauttaa url-osoitteen, jonka avulla voidaan suorittaa hakuehtojen
+           mukainen haku VR:än verkkokaupasta
+
+           lahto- ja saapumisajasta erotellaan päivämäärä ja minuutit, jonka jälkeen
+           kaikki parametrit asetetaan paikoilleen url:än muodostavaan merkkijonoon
+           ja palautetaan se.
+        """
+
         mista = self.korjaa_aakkoset(mista)
         mihin = self.korjaa_aakkoset(mihin)
 
@@ -85,8 +123,8 @@ class VrScraper:
 
         if saapumisaika:
             lahto_pvm = saapumisaika[8:10] + "." + saapumisaika[5:7] + "." + saapumisaika[0:4]
-            lahto_tunnit = saapumisaika[11:12]
-            lahto_minuutit = saapumisaika[14:15]
+            lahto_tunnit = saapumisaika[11:13]
+            lahto_minuutit = saapumisaika[14:16]
             ajan_tyyppi_url = "false"
             urli = ("https://shop.vr.fi/onlineshop/JourneySearch.do?request_locale=fi&basic." +
             "fromStationVR=" + mista +
@@ -99,8 +137,15 @@ class VrScraper:
 
         return urli
 
-    # Haetaan hinnat HTML-elementeistä, palautetaan listana
     def selvita_hinnat(self, hinnat):
+        """Palauttaa listan hinnoista
+
+        VR tarjoaa kolmenlaisia lippuja: Tavallisia (Eko), Ennakko ja Joustava lippuja.
+        Näiden lippujen hinnat sijoitetaan palautettavaan listaan seuraavasti:
+        [Ennakkolippu, Ekolippu, Joustavalippu]. Mikäli jotakin lippuluokkaa ei ole
+        haettuun yhteyteen saatavilla, on lippuluokan hinnan indeksissä arvo None
+        """
+
         lista_hinnoista = list()
         for hinta in hinnat:
             elementit = hinta.getchildren()
@@ -126,8 +171,16 @@ class VrScraper:
 
         return lista_hinnoista
 
-    # Hakee yhteyden vaihtojen tiedot ja palauttaa ne listana dictionaryja
     def hae_vaihtojen_tiedot(self, vaihdot, annettu_aika):
+        """Palauttaa listan matkan yhteyksistä, joista jokaisen tiedot on omassa
+           dictionaryssaan.
+
+        Luodaan lista yhteyksien tietojen säilömistä varten, jonka jälkeen muodostetaan
+        jokaisesta yhteydestä oma dictionary rakenne, joka sisältää tiedot: lähtöpaikka,
+        saapumispaikka, lahtoaika, saapumisaika, junan tunnus, junan tyyppi ja junassa
+        olevat palvelut.
+        """
+
         lista_vaihdoista = []
         for vaihto in vaihdot:
             vaihdon_tiedot = {}
@@ -157,22 +210,33 @@ class VrScraper:
 
         return lista_vaihdoista
 
-    # Hakee matkan tiedot paikasta X paikkaan Y. Palautetaan Dictionaryna, joka sisältää kaiken tarpeellisen tiedon
     def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None):
+        """Palauttaa listan dictionaryista, jotka sisältävät matkoihin liittyvän tiedon tai
+           listan siitä, mitkä hakuehdot aiheuttivat virheen tai None arvon, mikäli hakueh-
+           doilla ei löytnyt matkoja.
+
+        Avataan hakuehtojen mukaisen url-osoitteen takaa löytyvä HTML-sivu
+        käsiteltäväksi, josta sitten raaputetaan kaikki tarpeellinen tieto
+        dictionary rakenteeseen, joka palautetaan.
+        """
+
         avaaja = urllib2.build_opener(urllib2.HTTPCookieProcessor())
 
         urli = self.muodosta_url(mista, mihin, lahtoaika, saapumisaika)
         root = html.parse(avaaja.open(urli))
-        virheet = self.voidaanko_jatkaa(root)
+        virheet = self.voidaanko_jatkaa(root, lahtoaika, saapumisaika)
 
         if virheet[0] == "True":
             rows = root.xpath("//table[@id='buyTrip_1']/tbody")
             lista_yhteyksista = []
-
+            paikat = root.xpath("//h2[@class='tripheading']")[0].text_content()
+            paikat = paikat.replace(" ", "").split()
+            lahtee = paikat[0]
+            saapuu = paikat[1]
             for row in rows:
                 yhteyden_tiedot = {}
-                yhteyden_tiedot['mista'] = mista
-                yhteyden_tiedot['mihin'] = mihin
+                yhteyden_tiedot['mista'] = lahtee
+                yhteyden_tiedot['mihin'] = saapuu
                 yleiset = row.getchildren()[0].getchildren()
                 laika = yleiset[0].text.strip()
                 yhteyden_tiedot['lahtoaika'] = laika
@@ -191,12 +255,19 @@ class VrScraper:
 
             return lista_yhteyksista
         else:
-            return {"virhe": virheet}
+            if virheet[0] == 0:
+                return None
+            else:
+                return {"virhe": virheet}
 
 
-    # Tässä vaiheessa main funktiota käytetään vain käynnistämiseen ja syötteiden testaukseen
 def main():
-    screipperi = VrScraper()
+    """
+    Mainia käytetään vain toimivuuden testaamiseen. Haku voidaan suorittaa joko valmiilla ehdoilla
+    tai hakuehdot voidaan syöttää itse käsin.
+    """
+
+    screipperi = VRScraper()
     testataanko = raw_input('Tahdotko itse syottaa hakuehdot? (Y/N)')
     if testataanko == "Y":
         mista = raw_input('Mista lahdet?')
@@ -204,11 +275,11 @@ def main():
         aika = raw_input('saapumis- vai lahtoaika? (S/L)')
         if aika == "S":
             saapumisaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
-            tiedot = screipperi.hae_matka(mista, mihin, saapumisaika)
+            tiedot = screipperi.hae_matka(mista, mihin, None, saapumisaika)
             pprint.pprint(tiedot)
         if aika == "L":
             lahtoaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
-            tiedot = screipperi.hae_matka(mista, mihin, lahtoaika, saapumisaika=None,)
+            tiedot = screipperi.hae_matka(mista, mihin, lahtoaika, None)
             pprint.pprint(tiedot)
     if testataanko == "N":
         tiedot = screipperi.hae_matka("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50",)
