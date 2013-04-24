@@ -91,7 +91,7 @@ class ScraperWrapper:
             # Määritetään skreipperistä riippuva välimuistin avain:
             if scraper is self.mh_scraper:
                 tyyppi = "bussi"
-                cache_avain = "mh_" + pvm
+                cache_avain = "mh_" + mista + mihin + pvm
             elif scraper is self.vr_scraper:
                 # TODO Tälle ei tule paljoa osumia, parempi vaihtoehto?
                 tyyppi = "juna"
