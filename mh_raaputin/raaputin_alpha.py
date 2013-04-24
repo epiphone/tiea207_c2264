@@ -71,7 +71,7 @@ class MHScraper:
                          'mihin': asema_mihin,
                          'laituri': children[4].text_content(),
                          'kesto': self.keston_vaihto(children[5].text_content()),
-                         'hinta': [children[10].text_content(), children[11].text_content()],
+                         'hinta': self.hae_hinnat(children[10].text_content(), children[11].text_content()),
                          'vaihdot': [
                                 # 1. vaihtoyhteys
                                 {'lahtoaika': children[1].text_content(),
@@ -124,7 +124,7 @@ class MHScraper:
         return uusi_nimi
 
     def keston_vaihto(self, aika):
-        """Vaihtaa matkan keston HHh MMmin = HH:MM (esim 5h 15min = 05:15)"""
+        """Vaihtaa matkan keston HHh MMmin => HH:MM (esim 5h 15min = 05:15)"""
         kesto = aika.split()
         tunti = kesto[0].replace("h", "")
     
@@ -152,8 +152,33 @@ class MHScraper:
                 return {'Virhe': 'lahtoaika'}
             else:
                 return {'Virhe': 'saapumisaika'}
+            
+        if err_rows[1].text_content().strip() == ("Jatka antamillasi hakusanoilla"
+                                                 "painamalla \"Hae aikataulu\". Jos"
+                                                 "haluat tarkentaa pysäkin tai paikan"
+                                                 "nimen, hae pudotusvalikosta uusi hakusana"
+                                                 "ja paina sen jälkeen \"Hae aikataulu\"."):
+            return {'Virhe': "tarkennus vaaditaan"}
+            
+        else:
+            return {'Virhe': "muu"}
     
-    def hae_hinnat(self, url):
+    def hae_hinnat(self, hinta, tarjous):
+        """tutkitaan onko hintaa/tarjousta olemassa ja palautetaan ne listassa"""
+        
+        try:
+            num_hinta = float(hinta.replace(",", "."))
+        except ValueError:
+            num_hinta = None
+        
+        try:
+            num_tarjous = float(tarjous.replace(",", "."))
+        except ValueError:
+            num_tarjous = None
+            
+        return[num_hinta, num_tarjous]
+          
+    def tee_hinta(self, url):
         """haetaan kaikki matkan hinnat ja sijoitetaan ne dictionaryyn"""
     
         root = html.parse(url)
@@ -173,29 +198,35 @@ def main():
     """testi main"""
     scraper = MHScraper()
     
-    for x, matka in enumerate(scraper.hae_matka("Kuopio", "Siilinjärvi",
-                                   "2013-04-24 13:15", None)):
-        print "----------------------------------------------------------------"
-        print str(x+1) + ". Vuoro"
-        print "Mistä: " + matka['mista']
-        print "Mihin: " + matka['mihin']
-        print ("%s | %s | %s | "
-               "%s | %s | ") % (matka['lahtoaika'],
-                                matka['saapumisaika'],
-                                matka['laituri'],
-                                matka['kesto'],
-                                matka['hinta'])
+    matka = scraper.hae_matka("Kuopio", "Lahti",
+                              "2013-04-24 13:15", None)
+    
+    if 'Virhe' in matka:
+        print matka
         
-        for i, yhteys in enumerate(matka['vaihdot']):
-            print str(i+1) + ". VaihtoYhteys"
-            print ("--> %s | %s | %s | "
-            "%s | %s | %s") % (yhteys['lahtoaika'],
-                              yhteys['saapumisaika'],
-                              yhteys['mista'], yhteys['mihin'],
-                              yhteys['tyyppi'], yhteys['tunnus'])
+    else:
+        for x, matka in enumerate(matka):
+            print "----------------------------------------------------------------"
+            print str(x+1) + ". Vuoro"
+            print "Mistä: " + matka['mista']
+            print "Mihin: " + matka['mihin']
+            print ("%s | %s | %s | "
+                   "%s | %s | ") % (matka['lahtoaika'],
+                                    matka['saapumisaika'],
+                                    matka['laituri'],
+                                    matka['kesto'],
+                                    matka['hinta'])
         
-        print "----------------------------------------------------------------"
-        print "\n"
+            for i, yhteys in enumerate(matka['vaihdot']):
+                print str(i+1) + ". VaihtoYhteys"
+                print ("--> %s | %s | %s | "
+                       "%s | %s | %s") % (yhteys['lahtoaika'],
+                                          yhteys['saapumisaika'],
+                                          yhteys['mista'], yhteys['mihin'],
+                                          yhteys['tyyppi'], yhteys['tunnus'])
+        
+            print "----------------------------------------------------------------"
+            print "\n"
             
 if __name__ == "__main__":
     main()
