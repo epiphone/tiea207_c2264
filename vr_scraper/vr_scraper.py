@@ -194,7 +194,9 @@ class VRScraper:
             vaihdon_tiedot['mihin'] = spaikka
             juna_ruma = " ".join(vaihto[3].text_content())
             juna = juna_ruma.replace(" ", "").split()
-            vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
+            vaihdon_tiedot['tunnus'] = juna[1]
+            if len(juna) > 2:
+                vaihdon_tiedot['tunnus'] = vaihdon_tiedot['tunnus'] + " " + juna[2]
             vaihdon_tiedot['tyyppi'] = juna[1]
             lista_palveluista_html = vaihto[5].getchildren()
             palvelut = []
