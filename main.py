@@ -7,6 +7,7 @@ from scraper_wrapper import ScraperWrapper
 from datetime import datetime, timedelta
 import re
 import logging
+import time
 
 
 
@@ -41,6 +42,9 @@ class Index:
 class Haku:
     def GET(self):
         """Sivu, joka esittää haun tulokset."""
+        # Mitataan matkaselvityksen kesto:  # TODO debug
+        t = time.time()
+
         # Poimitaan parametrit URLista:
         inp = web.input(h=None, min=None, pvm=None, ale="0", juna=False,
             bussi=False, auto=False, aikatyyppi="saapumisaika")
@@ -70,7 +74,9 @@ class Haku:
             saapumisaika=saika, bussi=bussi, juna=juna, auto=auto,
             alennusluokka=ale)  # TODO debug
         matkat = scraper.hae_matka(**params)
-        return render.results(matkat=matkat, params=params)
+
+        t = str(round(time.time() - t, 2))
+        return render.results(matkat=matkat, params=params, t=t)
 
 
 ### APUFUNKTIOT ###

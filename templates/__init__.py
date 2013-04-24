@@ -2,6 +2,42 @@ from web.template import CompiledTemplate, ForLoop, TemplateResult
 
 
 # coding: utf-8
+def base (content):
+    __lineoffset__ = -4
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
+    extend_([u'<!DOCTYPE html>\n'])
+    extend_([u'<html>\n'])
+    extend_([u'<head>\n'])
+    extend_([u'  <meta charset="utf-8">\n'])
+    extend_([u'  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>\n'])
+    extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
+    extend_([u'  <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])
+    extend_([u'</head>\n'])
+    extend_([u'<body>\n'])
+    extend_([u'\n'])
+    extend_([u'  ', escape_(content, False), u'\n'])
+    extend_([u'\n'])
+    extend_([u'<!-- <script src="/static/js/jquery.js"></script> -->\n'])
+    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n'])
+    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>\n'])
+    extend_([u'<script src="/static/js/bootstrap.min.js"></script>\n'])
+    extend_([u'\n'])
+    extend_([u'</body>\n'])
+    extend_([u'</html>\n'])
+
+    return self
+
+base = CompiledTemplate(base, 'templates\\base.html')
+join_ = base._join; escape_ = base._escape
+
+# coding: utf-8
 def index():
     __lineoffset__ = -5
     loop = ForLoop()
@@ -114,15 +150,16 @@ def index():
 
     return self
 
-index = CompiledTemplate(index, 'templates/index.html')
+index = CompiledTemplate(index, 'templates\\index.html')
 join_ = index._join; escape_ = index._escape
 
 # coding: utf-8
-def results (matkat, params):
+def results (matkat, params, t):
     __lineoffset__ = -4
     loop = ForLoop()
     self = TemplateResult(); extend_ = self.extend
     extend_([u'\n'])
+    extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
     for k, v in loop.setup(params.iteritems()):
         extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
         extend_([u'\n'])
@@ -174,42 +211,6 @@ def results (matkat, params):
 
     return self
 
-results = CompiledTemplate(results, 'templates/results.html')
+results = CompiledTemplate(results, 'templates\\results.html')
 join_ = results._join; escape_ = results._escape
-
-# coding: utf-8
-def base (content):
-    __lineoffset__ = -4
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'\n'])
-    extend_([u'<!DOCTYPE html>\n'])
-    extend_([u'<html>\n'])
-    extend_([u'<head>\n'])
-    extend_([u'  <meta charset="utf-8">\n'])
-    extend_([u'  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>\n'])
-    extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
-    extend_([u'  <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])
-    extend_([u'</head>\n'])
-    extend_([u'<body>\n'])
-    extend_([u'\n'])
-    extend_([u'  ', escape_(content, False), u'\n'])
-    extend_([u'\n'])
-    extend_([u'<!-- <script src="/static/js/jquery.js"></script> -->\n'])
-    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n'])
-    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>\n'])
-    extend_([u'<script src="/static/js/bootstrap.min.js"></script>\n'])
-    extend_([u'\n'])
-    extend_([u'</body>\n'])
-    extend_([u'</html>\n'])
-
-    return self
-
-base = CompiledTemplate(base, 'templates/base.html')
-join_ = base._join; escape_ = base._escape
 
