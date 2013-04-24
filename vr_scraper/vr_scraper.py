@@ -233,7 +233,7 @@ class VRScraper:
             lista_yhteyksista = []
             paikat = root.xpath("//h2[@class='tripheading']")[0].text_content()
             paikat = paikat.replace(" ", "").split()
-            lahtee = paikat[0]
+            lahtee = paikat[0][:-1]
             saapuu = paikat[1]
             for row in rows:
                 yhteyden_tiedot = {}
