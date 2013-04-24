@@ -60,7 +60,7 @@ class AutoScraper():
         # Jos ehdotuksia löytyi
         if (len(error) > 0):
 
-            uudet_tiedot = root_matka.xpath("//td[@class='ddw-dla']")
+            uudet_tiedot = root_matka.xpath("//td[@class='ddw-dla']//div[2]")
 
             # Jos ehdotus koskee lähtöpaikkaa
             if (error[0].find("greenA") > -1):
@@ -72,7 +72,7 @@ class AutoScraper():
                     mista = uudet_tiedot[0].text_content().split()[0]
                 except Exception:
                     return {
-                                "virhe": "mistä"
+                                "virhe": "mista"
                                 }
                 # Jos ehdotuksia on useampi, niin palautetaan nämä virhe-
                 # ilmoituksen kera
@@ -81,10 +81,21 @@ class AutoScraper():
                     ehdotukset = []
 
                     for i in uudet_tiedot:
-                        ehdotukset.append(i.text_content())
+                        ehdotus = ""
+
+                        lista = i.text_content().split()
+
+                        # Jos ehdotus ei ole tarpeeksi pitkä
+                        if (len(lista) > 2):
+                            for j in range(2, len(lista)):
+                                ehdotus = ehdotus + lista[j]
+                        else:
+                            ehdotus = lista[0] + lista[1]
+
+                        ehdotukset.append(ehdotus)
 
                         return {
-                                "virhe": "mistä",
+                                "virhe": "mista",
                                 "ehdotukset": ehdotukset
                                 }
 
@@ -107,19 +118,31 @@ class AutoScraper():
 
                     ehdotukset = []
 
+                    # käydään kaikki ehdotukset läpi ja syötetään ne taulukkoon
+                    # siten, että poimitaan ehdotuksen osoiteriviltä paikkakunta
                     for i in uudet_tiedot:
-                        ehdotukset.append(i.text_content())
+
+                        ehdotus = ""
+
+                        lista = i.text_content().split()
+
+                        # Jos ehdotus ei ole tarpeeksi pitkä
+                        if (len(lista) > 2):
+                            for j in range(2, len(lista)):
+                                ehdotus = ehdotus + lista[j]
+                        else:
+                            ehdotus = lista[0] + lista[1]
+
+                        ehdotukset.append(ehdotus)
 
                     return {
                             "virhe": "mihin",
                             "ehdotukset": ehdotukset
                             }
 
-            # Luodaan url uudestaan päivitetyillä tiedoilla
-            url = self.luo_url(mista, mihin)
-            site = urllib.urlopen(url)
-
-
+        # Luodaan url uudestaan päivitetyillä tiedoilla
+        url = self.luo_url(mista, mihin)
+        site = urllib.urlopen(url)
 
         # Haetaan html-tiedosto, luodaan lxml-olio. Funktio itse palauttaa
         # poikkeuksen, jos kaikki ei mene putkeen
@@ -144,7 +167,7 @@ class AutoScraper():
                                   replace(",", "."))
         except Exception:
             # Ei löytynyt yhteyksiä
-            return None
+            return { "virhe": "eitietoa"}
 
         # Tutkitaan, onko matkan kesto vain minuutteja (alle tunti)
         if (len(reitti[1].text_content().split()) < 3):
@@ -230,7 +253,7 @@ def main():
 
     # Muuttujia
     lahtopaikka = "Ivalooo"
-    saapumispaikka = "Kuopio"
+    saapumispaikka = "Jyväsky"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()
