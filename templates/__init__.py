@@ -17,7 +17,7 @@ def index():
     extend_([u'  <div class="control-group">\n'])
     extend_([u'    <label for="inputMista" class="control-label">Mist\xe4</label>\n'])
     extend_([u'    <div class="controls">\n'])
-    extend_([u'      <input class="input" id="inputMista" type="text" name="mista" autocomplete="off" required/>\n'])
+    extend_([u'      <input class="input" id="inputMista" type="text" name="mista" autocomplete="off" required autofocus/>\n'])
     extend_([u'    </div>\n'])
     extend_([u'  </div>\n'])
     extend_([u'\n'])

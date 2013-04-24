@@ -43,7 +43,7 @@ class Scraper:
             "mista": "jyväskylä",
             "mihin": "helsinki",
             "kesto": "05:30",
-            "hinta": [28.84, 33.93, None],  # VR:llä on eri hintaluokkia: Ennakko, Perus, Kampanja. Matkahuollolla kaksi; perus ja tarjous
+            "hinnat": [28.84, 33.93, None],  # VR:llä on eri hintaluokkia: Ennakko, Perus, Kampanja. Matkahuollolla kaksi; perus ja tarjous
             "vaihdot": [
                 # 1. vaihtoyhteys
                 {"palvelut": ["Tupakointitila", "Poreamme"],

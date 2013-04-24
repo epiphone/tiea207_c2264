@@ -7,6 +7,7 @@
 import logging
 from henkiloauto_scraper.auto_scraper import AutoScraper
 from hinta_scraper import hinta_scraper
+from vr_scraper.vr_scraper import VRScraper
 from thread_helper import do_threaded_work
 try:
     from google.appengine.api import memcache
@@ -38,33 +39,33 @@ except ImportError:
 HINNAT_BACKUP = [1.638, 1.688, 1.52]
 
 
-class VRScraper:
-    """Tilapäinen dummy-luokka."""
-    def hae_matka(*args, **kwargs):
-        return [
-            {"lahtoaika": "2013-04-05 16:59",
-            "saapumisaika": "2013-04-05 22:22",
-            "mista": "jyväskylä",
-            "mihin": "helsinki",
-            "kesto": "04:23",
-            "hinta": [28.84, 33.93, None],
-            "vaihdot": [
-                {"lahtoaika": "2013-04-05 16:59",
-                "saapumisaika": "2013-04-05 20:00",
-                "mista": "jyväskylä",
-                "mihin": "tampere",
-                "tyyppi": "Pikajuna",
-                "tunnus": "Pikajuna 123"},
-               {"lahtoaika": "2013-04-05 20:10",
-                "saapumisaika": "2013-04-05 22:22",
-                "mista": "tampere",
-                "mihin": "helsinki",
-                "tyyppi": "Pendolino",
-                "tunnus": "Pendolino 666"}
-            ],
-            "url": "http://linkki-ostosivulle.fi"
-            }
-        ]
+# class VRScraper:
+#     """Tilapäinen dummy-luokka."""
+#     def hae_matka(*args, **kwargs):
+#         return [
+#             {"lahtoaika": "2013-04-05 16:59",
+#             "saapumisaika": "2013-04-05 22:22",
+#             "mista": "jyväskylä",
+#             "mihin": "helsinki",
+#             "kesto": "04:23",
+#             "hinta": [28.84, 33.93, None],
+#             "vaihdot": [
+#                 {"lahtoaika": "2013-04-05 16:59",
+#                 "saapumisaika": "2013-04-05 20:00",
+#                 "mista": "jyväskylä",
+#                 "mihin": "tampere",
+#                 "tyyppi": "Pikajuna",
+#                 "tunnus": "Pikajuna 123"},
+#                {"lahtoaika": "2013-04-05 20:10",
+#                 "saapumisaika": "2013-04-05 22:22",
+#                 "mista": "tampere",
+#                 "mihin": "helsinki",
+#                 "tyyppi": "Pendolino",
+#                 "tunnus": "Pendolino 666"}
+#             ],
+#             "url": "http://linkki-ostosivulle.fi"
+#             }
+#         ]
 
 
 class MHScraper:

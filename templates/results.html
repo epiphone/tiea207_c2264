@@ -18,7 +18,7 @@ $else:
         <strong>$loop.index. yhteys:</strong>
         Lähtee: $yhteys["lahtoaika"]<br>
         Saapuu: $yhteys["saapumisaika"]<br>
-        Kesto: $yhteys["kesto"] Hinta: $yhteys["hinta"][0]€<br>
+        Kesto: $yhteys["kesto"] Hinta: $yhteys["hinnat"][0]€<br>
         Vaihdot:<br>
         $for vaihto in yhteys["vaihdot"]:
           $loop.index. vaihto: $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"].split()[-1] - $vaihto["saapumisaika"].split()[-1])<br>
@@ -33,7 +33,7 @@ $else:
         Lähtee: $yhteys["lahtoaika"]<br>
         Saapuu: $yhteys["saapumisaika"]<br>
         Kesto: $yhteys["kesto"]<br>
-        Hinta: $yhteys["hinta"][0]<br>
+        Hinta: $yhteys["hinnat"][0]<br>
         Tähän vaihdot yms.<br>
         <br>
 
@@ -46,8 +46,8 @@ $else:
       Mihin: $matkat["auto"]["mihin"]<br>
       Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
       Kesto: $matkat["auto"]["kesto"]<br>
-      $if "hinta" in matkat["auto"]:
-        $ h1, h2, strong = matkat["auto"]["hinta"]
+      $if "hinnat" in matkat["auto"]:
+        $ h1, h2, strong = matkat["auto"]["hinnat"]
         Hinnat: <b>$h1</b>€ (95E10), <b>$h2</b>€ (98E), <b>$strong</b>€ (Diesel)<br>
 
 <a href="/">Takaisin</a>
