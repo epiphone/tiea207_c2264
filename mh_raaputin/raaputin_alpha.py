@@ -7,8 +7,6 @@ Luotu 16.4.2013
 from lxml import html
 import urllib
 
-matkat_lista = []
-
 class MHScraper:
     """luokka raaputtimelle"""
     def __init__(self):
@@ -18,6 +16,8 @@ class MHScraper:
     def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None):
         """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina
         taulukkoon attribuuttien kera"""
+        
+        matkat_lista = []
         
         url = self.tee_url(mista, mihin, lahtoaika, saapumisaika)
         
@@ -147,6 +147,9 @@ class MHScraper:
     def error_msg(self, err_rows, lahtoaika, saapumisaika):
         """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
         
+        if err_rows[1].text_content().strip() =="Annetuilla hakuehdoilla ei löytynyt yhtään yhteyttä.":
+            return None
+        
         if err_rows[1].text_content().strip() == "Lähtöpaikkaa ei löytynyt. Tarkista lähtöpaikan nimi.":
             return {'virhe': 'mista'}
         
@@ -204,35 +207,39 @@ def main():
     """testi main"""
     scraper = MHScraper()
     
-    matka = scraper.hae_matka("Rovaniemi", "Turku",
-                              "2013-04-30 01:54", None)
+    matka = scraper.hae_matka("Kuopio", "Jyväskylä",
+                              "2013-05-14 01:54", None)
     
-    if 'virhe' in matka:
-        print matka
-        
+    if matka is None:
+        print "Ei löytyny mittään"
+    
     else:
-        for x, matka in enumerate(matka):
-            print "----------------------------------------------------------------"
-            print str(x+1) + ". Vuoro"
-            print "Mistä: " + matka['mista']
-            print "Mihin: " + matka['mihin']
-            print ("%s | %s | %s | "
-                   "%s | %s | ") % (matka['lahtoaika'],
-                                    matka['saapumisaika'],
-                                    matka['laituri'],
-                                    matka['kesto'],
-                                    matka['hinnat'])
+        if 'virhe' in matka:
+            print matka
         
-            for i, yhteys in enumerate(matka['vaihdot']):
-                print str(i+1) + ". VaihtoYhteys"
-                print ("--> %s | %s | %s | "
-                       "%s | %s | %s") % (yhteys['lahtoaika'],
-                                          yhteys['saapumisaika'],
-                                          yhteys['mista'], yhteys['mihin'],
-                                          yhteys['tyyppi'], yhteys['tunnus'])
+        else:
+            for x, matka in enumerate(matka):
+                print "----------------------------------------------------------------"
+                print str(x+1) + ". Vuoro"
+                print "Mistä: " + matka['mista']
+                print "Mihin: " + matka['mihin']
+                print ("%s | %s | %s | "
+                       "%s | %s | ") % (matka['lahtoaika'],
+                                        matka['saapumisaika'],
+                                        matka['laituri'],
+                                        matka['kesto'],
+                                        matka['hinnat'])
         
-            print "----------------------------------------------------------------"
-            print "\n"
+                for i, yhteys in enumerate(matka['vaihdot']):
+                    print str(i+1) + ". VaihtoYhteys"
+                    print ("--> %s | %s | %s | "
+                           "%s | %s | %s") % (yhteys['lahtoaika'],
+                                              yhteys['saapumisaika'],
+                                              yhteys['mista'], yhteys['mihin'],
+                                              yhteys['tyyppi'], yhteys['tunnus'])
+        
+                print "----------------------------------------------------------------"
+                print "\n"
             
 if __name__ == "__main__":
     main()
