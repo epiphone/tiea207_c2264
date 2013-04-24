@@ -5,7 +5,7 @@
 <div class="hero-unit">
 <h1>Joukkoliikenteen hintavertailu</h1><small>prototyyppi</small>
 <form class="form-horizontal" method="GET" action="/haku">
-  <input type="hidden" id="inputTyyppi" name="aikatyyppi"/>
+  <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>
   <div class="control-group">
     <label for="inputMista" class="control-label">Mistä</label>
     <div class="controls">
@@ -28,10 +28,10 @@
       <input type="text" class="input-small" id="inputPvm" name="pvm"/>
 
       <div class="btn-group">
-        <button id="btnAikatyyppi" class="btn dropdown-toggle" data-toggle="dropdown">Lähtöaika<span class="caret"></span>
+        <button id="btnAikatyyppi" class="btn dropdown-toggle" data-toggle="dropdown">Saapumisaika<span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li><a id="aAikatyyppi">Saapumisaika</a></li>
+          <li><a id="aAikatyyppi">Lähtöaika</a></li>
         </ul>
       </div>
     </div>
@@ -84,6 +84,8 @@ window.onload = function() {
       $$("#inputTyyppi").val("saapumisaika");
     }
   })
+
+  $$("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
 
   // Datepicker
   var dpSettings = {

@@ -13,7 +13,7 @@ def index():
     extend_([u'<div class="hero-unit">\n'])
     extend_([u'<h1>Joukkoliikenteen hintavertailu</h1><small>prototyyppi</small>\n'])
     extend_([u'<form class="form-horizontal" method="GET" action="/haku">\n'])
-    extend_([u'  <input type="hidden" id="inputTyyppi" name="aikatyyppi"/>\n'])
+    extend_([u'  <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>\n'])
     extend_([u'  <div class="control-group">\n'])
     extend_([u'    <label for="inputMista" class="control-label">Mist\xe4</label>\n'])
     extend_([u'    <div class="controls">\n'])
@@ -31,15 +31,15 @@ def index():
     extend_([u'  <div class="control-group">\n'])
     extend_([u'    <label for="inputTunnit" class="control-label">Aika ja Pvm</label>\n'])
     extend_([u'    <div class="controls form-inline">\n'])
-    extend_([u'      <input type="text" class="input-xmini" id="inputTunnit" name="tunnit"/>\n'])
-    extend_([u'      <input type="text" class="input-xmini" id="inputMinuutit" name="minuutit"/>\n'])
+    extend_([u'      <input type="text" class="input-xmini" id="inputTunnit" name="h"/>\n'])
+    extend_([u'      <input type="text" class="input-xmini" id="inputMinuutit" name="min"/>\n'])
     extend_([u'      <input type="text" class="input-small" id="inputPvm" name="pvm"/>\n'])
     extend_([u'\n'])
     extend_([u'      <div class="btn-group">\n'])
-    extend_([u'        <button id="btnAikatyyppi" class="btn dropdown-toggle" data-toggle="dropdown">L\xe4ht\xf6aika<span class="caret"></span>\n'])
+    extend_([u'        <button id="btnAikatyyppi" class="btn dropdown-toggle" data-toggle="dropdown">Saapumisaika<span class="caret"></span>\n'])
     extend_([u'        </button>\n'])
     extend_([u'        <ul class="dropdown-menu">\n'])
-    extend_([u'          <li><a id="aAikatyyppi">Saapumisaika</a></li>\n'])
+    extend_([u'          <li><a id="aAikatyyppi">L\xe4ht\xf6aika</a></li>\n'])
     extend_([u'        </ul>\n'])
     extend_([u'      </div>\n'])
     extend_([u'    </div>\n'])
@@ -93,6 +93,8 @@ def index():
     extend_([u'    }\n'])
     extend_([u'  })\n'])
     extend_([u'\n'])
+    extend_([u'  ', u'$', u'("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo\n'])
+    extend_([u'\n'])
     extend_([u'  // Datepicker\n'])
     extend_([u'  var dpSettings = {\n'])
     extend_([u'    dateFormat: "dd.mm.yy",\n'])
@@ -116,11 +118,15 @@ index = CompiledTemplate(index, 'templates/index.html')
 join_ = index._join; escape_ = index._escape
 
 # coding: utf-8
-def results (matkat):
+def results (matkat, params):
     __lineoffset__ = -4
     loop = ForLoop()
     self = TemplateResult(); extend_ = self.extend
     extend_([u'\n'])
+    extend_([u'Hakuparametrit:<br>\n'])
+    for k, v in loop.setup(params.iteritems()):
+        extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong><br>\n'])
+        extend_([u'\n'])
     if len(matkat) == 0 or matkat is None:
         extend_([u'<h1>Ei tuloksia</h1>\n'])
         extend_([u'\n'])

@@ -1,4 +1,8 @@
-$def with (matkat)
+$def with (matkat, params)
+
+Hakuparametrit:<br>
+$for k, v in params.iteritems():
+  $k=<strong>$v</strong><br>
 
 $if len(matkat) == 0 or matkat is None:
   <h1>Ei tuloksia</h1>
