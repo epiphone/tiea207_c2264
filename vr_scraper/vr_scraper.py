@@ -187,11 +187,11 @@ class VRScraper:
             laika = vaihto[1][0].text_content()
             vaihdon_tiedot['lahtoaika'] = laika
             lpaikka = vaihto[1][1].text_content()
-            vaihdon_tiedot['lahtopaikka'] = lpaikka
+            vaihdon_tiedot['mista'] = lpaikka
             saika = vaihto[2][0].text_content()
             vaihdon_tiedot['saapumisaika'] = saika
             spaikka = vaihto[2][1].text_content()
-            vaihdon_tiedot['saapumispaikka'] = spaikka
+            vaihdon_tiedot['mihin'] = spaikka
             juna_ruma = " ".join(vaihto[3].text_content())
             juna = juna_ruma.replace(" ", "").split()
             vaihdon_tiedot['tunnus'] = juna[1] + " " + juna[2]
