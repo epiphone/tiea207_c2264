@@ -5,6 +5,7 @@ Luotu 16.4.2013
 @author: Juuso Tenhunen
 '''
 from lxml import html
+import urllib
 
 matkat_lista = []
 
@@ -19,8 +20,10 @@ class MHScraper:
         taulukkoon attribuuttien kera"""
         
         url = self.tee_url(mista, mihin, lahtoaika, saapumisaika)
+        
+        sivu = urllib.urlopen(url)
 
-        root = html.parse(url)
+        root = html.parse(sivu)
 
         err_rows = root.xpath("//table//tr[last()]/td[last()]//tr[1]//div[1]")
         err_row = err_rows[0]
@@ -63,6 +66,9 @@ class MHScraper:
                     matkat_lista[-1]['vaihdot'][-1]['mihin'] = asema_mihin
                     matkat_lista[-1]['vaihdot'][-1]['tyyppi'] = children[6].text_content().split()[0]
                     matkat_lista[-1]['vaihdot'][-1]['tunnus'] = children[6].text_content()
+                    continue
+                
+                if len(children) == 2: #!- KATSO HUOMAUTUS :DDDDD MITÄ TÄLLE TEHHÄÄN!?
                     continue
         
                 matka = {'lahtoaika': children[1].text_content(),
@@ -198,10 +204,10 @@ def main():
     """testi main"""
     scraper = MHScraper()
     
-    matka = scraper.hae_matka("Kuopio", "Tuovilanlahti (Maaninka)",
-                              "2013-04-24 13:15", None)
+    matka = scraper.hae_matka("Rovaniemi", "Turku",
+                              "2013-04-30 01:54", None)
     
-    if 'Virhe' in matka:
+    if 'virhe' in matka:
         print matka
         
     else:
@@ -215,7 +221,7 @@ def main():
                                     matka['saapumisaika'],
                                     matka['laituri'],
                                     matka['kesto'],
-                                    matka['hinta'])
+                                    matka['hinnat'])
         
             for i, yhteys in enumerate(matka['vaihdot']):
                 print str(i+1) + ". VaihtoYhteys"
