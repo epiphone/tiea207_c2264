@@ -141,7 +141,7 @@ def results (matkat, params):
                     extend_([u'<strong>', escape_(loop.index, True), u'. yhteys:</strong>\n'])
                     extend_([u'L\xe4htee: ', escape_(yhteys["lahtoaika"], True), u'<br>\n'])
                     extend_([u'Saapuu: ', escape_(yhteys["saapumisaika"], True), u'<br>\n'])
-                    extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u' Hinta: ', escape_(yhteys["hinta"][0], True), u'\u20ac<br>\n'])
+                    extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u' Hinta: ', escape_(yhteys["hinnat"][0], True), u'\u20ac<br>\n'])
                     extend_([u'Vaihdot:<br>\n'])
                     for vaihto in loop.setup(yhteys["vaihdot"]):
                         extend_([escape_(loop.index, True), u'. vaihto: ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"].split()[-1], True), u' - ', escape_(vaihto["saapumisaika"].split()[-1], True), u')<br>\n'])
@@ -156,7 +156,7 @@ def results (matkat, params):
                     extend_([u'L\xe4htee: ', escape_(yhteys["lahtoaika"], True), u'<br>\n'])
                     extend_([u'Saapuu: ', escape_(yhteys["saapumisaika"], True), u'<br>\n'])
                     extend_([u'Kesto: ', escape_(yhteys["kesto"], True), u'<br>\n'])
-                    extend_([u'Hinta: ', escape_(yhteys["hinta"][0], True), u'<br>\n'])
+                    extend_([u'Hinta: ', escape_(yhteys["hinnat"][0], True), u'<br>\n'])
                     extend_([u'T\xe4h\xe4n vaihdot yms.<br>\n'])
                     extend_([u'<br>\n'])
                     extend_([u'\n'])
@@ -169,8 +169,8 @@ def results (matkat, params):
                 extend_([u'Mihin: ', escape_(matkat["auto"]["mihin"], True), u'<br>\n'])
                 extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
                 extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
-                if "hinta" in matkat["auto"]:
-                    h1, h2, strong = matkat["auto"]["hinta"]
+                if "hinnat" in matkat["auto"]:
+                    h1, h2, strong = matkat["auto"]["hinnat"]
                     extend_([u'Hinnat: <b>', escape_(h1, True), u'</b>\u20ac (95E10), <b>', escape_(h2, True), u'</b>\u20ac (98E), <b>', escape_(strong, True), u'</b>\u20ac (Diesel)<br>\n'])
                     extend_([u'\n'])
     extend_([u'<a href="/">Takaisin</a>\n'])

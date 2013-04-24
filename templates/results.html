@@ -21,7 +21,10 @@ $else:
         Kesto: $yhteys["kesto"] Hinta: $yhteys["hinnat"][0]€<br>
         Vaihdot:<br>
         $for vaihto in yhteys["vaihdot"]:
-          $loop.index. vaihto: $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"].split()[-1] - $vaihto["saapumisaika"].split()[-1])<br>
+          $if "lahtopaikka" in vaihto:
+            $loop.index. vaihto: $vaihto["tyyppi"] $vaihto["lahtopaikka"] - $vaihto["saapumispaikka"] ($vaihto["lahtoaika"].split()[-1] - $vaihto["saapumisaika"].split()[-1])<br>
+          $elif "mista" in vaihto:
+            $loop.index. vaihto: $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"].split()[-1] - $vaihto["saapumisaika"].split()[-1])<br>
         <br>
 
   $if "bussi" in matkat:

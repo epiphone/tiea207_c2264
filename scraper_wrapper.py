@@ -77,7 +77,7 @@ class MHScraper:
             "mista": "jyväskylä",
             "mihin": "helsinki",
             "kesto": "04:23",
-            "hinta": [28.84, 33.93, None],
+            "hinnat": [28.84, 33.93, None],
             "vaihdot": [
                 {"lahtoaika": "2013-04-05 16:59",
                 "saapumisaika": "2013-04-05 20:00",
