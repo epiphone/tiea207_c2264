@@ -1,9 +1,41 @@
-#ui-datepicker-div {
+.ui-datepicker {
     background-color: white;
     border: 1px solid lightgray;
+    width: 180px;
+    height: auto;
 }
 
 .ui-datepicker-current-day {
     background-color: lightblue;
 }
 
+.ui-datepicker-inline {
+    width: 216px;
+    height: auto;
+}
+
+.ui-datepicker-calendar {
+    width: 100%;
+}
+
+.ui-datepicker-title {
+    text-align: center;
+}
+
+.ui-datepicker-prev, .ui-datepicker-next {
+    display: inline-block;
+    text-align: center;
+    overflow: hidden;
+}
+
+.ui-datepicker-prev {
+    float:left;
+}
+
+.ui-datepicker-next {
+    float: right;
+}
+
+.input-xmini {
+    width: 20px;
+}

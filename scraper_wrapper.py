@@ -14,7 +14,7 @@ except ImportError:
     logging.info("App Enginen apia ei löydetty")
 
     class Memcache:
-        """dummy-luokka sovelluksen testaamiseksi ilman GAE:a"""
+        """Dummy-luokka sovelluksen testaamiseksi ilman GAE:a"""
         def __init__(self):
             self.store = {}
 
@@ -36,6 +36,7 @@ except ImportError:
 
 # Käytetään näitä hintoja, jos hintojen hakeminen epäonnistuu
 HINNAT_BACKUP = [1.638, 1.688, 1.52]
+
 
 class VRScraper:
     """Tilapäinen dummy-luokka."""
@@ -142,14 +143,27 @@ class ScraperWrapper:
 
             try:
                 tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
-                # memcache.set(cache_avain, tulos)
+                if tulos:
+                    if "virhe" in tulos:
+                        # TODO Virheiden käsittely
+                        return tulos, tyyppi
+                    else:
+                        pass  # TODO Aseta välimuistiin
+                        # memcache.set(cache_avain, tulos)
+                else:
+                    tulos = {"virhe": "Sivun skreippaaminen epäonnistui [%s]"
+                        % tyyppi}
             except IOError:
-                tulos = {"virhe": "Sivun avaaminen epäonnistui."}
+                tulos = {
+                    "virhe": "Sivun avaaminen epäonnistui [%s]" % tyyppi}
 
+            # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
                 hinnat = self.hae_bensan_hinnat()
                 pit = tulos["matkanpituus"]
                 tulos["hinta"] = [round(pit * (6.0 / 100.0) * h, 2) for h in hinnat]
+
+            assert tulos is not None  # TODO debug
             return tulos, tyyppi
 
         # Palautetaan vain halutut matkustusvaihtoehdot:
@@ -168,9 +182,10 @@ class ScraperWrapper:
         try:
             hinnat = hinta_scraper.hae_hinta()
             if not hinnat:
+                logging.info("Polttoainehintojen skreippaaminen epäonnistui.")
                 return HINNAT_BACKUP
         except IOError:
-            logging.info("Bensa-urlin avaaminen epäonnistui")
+            logging.info("Polttoaine-urlin avaaminen epäonnistui")
             return HINNAT_BACKUP
 
         memcache.set("hinnat", hinnat, 60 * 60 * 24 * 7)

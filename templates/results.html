@@ -6,26 +6,25 @@ $if len(matkat) == 0 or matkat is None:
 $else:
   <h1>Löytyneet yhteydet:</h1>
   $if "juna" in matkat:
+    <h2>Junayhteydet:</h2>
     $if "virhe" in matkat["juna"]:
-      <h3>Virhe! $matkat["juna"]["virhe"]</h3>
+      <strong>Virhe! $matkat["juna"]["virhe"]</strong>
     $else:
-      <h2>Junayhteydet:</h2>
       $for yhteys in matkat["juna"]:
-        <h3>$loop.index. yhteys:</h3>
+        <strong>$loop.index. yhteys:</strong>
         Lähtee: $yhteys["lahtoaika"]<br>
         Saapuu: $yhteys["saapumisaika"]<br>
-        Kesto: $yhteys["kesto"]<br>
-        Hinta: $yhteys["hinta"][0]<br>
+        Kesto: $yhteys["kesto"] Hinta: $yhteys["hinta"][0]€<br>
         Vaihdot:<br>
         $for vaihto in yhteys["vaihdot"]:
           $loop.index. vaihto: $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"].split()[-1] - $vaihto["saapumisaika"].split()[-1])<br>
         <br>
 
   $if "bussi" in matkat:
+    <h2>Bussiyhteydet:</h2>
     $if "virhe" in matkat["bussi"]:
-      <h3>Virhe! matkat["bussi"]["virhe"]</h3>
+      <strong>Virhe!</strong> $matkat["bussi"]["virhe"]
     $else:
-      <h2>Bussiyhteydet:</h2>
       $for yhteys in matkat["bussi"]:
         Lähtee: $yhteys["lahtoaika"]<br>
         Saapuu: $yhteys["saapumisaika"]<br>
@@ -35,20 +34,16 @@ $else:
         <br>
 
   $if "auto" in matkat:
+    <h2>Autoyhteydet:</h2>
     $if "virhe" in matkat["auto"]:
-      <h3>Virhe! matkat["auto"]["virhe"]</h3>
+      <strong>Virhe!</strong> $matkat["auto"]["virhe"]
     $else:
-      $if matkat["auto"]:
-        <h2>Autoyhteydet:</h2>
-        Mistä: $matkat["auto"]["mista"]<br>
-        Mihin: $matkat["auto"]["mihin"]<br>
-        Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
-        Kesto: $matkat["auto"]["kesto"]<br>
-        $if "hinta" in matkat["auto"]:
-          $ h1, h2, h3 = matkat["auto"]["hinta"]
-          Hinnat: <b>$h1</b>€ (95E10), <b>$h2</b>€ (98E), <b>$h3</b>€ (Diesel)<br>
-      $else:
-        Autoyhteyden hakeminen epäonnistui.
-      <br>
+      Mistä: $matkat["auto"]["mista"]<br>
+      Mihin: $matkat["auto"]["mihin"]<br>
+      Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
+      Kesto: $matkat["auto"]["kesto"]<br>
+      $if "hinta" in matkat["auto"]:
+        $ h1, h2, strong = matkat["auto"]["hinta"]
+        Hinnat: <b>$h1</b>€ (95E10), <b>$h2</b>€ (98E), <b>$strong</b>€ (Diesel)<br>
 
 <a href="/">Takaisin</a>
