@@ -115,7 +115,7 @@ class ScraperWrapper:
                             # TODO Atm cache-arvo vanhenee
                             memcache.set(cache_avain, tulos, 60 * 60 * 60)
                     else:
-                        tulos = {"virhe": "Sivun skreippaaminen epäonnistui [%s]"
+                        tulos = {"virhe": "Ei yhteyksiä [%s]"
                             % tyyppi}
                 except IOError:
                     tulos = {
