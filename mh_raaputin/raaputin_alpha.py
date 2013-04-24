@@ -71,7 +71,7 @@ class MHScraper:
                          'mihin': asema_mihin,
                          'laituri': children[4].text_content(),
                          'kesto': self.keston_vaihto(children[5].text_content()),
-                         'hinta': self.hae_hinnat(children[10].text_content(), children[11].text_content()),
+                         'hinnat': self.hae_hinnat(children[10].text_content(), children[11].text_content()),
                          'vaihdot': [
                                 # 1. vaihtoyhteys
                                 {'lahtoaika': children[1].text_content(),
@@ -142,26 +142,26 @@ class MHScraper:
         """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
         
         if err_rows[1].text_content().strip() == "Lähtöpaikkaa ei löytynyt. Tarkista lähtöpaikan nimi.":
-            return {'Virhe': 'mista'}
+            return {'virhe': 'mista'}
         
         if err_rows[1].text_content().strip() == "Määräpaikkaa ei löytynyt. Tarkista määräpaikan nimi.":
-            return {'Virhe': 'mihin'}
+            return {'virhe': 'mihin'}
         
         if err_rows[1].text_content().strip() == "Virheellinen päivämäärä.":
             if saapumisaika is None:
-                return {'Virhe': 'lahtoaika'}
+                return {'virhe': 'lahtoaika'}
             else:
-                return {'Virhe': 'saapumisaika'}
+                return {'virhe': 'saapumisaika'}
             
-        if err_rows[1].text_content().strip() == ("Jatka antamillasi hakusanoilla"
-                                                 "painamalla \"Hae aikataulu\". Jos"
-                                                 "haluat tarkentaa pysäkin tai paikan"
-                                                 "nimen, hae pudotusvalikosta uusi hakusana"
+        if err_rows[1].text_content().strip() == ("Jatka antamillasi hakusanoilla "
+                                                 "painamalla \"Hae aikataulu\". Jos "
+                                                 "haluat tarkentaa pysäkin tai paikan "
+                                                 "nimen, hae pudotusvalikosta uusi hakusana "
                                                  "ja paina sen jälkeen \"Hae aikataulu\"."):
-            return {'Virhe': "tarkennus vaaditaan"}
+            return {'virhe': "tarkennus vaaditaan"}
             
         else:
-            return {'Virhe': "muu"}
+            return {'virhe': "muu"}
     
     def hae_hinnat(self, hinta, tarjous):
         """tutkitaan onko hintaa/tarjousta olemassa ja palautetaan ne listassa"""
@@ -198,7 +198,7 @@ def main():
     """testi main"""
     scraper = MHScraper()
     
-    matka = scraper.hae_matka("Kuopio", "Lahti",
+    matka = scraper.hae_matka("Kuopio", "Tuovilanlahti (Maaninka)",
                               "2013-04-24 13:15", None)
     
     if 'Virhe' in matka:
