@@ -8,56 +8,10 @@ from henkiloauto_scraper.auto_scraper import AutoScraper
 from hinta_scraper import hinta_scraper
 from vr_scraper.vr_scraper import VRScraper
 from thread_helper import do_threaded_work
-try:
-    from google.appengine.api import memcache
-except ImportError:
-    logging.info("App Enginen apia ei löydetty")
-
-    class Memcache:
-        """Dummy-luokka sovelluksen testaamiseksi ilman GAE:a"""
-        def __init__(self):
-            self.store = {}
-
-        def get(self, key):
-            """Returns requested key"""
-            if key in self.store:
-                return self.store[key]["value"]
-            else:
-                return None
-
-        def set(self, key, value, expires=None):
-            """Set value to memcache"""
-            self.store[key] = {"value": value, "expires": expires}
-
-        def add(self, key, value, expires=None):
-            """Set value to memcache"""
-            self.store[key] = {"value": value, "expires": expires}
-    memcache = Memcache()
+from google.appengine.api import memcache
 
 # Käytetään näitä hintoja, jos hintojen hakeminen epäonnistuu
 HINNAT_BACKUP = [1.638, 1.688, 1.52]
-
-
-# class MHScraper:
-#     """Tilapäinen dummy-luokka."""
-#     def hae_matka(*args, **kwargs):
-#         return [
-#             {"lahtoaika": "2013-04-05 16:59",
-#             "saapumisaika": "2013-04-05 22:22",
-#             "mista": "jyväskylä",
-#             "mihin": "helsinki",
-#             "kesto": "04:23",
-#             "hinnat": [28.84, 33.93, None],
-#             "vaihdot": [
-#                 {"lahtoaika": "2013-04-05 16:59",
-#                 "saapumisaika": "2013-04-05 20:00",
-#                 "mista": "jyväskylä",
-#                 "mihin": "tampere",
-#                 "tunnus": "Pikavuoro"}],
-#                 "tyyppi": "Pikavuoro Jyväskylä - Helsinki",
-#                "url": "http://linkki-ostosivulle.fi"
-#             }
-#         ]
 
 
 class ScraperWrapper:
