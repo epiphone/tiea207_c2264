@@ -71,7 +71,7 @@ def do_threaded_work(work_items, work_func, num_threads=None, per_sync_timeout=1
     result_items = []
     while not result_queue.empty():
         result = result_queue.get(timeout=per_sync_timeout)
-        logging.info('found result[:500]: ' + repr(result)[:500])
+        # logging.info('found result[:500]: ' + repr(result)[:500])
         if result:
             result_items.append(result)
 

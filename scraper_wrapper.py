@@ -2,9 +2,8 @@
 # Moduuli käärii eri skreipperit yhteisen rajapinnan alle.
 
 # TODO: Nämä käyttöön kun ovat valmiita:
-# import mh_scraper
-# import vr_scraper
 import logging
+from mh_raaputin.raaputin_alpha import MHScraper
 from henkiloauto_scraper.auto_scraper import AutoScraper
 from hinta_scraper import hinta_scraper
 from vr_scraper.vr_scraper import VRScraper
@@ -39,7 +38,7 @@ except ImportError:
 HINNAT_BACKUP = [1.638, 1.688, 1.52]
 
 
-# class VRScraper:
+# class MHScraper:
 #     """Tilapäinen dummy-luokka."""
 #     def hae_matka(*args, **kwargs):
 #         return [
@@ -48,52 +47,17 @@ HINNAT_BACKUP = [1.638, 1.688, 1.52]
 #             "mista": "jyväskylä",
 #             "mihin": "helsinki",
 #             "kesto": "04:23",
-#             "hinta": [28.84, 33.93, None],
+#             "hinnat": [28.84, 33.93, None],
 #             "vaihdot": [
 #                 {"lahtoaika": "2013-04-05 16:59",
 #                 "saapumisaika": "2013-04-05 20:00",
 #                 "mista": "jyväskylä",
 #                 "mihin": "tampere",
-#                 "tyyppi": "Pikajuna",
-#                 "tunnus": "Pikajuna 123"},
-#                {"lahtoaika": "2013-04-05 20:10",
-#                 "saapumisaika": "2013-04-05 22:22",
-#                 "mista": "tampere",
-#                 "mihin": "helsinki",
-#                 "tyyppi": "Pendolino",
-#                 "tunnus": "Pendolino 666"}
-#             ],
-#             "url": "http://linkki-ostosivulle.fi"
+#                 "tunnus": "Pikavuoro"}],
+#                 "tyyppi": "Pikavuoro Jyväskylä - Helsinki",
+#                "url": "http://linkki-ostosivulle.fi"
 #             }
 #         ]
-
-
-class MHScraper:
-    """Tilapäinen dummy-luokka."""
-    def hae_matka(*args, **kwargs):
-        return [
-            {"lahtoaika": "2013-04-05 16:59",
-            "saapumisaika": "2013-04-05 22:22",
-            "mista": "jyväskylä",
-            "mihin": "helsinki",
-            "kesto": "04:23",
-            "hinnat": [28.84, 33.93, None],
-            "vaihdot": [
-                {"lahtoaika": "2013-04-05 16:59",
-                "saapumisaika": "2013-04-05 20:00",
-                "mista": "jyväskylä",
-                "mihin": "tampere",
-                "tunnus": "Pikavuoro"}],
-                "tyyppi": "Pikavuoro Jyväskylä - Helsinki",
-               "url": "http://linkki-ostosivulle.fi"
-            }
-        ]
-
-
-class BensaScraper:
-    """Tilapäinen dummy-luokka."""
-    def hae_hinta(*args, **kwargs):
-        return [1.672, 1.721, 1.555]
 
 
 class ScraperWrapper:
@@ -103,7 +67,6 @@ class ScraperWrapper:
         self.vr_scraper = VRScraper()
         self.mh_scraper = MHScraper()
         self.auto_scraper = AutoScraper()
-        self.bensa_scraper = BensaScraper()
         self.scraperit = [self.vr_scraper, self.mh_scraper,
             self.auto_scraper]
 
@@ -119,8 +82,8 @@ class ScraperWrapper:
         except UnicodeDecodeError:
             pass
 
-        pvm = lahtoaika or saapumisaika
-        pvm = pvm.split()[0]
+        dt = lahtoaika or saapumisaika
+        pvm = dt.split()[0]
 
         def f(scraper):
             """Apufunktio, joka tarkistaa välimuistin ja hakee tarvittaessa
@@ -130,39 +93,39 @@ class ScraperWrapper:
                 tyyppi = "bussi"
                 cache_avain = "mh_" + pvm
             elif scraper is self.vr_scraper:
-                # Tälle ei tule paljoa osumia, parempi vaihtoehto?
+                # TODO Tälle ei tule paljoa osumia, parempi vaihtoehto?
                 tyyppi = "juna"
-                cache_avain = "vr_" + mista + mihin + pvm
+                cache_avain = "vr_" + mista + mihin + dt
             else:
                 tyyppi = "auto"
                 cache_avain = "auto_" + mista + mihin
 
-            # tulos = memcache.get(cache_avain)
-            # if tulos is not None:
-            #     logging.info("Cache hit, key:" + cache_avain)
-            #     return tulos, tyyppi
-
-            try:
-                tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
-                if tulos:
-                    if "virhe" in tulos:
-                        # TODO Virheiden käsittely
-                        return tulos, tyyppi
+            tulos = memcache.get(cache_avain)
+            if tulos is not None:
+                logging.info("CACHE HIT, key:" + cache_avain)
+                # return tulos, tyyppi
+            else:
+                try:
+                    tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
+                    if tulos:
+                        if "virhe" in tulos:
+                            # TODO Virheiden käsittely
+                            return tulos, tyyppi
+                        else:
+                            # TODO Atm cache-arvo vanhenee
+                            memcache.set(cache_avain, tulos, 60 * 60 * 60)
                     else:
-                        pass  # TODO Aseta välimuistiin
-                        # memcache.set(cache_avain, tulos)
-                else:
-                    tulos = {"virhe": "Sivun skreippaaminen epäonnistui [%s]"
-                        % tyyppi}
-            except IOError:
-                tulos = {
-                    "virhe": "Sivun avaaminen epäonnistui [%s]" % tyyppi}
+                        tulos = {"virhe": "Sivun skreippaaminen epäonnistui [%s]"
+                            % tyyppi}
+                except IOError:
+                    tulos = {
+                        "virhe": "Sivun avaaminen epäonnistui [%s]" % tyyppi}
 
             # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
                 hinnat = self.hae_bensan_hinnat()
                 pit = tulos["matkanpituus"]
-                tulos["hinta"] = [round(pit * (6.0 / 100.0) * h, 2) for h in hinnat]
+                tulos["hinnat"] = [round(pit * (6.0 / 100.0) * h, 2) for h in hinnat]
 
             assert tulos is not None  # TODO debug
             return tulos, tyyppi
@@ -176,8 +139,9 @@ class ScraperWrapper:
     def hae_bensan_hinnat(self):
         """Hakee bensan hinnat hinta_scraper-moduulia käyttäen."""
         hinnat = memcache.get("hinnat")
-        if hinnat is not None:
+        if hinnat not in [None, []]:
             # Hinnat löytyivät välimuistista
+            logging.info("CACHE HIT, key: hinnat")
             return hinnat
 
         try:
