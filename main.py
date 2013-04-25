@@ -4,7 +4,7 @@
 
 import web
 from scraper_wrapper import ScraperWrapper
-from datetime import datetime, timedelta
+from datetime import datetime
 import re
 import logging
 import time
@@ -70,9 +70,9 @@ class Haku:
             saika = None
             laika = pvm
 
-        params = dict(mista=mista, mihin=mihin, lahtoaika=laika,
-            saapumisaika=saika, bussi=bussi, juna=juna, auto=auto,
-            alennusluokka=ale)  # TODO debug
+        params = dict(mista=mista.lower(), mihin=mihin.lower(),
+            lahtoaika=laika, saapumisaika=saika, bussi=bussi, juna=juna,
+            auto=auto, alennusluokka=ale)  # TODO debug
         matkat = scraper.hae_matka(**params)
 
         t = str(round(time.time() - t, 2))
