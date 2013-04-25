@@ -21,8 +21,10 @@ class VRScraper:
         Varusmies=88, Siviilipalvelusmies=89. Alennusluokkien tunnukset ovat: 0 = Aikuinen,
         1 = Lapsi, 2 = Opiskelija, 3 = Nuoriso, 4 = Eläkeläinen 5 = Varusmies, 6 = Lehdistö,
         7 = Siviilipalvelusmies
-
         """
+
+        if alennusluokka not in ["0", "1", "2", "3", "4", "5", "6", "7"]:
+            return "Kelpaamaton alennusluokka"
 
         if alennusluokka == "2":
             palaute = alkuperainen_url.replace("passengerType=84", "passengerType=85")
@@ -131,8 +133,11 @@ class VRScraper:
            ja palautetaan se.
         """
 
-        mista = self.korjaa_aakkoset(mista)
-        mihin = self.korjaa_aakkoset(mihin)
+        bad_chars = 'äÄöÖåÅ'
+        if any((bad_char in mista) for bad_char in bad_chars):
+            mista = self.korjaa_aakkoset(mista)
+        if any((bad_char in mihin) for bad_char in bad_chars):
+            mihin = self.korjaa_aakkoset(mihin)
 
         if lahtoaika:
             lahto_pvm = lahtoaika[8:10] + "." + lahtoaika[5:7] + "." + lahtoaika[0:4]
@@ -172,31 +177,33 @@ class VRScraper:
         [Ennakkolippu, Ekolippu, Joustavalippu]. Mikäli jotakin lippuluokkaa ei ole
         haettuun yhteyteen saatavilla, on lippuluokan hinnan indeksissä arvo None
         """
-
-        lista_hinnoista = list()
-        for hinta in hinnat:
-            elementit = hinta.getchildren()
-            if hinta.text_content().find("Matka") != -1 or hinta.text_content().find("Ei") != -1 or len(hinta.text_content()) < 1:
-                lista_hinnoista.append(None)
-                continue
-            if len(elementit) >= 1:
-                hinnan_label = elementit[0].text_content()[:-2].replace(",", ".")
-                if len(hinnan_label) > 0:
-                    lista_hinnoista.append(hinnan_label)
+        try:
+            lista_hinnoista = list()
+            for hinta in hinnat:
+                elementit = hinta.getchildren()
+                if hinta.text_content().find("Matka") != -1 or hinta.text_content().find("Ei") != -1 or len(hinta.text_content()) < 1:
+                    lista_hinnoista.append(None)
                     continue
+                if len(elementit) >= 1:
+                    hinnan_label = elementit[0].text_content()[:-2].replace(",", ".")
+                    if len(hinnan_label) > 0:
+                        lista_hinnoista.append(hinnan_label)
+                        continue
+                    else:
+                        teksti = hinta.text_content().replace(u"€", "")
+                        teksti = ' '.join(teksti.split())
+                        teksti = teksti.replace(",", ".")
+                        lista_hinnoista.append(teksti)
+                        continue
                 else:
-                    testi = hinta.text_content().replace(u"€", "")
-                    testi = ' '.join(testi.split())
-                    testi = testi.replace(",", ".")
-                    lista_hinnoista.append(testi)
-                    continue
-            else:
+                    lista_hinnoista.append(None)
+
+            if len(lista_hinnoista) < 3:
                 lista_hinnoista.append(None)
 
-        if len(lista_hinnoista) < 3:
-            lista_hinnoista.append(None)
-
-        return lista_hinnoista
+            return lista_hinnoista
+        except:
+            return ["Hintojen haussa tapahtui virhe!"]
 
     def hae_vaihtojen_tiedot(self, vaihdot, annettu_aika):
         """Palauttaa listan matkan yhteyksistä, joista jokaisen tiedot on omassa
@@ -306,27 +313,29 @@ def main():
     import pprint
 
     screipperi = VRScraper()
-    testataanko = raw_input('Tahdotko itse syottaa hakuehdot? (Y/N) Alennusluokkaa testataksesi, valitse A')
+    print "Tahdotko itse syottaa hakuehdot? (Y/N) Alennusluokkaa testataksesi, valitse A"
+    testataanko = raw_input(': ')
     if testataanko == "Y":
-        mista = raw_input('Mista lahdet?')
-        mihin = raw_input('Minne menet?')
-        alennus = raw_input('Mihin alennusluokkaan kuulut?')
-        print ("0 = Aikuinen, 1 = Lapsi, 2 = Opiskelija, 3 = Nuoriso, 4 = Eläkeläinen 5 = Varusmies, 6 = Lehdistö, 7 = Siviilipalvelusmies")
-        aika = raw_input('saapumis- vai lahtoaika? (S/L)')
+
+        mista = raw_input('Mista lahdet? >>>')
+        mihin = raw_input('Minne menet? >>>')
+        aika = raw_input('saapumis- vai lahtoaika? (S/L): ')
         if aika == "S":
-            saapumisaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
+            saapumisaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM >>>')
             tiedot = screipperi.hae_matka(mista, mihin, None, saapumisaika)
+            #webbrowser.open_new(screipperi.muodosta_url(mista, mihin, None, saapumisaika))
             pprint.pprint(tiedot)
         if aika == "L":
-            lahtoaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM')
+            lahtoaika = raw_input('Anna aika muodossa YYYY-MM-DD HH:MM >>>')
             tiedot = screipperi.hae_matka(mista, mihin, lahtoaika, None)
+            #webbrowser.open_new(screipperi.muodosta_url(mista, mihin, lahtoaika, None))
             pprint.pprint(tiedot)
     if testataanko == "N":
         tiedot = screipperi.hae_matka("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50",)
         pprint.pprint(tiedot)
     if testataanko == "A":
         print ("0 = Aikuinen, 1 = Lapsi, 2 = Opiskelija, 3 = Nuoriso, 4 = Eläkeläinen 5 = Varusmies, 6 = Lehdistö, 7 = Siviilipalvelusmies")
-        alennus = raw_input('Mihin alennusluokkaan kuulut?')
+        alennus = raw_input('Mihin alennusluokkaan kuulut? >>>')
         url_testi = screipperi.ostosivun_url_muodostaja(screipperi.muodosta_url("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50"), alennus)
         webbrowser.open_new(url_testi)
 
