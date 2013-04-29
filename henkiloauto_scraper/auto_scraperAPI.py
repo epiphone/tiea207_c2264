@@ -49,6 +49,11 @@ class AutoScraper():
         # Tarkistetaan tapahtuiko virhe: jos tapahtui, niin palautetaan --------
         # virhetta kuvaileva koodi.
 
+        # Jos syötteessä on virhe (esim. tyhjä syöte jommassa kummassa, jne)
+        if (matkan_tiedot["status"] == "INVALID_REQUEST"):
+            return { "virhe": "INVALIDI_PYYNTO"}
+
+
         # Jos lähtöpaikan tai määränpään tietoja ei löydy, niin palautetaan
         # virhe "mista_ja_mihin"
         if (matkan_tiedot["origin_addresses"][0] == "" and
@@ -70,10 +75,6 @@ class AutoScraper():
         if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
             "ZERO_RESULTS"):
             return { "virhe": "EI_REITTIA"}
-
-        if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
-            "INVALID_REQUEST"):
-            return { "virhe": "INVALIDI_PYYNTO"}
 
         if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
             "OVER_QUERY_LIMIT"):
@@ -163,8 +164,8 @@ def main():
     ''' Pääfunktio alkaa tästä. Tämä on AutoScraper-luokan testausta '''
 
     # Muuttujia
-    lahtopaikka = "Utsjokiu"
-    saapumispaikka = "Jyväsky"
+    lahtopaikka = ""
+    saapumispaikka = "suonenjoki (suonenjoki)"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()
