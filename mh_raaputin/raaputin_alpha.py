@@ -31,7 +31,7 @@ class MHScraper:
         #Jos haku tuottaa error-boxin, haetaan sen errorin nimi,
         #eikä tehdä enää muuta
         if err_row.attrib["class"] in ["error_wrapper"]:
-            return self.error_msg(err_rows, lahtoaika, saapumisaika)
+            return self.error_msg(err_rows, lahtoaika, saapumisaika, root)
         
 
         #jos hakuvirhettä ei tule, jatketaan normaalisti
@@ -144,7 +144,7 @@ class MHScraper:
         
         return tunti + ":" + minuutti
 
-    def error_msg(self, err_rows, lahtoaika, saapumisaika):
+    def error_msg(self, err_rows, lahtoaika, saapumisaika, root):
         """Hakee 'error_wrapper':sta errorin nimen ja tulostaa sen"""
         
         if err_rows[1].text_content().strip() =="Annetuilla hakuehdoilla ei löytynyt yhtään yhteyttä.":
@@ -167,11 +167,38 @@ class MHScraper:
                                                  "haluat tarkentaa pysäkin tai paikan "
                                                  "nimen, hae pudotusvalikosta uusi hakusana "
                                                  "ja paina sen jälkeen \"Hae aikataulu\"."):
-            return {'virhe': "tarkennus vaaditaan"}
+            return self.tarkennus_vaaditaan(root)
             
         else:
             return {'virhe': "muu"}
-    
+        
+    def tarkennus_vaaditaan(self, root):
+        """jos jokin hakuvaihtoehto vaatii tarkennuksen (Ivalo => Ivalo (Inari)
+        käsitellään se tässä"""
+        
+        vaihtoehdot = {'virhe': "tarkennus",
+                       'mista': None,
+                       'mihin': None}
+        
+        eka_syote = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table//tr[1]/td[2]/select")
+        toka_syote = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table//tr[2]/td[2]/select")
+        
+        if len(eka_syote) > 0:
+            eka = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table//tr[1]/td[2]/select/option")
+            lista1 = []
+            for vaihtoehto in eka:
+                lista1.append(vaihtoehto.text_content())
+            vaihtoehdot['mista'] = lista1
+        
+        if len(toka_syote) > 0:
+            toka = root.xpath("//table//tr[last()]/td[last()]//tr[1]//table//tr[2]/td[2]/select/option")
+            lista2 = []
+            for vaihtoehto in toka:
+                lista2.append(vaihtoehto.text_content())
+            vaihtoehdot['mihin'] = lista2
+
+        return vaihtoehdot
+        
     def hae_hinnat(self, hinta, tarjous):
         """tutkitaan onko hintaa/tarjousta olemassa ja palautetaan ne listassa"""
         
@@ -207,7 +234,7 @@ def main():
     """testi main"""
     scraper = MHScraper()
     
-    matka = scraper.hae_matka("Kuopio", "Jyväskylä",
+    matka = scraper.hae_matka("Ivalo", "Tuovilanlahti",
                               "2013-05-14 01:54", None)
     
     if matka is None:
