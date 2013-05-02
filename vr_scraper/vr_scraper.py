@@ -77,6 +77,8 @@ class VRScraper:
         if len(lista_virheista) < 1:
             lista_virheista.append("True")
             return lista_virheista
+
+        #Tarkista minkälaisen viestin VR antaa, kun palvelu on yöllä suljettuna (23-06 ?)
         else:
             return lista_virheista
 
@@ -305,8 +307,8 @@ class VRScraper:
 
 def main():
     """
-    Mainia käytetään vain toimivuuden testaamiseen. Haku voidaan suorittaa joko valmiilla ehdoilla
-    tai hakuehdot voidaan syöttää itse käsin.
+    Mainia käytetään vain toimivuuden testaamiseen. Testit voidaan suorittaa joko käsin annetuilla
+    syötteillä, valmiilla haulla tai automaattitesterilla, joka arpoo hakuehdot.
     """
 
     import webbrowser
@@ -314,9 +316,9 @@ def main():
 
     screipperi = VRScraper()
     print "Tahdotko itse syottaa hakuehdot? (Y/N) Alennusluokkaa testataksesi, valitse A"
-    testataanko = raw_input(': ')
+    testataanko = raw_input('Jos tahdot kayttaa automaattista testausta, valitse R. >>> ')
+    #Itse syötetyillä ehdoilla testaaminen
     if testataanko == "Y":
-
         mista = raw_input('Mista lahdet? >>>')
         mihin = raw_input('Minne menet? >>>')
         aika = raw_input('saapumis- vai lahtoaika? (S/L): ')
@@ -330,14 +332,54 @@ def main():
             tiedot = screipperi.hae_matka(mista, mihin, lahtoaika, None)
             #webbrowser.open_new(screipperi.muodosta_url(mista, mihin, lahtoaika, None))
             pprint.pprint(tiedot)
+    # Valmiilla haulla testaus
     if testataanko == "N":
         tiedot = screipperi.hae_matka("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50",)
         pprint.pprint(tiedot)
+    #Alennusluokan testaaminen
     if testataanko == "A":
         print ("0 = Aikuinen, 1 = Lapsi, 2 = Opiskelija, 3 = Nuoriso, 4 = Eläkeläinen 5 = Varusmies, 6 = Lehdistö, 7 = Siviilipalvelusmies")
         alennus = raw_input('Mihin alennusluokkaan kuulut? >>>')
         url_testi = screipperi.ostosivun_url_muodostaja(screipperi.muodosta_url("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50"), alennus)
         webbrowser.open_new(url_testi)
+    #Automaattitesteri (HUOM! Arpojan päivämääräehdot päivitettävä sillointällöin)
+    if testataanko == "R":
+        lista_paikoista = ['Alavus', 'Dragsvik', 'Eläinpuisto - Zoo', 'Eno', 'Enontekiö', 'Espoo', 'Haapajärvi', 'Haapamäki', 'Haarajoki', 'Hankasalmi', 'Hanko', 'Hanko-Pohjoinen', 'Harjavalta', 'Haukivuori', 'Heinävesi', 'Helsinki', 'Helsinki airport', 'Herrala', 'Hiekkaharju', 'Hikiä', 'Humppila', 'Huopalahti', 'Hyvinkää', 'Hämeenlinna', 'Höljäkkä', 'Iisalmi', 'Iittala', 'Ilmala', 'Imatra', 'Inari', 'Inkeroinen', 'Inkoo', 'Isokyrö', 'Ivalo', 'Joensuu', 'Jokela', 'Joroinen', 'Jorvas', 'Joutseno', 'Juupajoki', 'Jyväskylä', 'Jämsä', 'Järvelä', 'Järvenpää', 'Kajaani', 'Kannelmäki', 'Kannus', 'Karjaa', 'Karkku', 'Kauhava', 'Kauklahti', 'Kauniainen', 'Kausala', 'Kemi', 'Kemijärvi', 'Kemijärvi bus station', 'Kera', 'Kerava', 'Kerimäki', 'Kesälahti', 'Keuruu', 'Kiilopää', 'Kilo', 'Kilpisjärvi', 'Kirkkonummi', 'Kitee', 'Kittilä', 'Kiuruvesi', 'Kohtavaara', 'Koivuhovi', 'Koivukylä', 'Kokemäki', 'Kokkola', 'Kolari', 'Kolho', 'Kontiomäki', 'Koria', 'Korso', 'Kotka', 'Kotkan Satama', 'Kouvola', 'Kuhmo', 'Kuopio', 'Kupittaa', 'Kuusamo', 'Kylänlahti', 'Kymi', 'Kyminlinna', 'Kyrölä', 'Käpylä', 'Lahti', 'Laihia', 'Lapinlahti', 'Lappeenranta', 'Lappila', 'Lappohja', 'Lapua', 'Lempäälä', 'Leppävaara', 'Levi', 'Lieksa', 'Lievestuore', 'Lohja bus station', 'Loimaa', 'Louhela', 'Loviisa bus station', 'Luoma', 'Luosto', 'Lusto', 'Malmi', 'Malminkartano', 'Mankki', 'Martinlaakso', 'Masala', 'Mikkeli', 'Misi', 'Mommila', 'Moscow (Leningradski)', 'Muhos', 'Muijala', 'Muonio', 'Muurola', 'Myllykoski', 'Myllymäki', 'Myyrmäki', 'Mäkkylä', 'Mäntsälä', 'Mäntyharju', 'Nastola', 'Nivala', 'Nokia', 'Nummela', 'Nuppulinna', 'Nurmes', 'Oitti', 'Olos', 'Orivesi', 'Orivesi Keskusta', 'Oulainen', 'Oulu', 'Oulunkylä', 'Paimenportti', 'Pallastunturi', 'Paltamo', 'Parikkala', 'Parkano', 'Parola', 'Pasila', 'Pello', 'Perttilä', 'Petäjävesi', 'Pieksämäki', 'Pietarsaari', 'Pihlajavesi', 'Pitäjänmäki', 'Pohjois-Haaga', 'Pori', 'Porvoo bus station', 'Puistola', 'Pukinmäki', 'Punkaharju', 'Purola', 'Pyhä', 'Pyhäsalmi', 'Pännäinen', 'Pääskylahti', 'Raahe', 'Rantasalmi', 'Rauma', 'Rekola', 'Retretti', 'Riihimäki', 'Rovaniemi', 'Ruka', 'Runni', 'Ruukki', 'Ryttylä', 'Saariselkä', 'Salla', 'Sallatunturi', 'Salo', 'Santala', 'Saunakallio', 'Savio', 'Savonlinna', 'Savonlinna bus station', 'Seinäjoki', 'Siilinjärvi', 'Simpele', 'Siuntio', 'Skogby', 'Sodankylä', 'Sotkamo', 'St. Petersburg (Finljandski)', 'St.petersburg (Ladozhki)', 'Sukeva', 'Suomu', 'Suonenjoki', 'Tahko', 'Tammisaari', 'Tampere', 'Tapanila', 'Tavastila', 'Tervajoki', 'Tervola', 'Tikkurila', 'Toijala', 'Tolsa', 'Tornio', 'Tornio bus station', 'Tornio- Itäinen', 'Tuomarila', 'Turenki', 'Turku', 'Turku Satama', 'Tuuri', 'Tver', 'Uimaharju', 'Utajärvi', 'Utsjoki', 'Uusikylä', 'Vaala', 'Vaasa', 'Vainikkala', 'Vainikkala raja', 'Valimo', 'Valtimo', 'Vammala', 'Vantaankoski', 'Varkaus', 'Veikkola', 'Vihanti', 'Vihtari', 'Viiala', 'Viinijärvi', 'Villähde', 'Vilppula', 'Virkkala', 'Vuokatti ras th', 'Vuokatti urheiluopisto th', 'Vuonislahti', 'Vuontispirtti', 'Vyborg', 'Ylistaro', 'Ylitornio', 'Ylivieska', 'Ähtäri', 'Äkäslompolo']
+        from random import choice
+        from random import randint
+        while True:
+            mista = choice(lista_paikoista)
+            mihin = choice(lista_paikoista)
+            while True:
+                if mista == mihin:
+                    mihin = choice(lista_paikoista)
+                if mista != mihin:
+                    break
+            paiva = randint(1, 28)
+            kuukausi = randint(5, 8)
+            vuosi = "2013"
+            tunnit = randint(0, 23)
+            minuutit = randint(0, 59)
+            haku_pvm = vuosi + "-" + str(kuukausi).zfill(2) + "-" + str(paiva).zfill(2) + " " + str(tunnit).zfill(2) + ":" + str(minuutit).zfill(2)
+            lahto_vai_saapu = randint(0, 1)
+            if lahto_vai_saapu == 0:
+                print "Annetut hakuehdot. mista: " + mista + " mihin: " + mihin + " lahtoaika: " + haku_pvm
+                pprint.pprint(screipperi.hae_matka(mista, mihin, haku_pvm, None))
+            if lahto_vai_saapu == 1:
+                print "Annetut hakuehdot. mista: " + mista + " mihin: " + mihin + " saapumisaika: " + haku_pvm
+                pprint.pprint(screipperi.hae_matka(mista, mihin, None, haku_pvm))
+            print ""
+            print "****************"
+            print "EI KAATUNUT! ^_^"
+            print "****************"
+            print ""
+            jatketaanko_test = raw_input('Pistetaanko uusi testi tulille? (Y/N) >>> ')
+            if jatketaanko_test == "Y":
+                jatketaanko = True
+            if jatketaanko_test == "N":
+                jatketaanko = False
+            if not jatketaanko:
+                break
 
 if __name__ == "__main__":
     main()
