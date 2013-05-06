@@ -6,6 +6,7 @@ import urllib
 import urllib2
 from lxml import html
 from multiprocessing import Pool
+import json
 
 
 URL_MH = "http://matkahuolto.info/lippu/fi/autocomplete"
@@ -56,9 +57,7 @@ def selvita_yhteydet(paikat):
 
 def f(paikka):
     print paikka
-    if paikka in hae_mh(paikka):
-        return paikka
-    return None
+    return hae_mh(paikka)
 
 
 def selvita_yhteydet_async(paikat, poolsize=20):
@@ -67,16 +66,57 @@ def selvita_yhteydet_async(paikat, poolsize=20):
 
 
 def suorita():
-    paikat = hae_paikat()
-    print "Paikat haettu, selvitetään yhteydet..."
+    try:
+        json_file = open("paikat.json")
+        data = json.load(json_file)
+    except IOError:
+        data = None
 
-    yhteydet = selvita_yhteydet_async(paikat)
-    loytyneet = [p for i, p in enumerate(paikat) if yhteydet[i]]
-    eiloytyneet = [p for i, p in enumerate(paikat) if not yhteydet[i]]
-    print "Suora vastaavuus löytyi %d/%d paikalle"\
-        % (len(loytyneet), len(paikat))
+    if not data:
+        # Haetaan tiehallinnon paikkapalvelun 470 paikkakuntaa:
+        paikat = hae_paikat()
+        uudet_paikat = []
+        for i, paikka in enumerate(paikat):
+            # Muokataan "jämsä, kaipola" --> "kaipola (jämsä)"
+            paikka = paikka.replace(u"(yhdistetty)", u"").strip()
+            if paikka.endswith(u" kko"):
+                paikka = paikka.replace(u" kko", u"")
+            paikka = paikka.replace(u"jyväskylän mlk", u"jyväskylä")
+            osat = paikka.split(",")
+            if len(osat) == 3:
+                if osat[2].strip() == "raja":
+                    osat = osat[:2]
+            if len(osat) == 2:
+                if osat[1].strip() in ["kko.", "kesk."]:
+                    uusi_paikka = osat[0].strip()
+                else:
+                    uusi_paikka = "%s (%s)" % (osat[1].strip(), osat[0].strip())
+                print "Muokattiin %s -> %s" % (paikka, uusi_paikka)
+                uudet_paikat.append(uusi_paikka)
+            else:
+                uudet_paikat.append(paikka)
+        paikat = uudet_paikat
 
-    print ""
-    for paikka in eiloytyneet:
-        mh_ehdotukset = hae_mh(paikka)
+        # Haetaan Matkahuollon hakutulokset jokaiselle haetulle paikalle:
+        mh_paikat = selvita_yhteydet_async(paikat)
+        data = {p: mh_paikat[i] for i, p in enumerate(paikat)}
+        json_file = open("paikat.json", "w")
+        json_file.write(json.dumps(data))
+        json_file.close()
 
+    d = {}
+    for paikka, ehdotukset in data.iteritems():
+        d[paikka] = ehdotukset
+        for ehdotus in ehdotukset:
+            if ehdotus == paikka:
+                d[paikka] = ehdotus
+                continue
+            osat = ehdotus.split()
+            if len(osat) == 2 and osat[0].strip() == paikka:
+                d[paikka] = osat[0].strip()
+                continue
+
+    paikat = d.keys()
+    loytyneet = [p for p in paikat if isinstance(d[p], basestring)]
+    eiloytyneet = [p for p in paikat if p not in loytyneet]
+    return d, loytyneet, eiloytyneet
