@@ -66,43 +66,40 @@ def selvita_yhteydet_async(paikat, poolsize=20):
 
 
 def suorita():
-    try:
-        json_file = open("paikat.json")
-        data = json.load(json_file)
-    except IOError:
-        data = None
+    json_file = open("paikat.json")
+    data = json.load(json_file)
 
-    if not data:
-        # Haetaan tiehallinnon paikkapalvelun 470 paikkakuntaa:
-        paikat = hae_paikat()
-        uudet_paikat = []
-        for i, paikka in enumerate(paikat):
-            # Muokataan "jämsä, kaipola" --> "kaipola (jämsä)"
-            paikka = paikka.replace(u"(yhdistetty)", u"").strip()
-            if paikka.endswith(u" kko"):
-                paikka = paikka.replace(u" kko", u"")
-            paikka = paikka.replace(u"jyväskylän mlk", u"jyväskylä")
-            osat = paikka.split(",")
-            if len(osat) == 3:
-                if osat[2].strip() == "raja":
-                    osat = osat[:2]
-            if len(osat) == 2:
-                if osat[1].strip() in ["kko.", "kesk."]:
-                    uusi_paikka = osat[0].strip()
-                else:
-                    uusi_paikka = "%s (%s)" % (osat[1].strip(), osat[0].strip())
-                print "Muokattiin %s -> %s" % (paikka, uusi_paikka)
-                uudet_paikat.append(uusi_paikka)
-            else:
-                uudet_paikat.append(paikka)
-        paikat = uudet_paikat
+    # if not data:
+    #     # Haetaan tiehallinnon paikkapalvelun 470 paikkakuntaa:
+    #     paikat = hae_paikat()
+    #     uudet_paikat = []
+    #     for i, paikka in enumerate(paikat):
+    #         # Muokataan "jämsä, kaipola" --> "kaipola (jämsä)"
+    #         paikka = paikka.replace(u"(yhdistetty)", u"").strip()
+    #         if paikka.endswith(u" kko"):
+    #             paikka = paikka.replace(u" kko", u"")
+    #         paikka = paikka.replace(u"jyväskylän mlk", u"jyväskylä")
+    #         osat = paikka.split(",")
+    #         if len(osat) == 3:
+    #             if osat[2].strip() == "raja":
+    #                 osat = osat[:2]
+    #         if len(osat) == 2:
+    #             if osat[1].strip() in ["kko.", "kesk."]:
+    #                 uusi_paikka = osat[0].strip()
+    #             else:
+    #                 uusi_paikka = "%s (%s)" % (osat[1].strip(), osat[0].strip())
+    #             print "Muokattiin %s -> %s" % (paikka, uusi_paikka)
+    #             uudet_paikat.append(uusi_paikka)
+    #         else:
+    #             uudet_paikat.append(paikka)
+    #     paikat = uudet_paikat
 
         # Haetaan Matkahuollon hakutulokset jokaiselle haetulle paikalle:
-        mh_paikat = selvita_yhteydet_async(paikat)
-        data = {p: mh_paikat[i] for i, p in enumerate(paikat)}
-        json_file = open("paikat.json", "w")
-        json_file.write(json.dumps(data))
-        json_file.close()
+        # mh_paikat = selvita_yhteydet_async(paikat)
+        # data = {p: mh_paikat[i] for i, p in enumerate(paikat)}
+        # json_file = open("paikat.json", "w")
+        # json_file.write(json.dumps(data))
+        # json_file.close()
 
     d = {}
     for paikka, ehdotukset in data.iteritems():
