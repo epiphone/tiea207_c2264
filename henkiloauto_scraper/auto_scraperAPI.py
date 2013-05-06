@@ -46,46 +46,46 @@ class AutoScraper():
         # Haetaan tiedot dictionaryyn
         matkan_tiedot = json.load(site)
 
-        # Tarkistetaan tapahtuiko virhe: jos tapahtui, niin palautetaan --------
+        # Tarkistetaan tapahtuiko virhe: jos tapahtui, niin palautetaan
         # virhetta kuvaileva koodi.
 
         # Jos syötteessä on virhe (esim. tyhjä syöte jommassa kummassa, jne)
         if (matkan_tiedot["status"] == "INVALID_REQUEST"):
-            return { "virhe": "INVALIDI_PYYNTO"}
+            return { "virhe": "EPÄKELPO_PYYNTO"}
 
 
         # Jos lähtöpaikan tai määränpään tietoja ei löydy, niin palautetaan
-        # virhe "mista_ja_mihin"
+        # virhe, joka sisältää taulukon ["mista", "mihin"]
         if (matkan_tiedot["origin_addresses"][0] == "" and
             matkan_tiedot["destination_addresses"][0] == ""):
-            return { "virhe": "mista_ja_mihin"}
+            return { "virhe": ["mista", "mihin"]}
 
-        # Jos lahtopaikan tietoja ei löydy, niin palautetaan virhe: "mista"
-        if (matkan_tiedot["origin_addresses"][0] == ""):
+        # Jos lahtopaikan tietoja ei löydy tai löydetty paikka on Suomen
+        # ulkopuolella, niin palautetaan virhe: "mista"
+        if (matkan_tiedot["origin_addresses"][0] == "" or
+            (matkan_tiedot["origin_addresses"][0].find("Suomi") < 0
+             and
+             matkan_tiedot["origin_addresses"][0].find("Ahvenanmaa") < 0)):
             return { "virhe": "mista"}
 
         # Jos määränpään tietoja ei löydy, niin palautetaan virhe: "mihin"
-        if (matkan_tiedot["destination_addresses"][0] == ""):
+        if (matkan_tiedot["destination_addresses"][0] == "" or
+            (matkan_tiedot["destination_addresses"][0].find("Suomi") < 0
+             and
+             matkan_tiedot["destination_addresses"][0].find("Ahvenanmaa") < 0)):
             return { "virhe": "mihin"}
-
-        # En tiedä tarvitaanko tätä
-        # if (matkan_tiedot["rows"][0]["elements"][0]["status"] == "NOT_FOUND"):
-            # return { "virhe": "EI_LOYTYNYT"}
 
         if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
             "ZERO_RESULTS"):
             return { "virhe": "EI_REITTIA"}
 
+        # Yhdistin nämä kaikki samaan
         if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
-            "OVER_QUERY_LIMIT"):
-            return { "virhe": "LIIKAA_KYSELYITA"}
-
-        if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
+            "UNKNOWN_ERROR"
+            or matkan_tiedot["rows"][0]["elements"][0]["status"] ==
+            "OVER_QUERY_LIMIT"
+            or matkan_tiedot["rows"][0]["elements"][0]["status"] ==
             "REQUEST_DENIED"):
-            return { "virhe": "EI_KAYTTO-OIKEUTTA"}
-
-        if (matkan_tiedot["rows"][0]["elements"][0]["status"] ==
-            "UNKNOWN_ERROR"):
             return { "virhe": "SERVER_ERROR"}
 
         # ----------------------------------------------------------------------
@@ -123,7 +123,21 @@ class AutoScraper():
             # Poimitaan varsinainen, haun kautta saatu lähtö- sekä
             # saapumispaikka.
             mista = matkan_tiedot["origin_addresses"][0].split(',')[0]
+
+            # Tarkistetaan onko postinumero lähtöpaikassa. Jos on, niin
+            # poistetaan se.
+            if (mista.split()[0].isdigit()):
+                mista = mista.replace(mista.split()[0], "")
+
             mihin = matkan_tiedot["destination_addresses"][0].split(',')[0]
+
+            # Tarkistetaan onko postinumero määränpäässä. Jos on, niin
+            # poistetaan se.
+            if (mihin.split()[0].isdigit()):
+                mihin = mihin.replace(mihin.split()[0], "")
+
+            mista = mista.strip()
+            mihin = mihin.strip()
 
             # Palautettava url on googlemapsiin
             params = {"saddr": mista, "daddr": mihin, "hl": "fi"}
@@ -132,7 +146,9 @@ class AutoScraper():
             url_palautettava = ("http://maps.google.fi/maps?"
                      + urllib.urlencode(params))
 
-            # Palautetaan tiedot reitistä
+            # Palautetaan tiedot reitistä. Otetaan vielä turhat
+            # välilyönnit pois mista & mihin -merkkijonojen alusta
+            # ja lopusta
             return {"mista": mista, "mihin": mihin,
                          "kesto": matkan_kesto, "matkanpituus": matkan_pituus,
                          "url": url_palautettava}
@@ -165,7 +181,7 @@ def main():
 
     # Muuttujia
     lahtopaikka = ""
-    saapumispaikka = "suonenjoki (suonenjoki)"
+    saapumispaikka = "suonenjoki"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()
