@@ -27,6 +27,8 @@ viikko 17	11
 
 viikko 18	4	
 
+6.5		0
+7.5		3
 
 
 viikko 19
