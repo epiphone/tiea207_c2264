@@ -140,7 +140,7 @@ class AutoScraper():
             mihin = mihin.strip()
 
             # Palautettava url on googlemapsiin
-            params = {"saddr": mista, "daddr": mihin, "hl": "fi"}
+            params = {"saddr": mista.encode("utf-8"), "daddr": mihin.encode("utf-8"), "hl": "fi"}
 
             # Luodaan url
             url_palautettava = ("http://maps.google.fi/maps?"
@@ -180,8 +180,8 @@ def main():
     ''' Pääfunktio alkaa tästä. Tämä on AutoScraper-luokan testausta '''
 
     # Muuttujia
-    lahtopaikka = ""
-    saapumispaikka = "suonenjoki"
+    lahtopaikka = "ivalo (inari)"
+    saapumispaikka = "Jyväskylä"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
     auto_scraper = AutoScraper()
