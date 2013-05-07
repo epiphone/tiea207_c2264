@@ -53,6 +53,9 @@ class AutoScraper():
         if (matkan_tiedot["status"] == "INVALID_REQUEST"):
             return { "virhe": "EPÄKELPO_PYYNTO"}
 
+        # Jos hakuja on tehty liikaa
+        if (matkan_tiedot["status"] == "OVER_QUERY_LIMIT"):
+            return { "virhe": "LIIKAA_PYYNTOJA" }
 
         # Jos lähtöpaikan tai määränpään tietoja ei löydy, niin palautetaan
         # virhe, joka sisältää taulukon ["mista", "mihin"]
@@ -139,8 +142,10 @@ class AutoScraper():
             mista = mista.strip()
             mihin = mihin.strip()
 
-            # Palautettava url on googlemapsiin
-            params = {"saddr": mista.encode("utf-8"), "daddr": mihin.encode("utf-8"), "hl": "fi"}
+            # Palautettava url on googlemapsiin, muokataan paikat utf-8 -
+            # formaattiin
+            params = {"saddr": mista.encode("utf-8"),
+                      "daddr": mihin.encode("utf-8"), "hl": "fi"}
 
             # Luodaan url
             url_palautettava = ("http://maps.google.fi/maps?"
@@ -180,7 +185,7 @@ def main():
     ''' Pääfunktio alkaa tästä. Tämä on AutoScraper-luokan testausta '''
 
     # Muuttujia
-    lahtopaikka = "ivalo (inari)"
+    lahtopaikka = "Palojoensuu (enontekijä)"
     saapumispaikka = "Jyväskylä"
     lahtoaika = datetime.datetime(2013, 4, 16, 12, 20)  # klo 12:20
 
