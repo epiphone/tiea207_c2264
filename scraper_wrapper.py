@@ -32,7 +32,7 @@ class ScraperWrapper:
         assert lahtoaika is not None or saapumisaika is not None
 
         # Selvitetään haettuja paikkoja vastaavat MH:n ja VR:n paikat:
-        for k, v in paikat.iteritems():
+        for k, v in self.paikat.iteritems():
             if k == mista:
                 mista_auto = mista
                 mista = v
