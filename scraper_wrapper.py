@@ -1,7 +1,6 @@
 # -*-coding:utf-8-*-
 # Moduuli käärii eri skreipperit yhteisen rajapinnan alle.
 
-# TODO: Nämä käyttöön kun ovat valmiita:
 import logging
 from mh_raaputin.raaputin_alpha import MHScraper
 from henkiloauto_scraper.auto_scraper import AutoScraper
@@ -9,6 +8,7 @@ from hinta_scraper import hinta_scraper
 from vr_scraper.vr_scraper import VRScraper
 from thread_helper import do_threaded_work
 from google.appengine.api import memcache
+import json
 
 # Käytetään näitä hintoja, jos hintojen hakeminen epäonnistuu
 HINNAT_BACKUP = [1.638, 1.688, 1.52]
@@ -23,6 +23,7 @@ class ScraperWrapper:
         self.auto_scraper = AutoScraper()
         self.scraperit = [self.vr_scraper, self.mh_scraper,
             self.auto_scraper]
+        self.paikat = json.load(open("paikat.json", "r"))
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
         bussi=True, juna=True, auto=True, alennusluokka=0):
@@ -30,11 +31,26 @@ class ScraperWrapper:
         assert mista and mihin
         assert lahtoaika is not None or saapumisaika is not None
 
-        try:
-            mista = mista.encode("utf-8")
-            mihin = mihin.encode("utf-8")
-        except UnicodeDecodeError:
-            pass
+        # Selvitetään haettuja paikkoja vastaavat MH:n ja VR:n paikat:
+        for k, v in paikat.iteritems():
+            if k == mista:
+                mista_auto = mista
+                mista = v
+                if isinstance(mihin, list):
+                    break
+            if k == mihin:
+                mihin_auto = mihin
+                mihin = v
+                if isinstance(mista, list):
+                    break
+
+        if not isinstance(mista, list):
+            return dict(virhe="mista")
+        if not isinstance(mihin, list):
+            return dict(virhe="mihin")
+
+        mista_mh, mista_vr = [x.encode("utf-8") for x in mista]
+        mihin_mh, mihin_vr = [x.encode("utf-8") for x in mihin]
 
         dt = lahtoaika or saapumisaika
         pvm = dt.split()[0]
@@ -44,15 +60,21 @@ class ScraperWrapper:
             uuden tuloksen skreipperiltä."""
             # Määritetään skreipperistä riippuva välimuistin avain:
             if scraper is self.mh_scraper:
+                mista, mihin = mista_mh, mihin_mh
                 tyyppi = "bussi"
-                cache_avain = "mh_" + mista + mihin + pvm
+                cache_avain = "mh_%s_%s_%s" % (mista, mihin, pvm)
             elif scraper is self.vr_scraper:
                 # TODO Tälle ei tule paljoa osumia, parempi vaihtoehto?
+                mista, mihin = mista_vr, mihin_vr
                 tyyppi = "juna"
-                cache_avain = "vr_" + mista + mihin + dt
+                cache_avain = "vr_%s_%s_%s" % (mista, mihin, dt)
             else:
+                mista, mihin = mista_auto, mihin_auto
                 tyyppi = "auto"
-                cache_avain = "auto_" + mista + mihin
+                cache_avain = "auto_%s_%s" % (mista, mihin)
+
+            if not mista or not mihin:
+                return dict(virhe="ei yhteyksia [%s]" % tyyppi)
 
             tulos = memcache.get(cache_avain)
             if tulos is not None:
@@ -67,9 +89,9 @@ class ScraperWrapper:
                             return tulos, tyyppi
                         else:
                             # TODO Atm cache-arvo vanhenee
-                            memcache.set(cache_avain, tulos, 60 * 60 * 60)
+                            memcache.set(cache_avain, tulos, 60 * 60 * 48)
                     else:
-                        tulos = {"virhe": "Ei yhteyksiä [%s]"
+                        tulos = {"virhe": "ei yhteyksiä [%s]"
                             % tyyppi}
                 except IOError:
                     tulos = {
@@ -86,8 +108,8 @@ class ScraperWrapper:
 
         # Palautetaan vain halutut matkustusvaihtoehdot:
         matkat = do_threaded_work(self.scraperit, f)
-        lokaalit = locals()
-        matkat = {tyyppi: matka for matka, tyyppi in matkat if lokaalit[tyyppi]}
+        lok = locals()
+        matkat = {tyyppi: matka for matka, tyyppi in matkat if lok[tyyppi]}
         return matkat
 
     def hae_bensan_hinnat(self):
