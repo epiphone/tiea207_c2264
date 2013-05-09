@@ -6,7 +6,9 @@ import urllib
 import urllib2
 from lxml import html
 import json
-from henkiloauto_scraper.auto_scraperAPI import AutoScraper
+from henkiloauto_scraper.auto_scraper import AutoScraper
+from vr_scraper.vr_scraper import VRScraper
+from mh_raaputin.raaputin_alpha import MHScraper
 
 
 URL_MH = "http://matkahuolto.info/lippu/fi/autocomplete"
@@ -47,31 +49,20 @@ def avaa_json():
     return json.load(json_file)
 
 
-def testaa_mh():
+def testaa():
+    """
+    Testataan paikannimet dramaattisen hitaasti.
+    """
+    auto_s, mh_s, vr_s = AutoScraper(), MHScraper(), VRScraper()
     paikat = avaa_json()
-    eiloyt = []
+    dt = "2013-05-20 12:12"
+
     for k, v in paikat.iteritems():
-        bpaikka, jpaikka = v
-        if bpaikka:
-            if not bpaikka in hae_mh(bpaikka):
-                eiloyt.append({k: bpaikka})
-                print "FAIL", k, "==>", bpaikka
-            else:
-                print " OK ", k, "==>", bpaikka
-
-
-def testaa_auto():
-    s = AutoScraper()
-    paikat = avaa_json().keys()
-    for paikka in paikat:
-        splitted = paikka.split()
-        if splitted[-1].startswith("("):
-            paikka = splitted[0] + ", " + splitted[-1][1:-1]
-        p = str(unicode(paikka).encode("utf-8"))
-        print "Yritetään", repr(p)
-        matka = s.hae_matka("tampere", p)
-        if "virhe" in matka:
-            tulos = matka["virhe"]
-        else:
-            tulos = matka["mihin"]
-        print paikka, "==>", tulos
+        print k
+        mh_paikka, vr_paikka, auto_paikka = v
+        mh_matka = mh_s.hae_matka("oulu", mh_paikka.encode("utf-8"), dt) if mh_paikka else None
+        vr_matka = vr_s.hae_matka("oulu", vr_paikka.encode("utf-8"), dt) if vr_paikka else None
+        auto_matka = auto_s.hae_matka("oulu", auto_paikka.encode("utf-8"), dt) if auto_paikka else None
+        print "- MH:", "VIRHE" if mh_matka and "virhe" in mh_matka else "OK"
+        print "- VR:", "VIRHE" if vr_matka and "virhe" in vr_matka else "OK"
+        print "- AU:", "VIRHE" if auto_matka and "virhe" in auto_matka else "OK"

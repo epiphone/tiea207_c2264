@@ -21,12 +21,14 @@ class ScraperWrapper:
         self.vr_scraper = VRScraper()
         self.mh_scraper = MHScraper()
         self.auto_scraper = AutoScraper()
-        self.scraperit = [self.vr_scraper, self.mh_scraper,
+        self.scraperit = [
+            self.vr_scraper,
+            self.mh_scraper,
             self.auto_scraper]
         self.paikat = json.load(open("paikat.json", "r"))
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
-        bussi=True, juna=True, auto=True, alennusluokka=0):
+            bussi=True, juna=True, auto=True, alennusluokka=0):
         """Palauttaa valitulle matkalle eri yhteydet."""
         assert mista and mihin
         assert lahtoaika is not None or saapumisaika is not None
@@ -91,8 +93,7 @@ class ScraperWrapper:
                             # TODO Atm cache-arvo vanhenee
                             memcache.set(cache_avain, tulos, 60 * 60 * 48)
                     else:
-                        tulos = {"virhe": "ei yhteyksiä [%s]"
-                            % tyyppi}
+                        tulos = {"virhe": "ei yhteyksiä [%s]" % tyyppi}
                 except IOError:
                     tulos = {
                         "virhe": "Sivun avaaminen epäonnistui [%s]" % tyyppi}
