@@ -1,16 +1,36 @@
 # -*-coding:utf-8-*-
-# Moduuli käärii eri skreipperit yhteisen rajapinnan alle.
+"""
+Moduuli käärii eri skreipperit yhteisen rajapinnan alle.
 
-import logging
+Aleksi Pekkala
+"""
+
+# Scraperit:
 from mh_raaputin.raaputin_alpha import MHScraper
 from henkiloauto_scraper.auto_scraper import AutoScraper
 from hinta_scraper import hinta_scraper
 from vr_scraper.vr_scraper import VRScraper
-from thread_helper import do_threaded_work
-from google.appengine.api import memcache
-import json
 
-# Käytetään näitä hintoja, jos hintojen hakeminen epäonnistuu
+from thread_helper import do_threaded_work
+import logging
+import json
+try:
+    from google.appengine.api import memcache
+except ImportError:
+    class DummyMemcache():
+        """
+        Mahdollistaa moduulin testaamisen ilman App Engineä.
+        """
+        def set(*args, **kwargs):
+            return None
+
+        def get(*args, **kwargs):
+            return None
+
+    memcache = DummyMemcache()
+
+
+# Käytetään näitä, jos hintojen hakeminen epäonnistuu:
 HINNAT_BACKUP = [1.638, 1.688, 1.52]
 
 
@@ -29,30 +49,36 @@ class ScraperWrapper:
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
             bussi=True, juna=True, auto=True, alennusluokka=0):
-        """Palauttaa valitulle matkalle eri yhteydet."""
-        assert mista and mihin
+        """
+        Palauttaa valitulle matkalle löytyneet yhteydet.
+        """
+        assert type(mista) == type(mihin) == unicode
         assert lahtoaika is not None or saapumisaika is not None
 
-        # Selvitetään haettuja paikkoja vastaavat MH:n ja VR:n paikat:
+        # Selvitetään haettuja paikkoja vastaavat
+        # MH:n, VR:n ja Google Mapsin paikat:
         for k, v in self.paikat.iteritems():
             if k == mista:
-                mista_auto = mista
                 mista = v
                 if isinstance(mihin, list):
                     break
             if k == mihin:
-                mihin_auto = mihin
                 mihin = v
                 if isinstance(mista, list):
                     break
 
+        # Jos paikkoja ei löytynyt:
         if not isinstance(mista, list):
             return dict(virhe="mista")
         if not isinstance(mihin, list):
             return dict(virhe="mihin")
 
-        mista_mh, mista_vr = [x.encode("utf-8") for x in mista]
-        mihin_mh, mihin_vr = [x.encode("utf-8") for x in mihin]
+        for i in range(3):
+            mista[i] = mista[i].encode("utf-8") if mista[i] else None
+            mihin[i] = mihin[i].encode("utf-8") if mihin[i] else None
+
+        mista_mh, mista_vr, mista_auto = mista
+        mihin_mh, mihin_vr, mihin_auto = mihin
 
         dt = lahtoaika or saapumisaika
         pvm = dt.split()[0]
@@ -76,7 +102,7 @@ class ScraperWrapper:
                 cache_avain = "auto_%s_%s" % (mista, mihin)
 
             if not mista or not mihin:
-                return dict(virhe="ei yhteyksia [%s]" % tyyppi)
+                return {"virhe": "paikkakunnalla ei ole asemaa"}, tyyppi
 
             tulos = memcache.get(cache_avain)
             if tulos is not None:
@@ -84,7 +110,8 @@ class ScraperWrapper:
                 # return tulos, tyyppi
             else:
                 try:
-                    tulos = scraper.hae_matka(mista, mihin, lahtoaika, saapumisaika)
+                    tulos = scraper.hae_matka(
+                        mista, mihin, lahtoaika, saapumisaika)
                     if tulos:
                         if "virhe" in tulos:
                             # TODO Virheiden käsittely
@@ -93,16 +120,15 @@ class ScraperWrapper:
                             # TODO Atm cache-arvo vanhenee
                             memcache.set(cache_avain, tulos, 60 * 60 * 48)
                     else:
-                        tulos = {"virhe": "ei yhteyksiä [%s]" % tyyppi}
+                        tulos = {"virhe": "ei yhteyksiä"}
                 except IOError:
-                    tulos = {
-                        "virhe": "Sivun avaaminen epäonnistui [%s]" % tyyppi}
+                    tulos = {"virhe": "sivun avaaminen epäonnistui"}
 
             # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
                 hinnat = self.hae_bensan_hinnat()
                 pit = tulos["matkanpituus"]
-                tulos["hinnat"] = [round(pit * (6.0 / 100.0) * h, 2) for h in hinnat]
+                tulos["hinnat"] = [round(pit*(6.0/100.0)*h, 2) for h in hinnat]
 
             assert tulos is not None  # TODO debug
             return tulos, tyyppi

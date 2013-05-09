@@ -1,8 +1,6 @@
 <div class="container">
-<!-- <div class="row">
-<div class"span4 offset4">
- -->
 <div class="hero-unit">
+
 <h1>Joukkoliikenteen hintavertailu</h1><small>prototyyppi</small>
 <form class="form-horizontal" method="GET" action="/haku">
   <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>
@@ -58,11 +56,10 @@
   </div>
 </form>
 
-<!-- </div>
-</div>-->
 </div> <!-- /.hero-unit -->
 </div> <!-- /.container -->
 
+<script src="static/js/paikannimet.js"></script>
 <script>
 window.onload = function() {
   // Asetetaan oletuslähtöaika ja lähtöpvm
@@ -85,7 +82,7 @@ window.onload = function() {
     }
   })
 
-  $$("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
+  $$("#inputTyyppi").val("saapumisaika"); // Asetetaan oletusarvo
 
   // Datepicker
   var dpSettings = {
