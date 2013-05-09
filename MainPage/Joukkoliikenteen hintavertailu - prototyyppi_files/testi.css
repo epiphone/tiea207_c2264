@@ -1,0 +1,40 @@
+ body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .nav li {
+      padding-top: 5px;
+      }
+
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      .leaderboard {
+  padding: 60px;
+  margin-bottom: 30px;
+  border-style:solid;
+  border-width:5px;
+  }
+.leaderboard h1 {
+  font-size: 40px;
+  margin-bottom: 5px;
+  line-height: 1;
+  letter-spacing: -1px;
+  color:#FF6600;
+}
+.leaderboard p {
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 27px;
+}
+#ui-datepicker-div{
+  visibility:hidden;
+}
+
+#footteri{
+  text-align: center;
+}
+
+hr{
+  height: 20px
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://www.junavsbussi.appspot.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>
+  <meta name="description" content="description tähän">
+  <meta name="keywords" content="keywordsit tähän">
+  <meta name="author" content="authorit tähän">
+  <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/style.css">
+  <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/testi.css">
+  <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->
+  <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap-responsive.min.css">
+</head>
+<body>
+
+<div class="container">
+<!-- <div class="row">
+<div class"span4 offset4">
+ -->
+<div class="leaderboard" background-image:url('http://fc03.deviantart.net/fs71/f/2012/040/4/d/gurren_lagann_facebook_banner_by_mariusmalek-d4p5jo1.png') >
+    <h1>Millä matkaan?</h1>
+    <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
+</div>
+
+<div class="hero-unit">
+<form class="form-horizontal" method="GET" action="http://www.junavsbussi.appspot.com/haku">
+  <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika">
+  <div class="control-group">
+    <label for="inputMista" class="control-label">Mistä</label>
+    <div class="controls">
+      <input class="input" id="inputMista" type="text" name="mista" autocomplete="off" required="" autofocus="">
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label for="inputMihin" class="control-label">Mihin</label>
+    <div class="controls">
+      <input id="inputMihin" type="text" name="mihin" autocomplete="off" required="">
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label for="inputTunnit" class="control-label">Aika ja Pvm</label>
+    <div class="controls form-inline">
+      <input type="text" class="input-xmini" id="inputTunnit" name="h">
+      <input type="text" class="input-xmini" id="inputMinuutit" name="min">
+      <input type="text" class="input-small hasDatepicker" id="inputPvm" name="pvm">
+
+      <div class="btn-group">
+        <select id="Aikatyyppi" class="input-medium">
+          <option>Lähtöaika</option>
+          <option>Saapumisaika</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+      <label class="checkbox inline">
+        <input type="checkbox" name="juna" checked=""> Juna
+      </label>
+      <label class="checkbox inline">
+        <input type="checkbox" name="bussi" checked=""> Bussi
+      </label>
+      <label class="checkbox inline">
+        <input type="checkbox" name="auto" checked=""> Auto
+      </label>
+    </div>
+  </div>
+
+  <div class="control group">
+    <div class="controls">
+      <button class="btn btn-primary" type="submit">Hae yhteyksiä</button>
+    </div>
+  </div>
+</form>
+
+<!-- </div>
+</div>-->
+</div> <!-- /.hero-unit -->
+<hr>
+</div> <!-- /.container -->
+
+<footer id="footteri">
+<p>Tähän jotain hauskaa liibalaabaa ja linkki johonkin infosivulle</p>
+</footer>
+
+<script>
+window.onload = function() {
+  // Asetetaan oletuslähtöaika ja lähtöpvm
+  var dt = new Date();
+  $("#inputPvm").val([dt.getDate(), dt.getMonth() + 1, dt.getFullYear()].join("."));
+  $("#inputTunnit").val(dt.getHours() + 1);
+  $("#inputMinuutit").val(dt.getMinutes());
+
+  // Lähtöaika/Saapumisaika-valitsin
+  $("#aAikatyyppi").click(function() {
+    var btn = $("#btnAikatyyppi")[0],
+        vanhaTyyppi = $(btn).text().trim(),
+        uusiTyyppi = $(this).text().trim();
+    $(this).text(vanhaTyyppi);
+    $(btn).text(uusiTyyppi);
+    if (uusiTyyppi == "Lähtöaika") {
+      $("#inputTyyppi").val("lahtoaika");
+    } else {
+      $("#inputTyyppi").val("saapumisaika");
+    }
+  })
+
+  $("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
+
+  // Datepicker
+  var dpSettings = {
+    dateFormat: "dd.mm.yy",
+    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"],
+    defaultDate: null
+  };
+  $("#inputPvm").datepicker(dpSettings);
+  // dpSettings["altField"] = "#inputTestiaika";
+  // $("#testiaika").datepicker(dpSettings);
+
+  // Autocomplete
+  var vrAsemat = ['Alavus','Dragsvik','Eno','Enontekiö','Espoo','Haapajärvi','Haapamäki','Haarajoki','Hankasalmi','Hanko','Hanko-Pohjoinen','Harjavalta','Haukivuori','Heinävesi','Helsinki','Helsinki airport','Herrala','Hiekkaharju','Hikiä','Humppila','Huopalahti','Hyvinkää','Hämeenlinna','Höljäkkä','Iisalmi','Iittala','Ilmala','Imatra','Inari','Inkeroinen','Inkoo','Isokyrö','Ivalo','Joensuu','Jokela','Joroinen','Jorvas','Joutseno','Juupajoki','Jyväskylä','Jämsä','Järvelä','Järvenpää','Kajaani','Kannelmäki','Kannus','Karjaa','Karkku','Kauhava','Kauklahti','Kauniainen','Kausala','Kemi','Kemijärvi','Kemijärvi bus station','Kera','Kerava','Kerimäki','Kesälahti','Keuruu','Kiilopää','Kilo','Kilpisjärvi','Kirkkonummi','Kitee','Kittilä','Kiuruvesi','Kohtavaara','Koivuhovi','Koivukylä','Kokemäki','Kokkola','Kolari','Kolho','Kontiomäki','Koria','Korso','Kotka','Kotkan Satama','Kouvola','Kuhmo','Kuopio','Kupittaa','Kuusamo','Kylänlahti','Kymi','Kyminlinna','Kyrölä','Käpylä','Lahti','Laihia','Lapinlahti','Lappeenranta','Lappila','Lappohja','Lapua','Lempäälä','Leppävaara','Levi','Lieksa','Lievestuore','Lohja bus station','Loimaa','Louhela','Loviisa bus station','Luoma','Luosto','Lusto','Malmi','Malminkartano','Mankki','Martinlaakso','Masala','Mikkeli','Misi','Mommila','Muhos','Muijala','Muonio','Muurola','Myllykoski','Myllymäki','Myyrmäki','Mäkkylä','Mäntsälä','Mäntyharju','Nastola','Nivala','Nokia','Nummela','Nuppulinna','Nurmes','Oitti','Olos','Orivesi','Orivesi Keskusta','Oulainen','Oulu','Oulunkylä','Paimenportti','Pallastunturi','Paltamo','Parikkala','Parkano','Parola','Pasila','Pello','Perttilä','Petäjävesi','Pieksämäki','Pietarsaari','Pihlajavesi','Pitäjänmäki','Pohjois-Haaga','Pori','Puistola','Pukinmäki','Punkaharju','Purola','Pyhä','Pyhäsalmi','Pännäinen','Pääskylahti','Raahe','Rantasalmi','Rauma','Rekola','Retretti','Riihimäki','Rovaniemi','Ruka','Runni','Ruukki','Ryttylä','Saariselkä','Salla','Sallatunturi','Salo','Santala','Saunakallio','Savio','Savonlinna','Savonlinna bus station','Seinäjoki','Siilinjärvi','Simpele','Siuntio','Skogby','Sodankylä','Sotkamo','Sukeva','Suomu','Suonenjoki','Tahko','Tammisaari','Tampere','Tapanila','Tavastila','Tervajoki','Tervola','Tikkurila','Toijala','Tolsa','Tornio','Tornio bus station','Tornio- Itäinen','Tuomarila','Turenki','Turku','Turku Satama','Tuuri','Tver','Uimaharju','Utajärvi','Utsjoki','Uusikylä','Vaala','Vaasa','Vainikkala','Vainikkala raja','Valimo','Valtimo','Vammala','Vantaankoski','Varkaus','Veikkola','Vihanti','Vihtari','Viiala','Viinijärvi','Villähde','Vilppula','Virkkala','Vuokatti ras th','Vuokatti urheiluopisto th','Vuonislahti','Vuontispirtti','Ylistaro','Ylitornio','Ylivieska','Ähtäri','Äkäslompolo'];
+    $("input[name='mista'],input[name='mihin']").typeahead({source: vrAsemat});
+}
+</script>
+
+
+<!-- <script src="/static/js/jquery.js"></script> -->
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery.min.js"></script>
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery-ui.min.js"></script>
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.js"></script>
+
+
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>
