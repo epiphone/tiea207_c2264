@@ -1,6 +1,9 @@
 # -*-coding:utf-8-*-
-# Joukkoliikenteen hintavertailusovellus
+"""
+Joukkoliikenteen hintavertailusovellus.
 
+
+"""
 
 import web
 from scraper_wrapper import ScraperWrapper
@@ -14,6 +17,7 @@ import time
 LOMAKE_PVM_FORMAATTI = "%d.%m.%Y %H:%M"
 SOVELLUS_PVM_FORMAATTI = "%Y-%m-%d %H:%M"
 
+# Reititykset:
 urls = (
     "/", "Index",
     "/haku", "Haku"
@@ -92,7 +96,7 @@ def formatoi_aika(h, mins, pvm):
     return datetime.strftime(dt, SOVELLUS_PVM_FORMAATTI)
 
 
-### SOVELLUKSEN KÄYNNISTÄMINEN ###
+### INIT ###
 
 
 app = web.application(urls, globals(), autoreload=False)

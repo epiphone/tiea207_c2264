@@ -6,10 +6,10 @@ Aleksi Pekkala
 """
 
 # Scraperit:
-from mh_raaputin.raaputin_alpha import MHScraper
-from henkiloauto_scraper.auto_scraper import AutoScraper
+from mh_raaputin import MHScraper
+from henkiloauto_scraper import AutoScraper
+from vr_scraper import VRScraper
 from hinta_scraper import hinta_scraper
-from vr_scraper.vr_scraper import VRScraper
 
 from thread_helper import do_threaded_work
 import logging
