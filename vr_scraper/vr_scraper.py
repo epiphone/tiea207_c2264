@@ -171,7 +171,7 @@ class VRScraper:
 
         return urli
 
-    def selvita_hinnat(self, hinnat):
+    def selvita_hinnat(self, hinnat, hintojen_rakenne):
         """Palauttaa listan hinnoista
 
         VR tarjoaa kolmenlaisia lippuja: Tavallisia (Eko), Ennakko ja Joustava lippuja.
@@ -181,6 +181,8 @@ class VRScraper:
         """
         try:
             lista_hinnoista = list()
+            if not "Ennakko" in hintojen_rakenne[0] and len(hintojen_rakenne) > 1:
+                    lista_hinnoista.append(None)
             for hinta in hinnat:
                 elementit = hinta.getchildren()
                 if hinta.text_content().find("Matka") != -1 or hinta.text_content().find("Ei") != -1 or len(hinta.text_content()) < 1:
@@ -270,6 +272,8 @@ class VRScraper:
         except:
             return{"virhe": "Palvelu ei saatavilla"}
 
+        hintojen_rakenne = root.xpath("//th[@class='buyCategory']")
+
         if virheet[0] == "True":
             rows = root.xpath("//table[@id='buyTrip_1']/tbody")
             lista_yhteyksista = []
@@ -288,7 +292,7 @@ class VRScraper:
                 yhteyden_tiedot['saapumisaika'] = saika
                 kesto = yleiset[3].text.strip()
                 yhteyden_tiedot['kesto'] = kesto
-                hinta = self.selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"))
+                hinta = self.selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"), hintojen_rakenne)
                 yhteyden_tiedot['hinnat'] = hinta
                 lista_yhteyksista.append(yhteyden_tiedot)
                 if saapumisaika:
