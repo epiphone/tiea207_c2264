@@ -2,7 +2,7 @@
 <!-- saved from url=(0035)http://www.junavsbussi.appspot.com/ -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
-  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>
+  <title>Joukkoliikenteen hintavertailu</title>
   <meta name="description" content="description tähän">
   <meta name="keywords" content="keywordsit tähän">
   <meta name="author" content="authorit tähän">
@@ -18,14 +18,13 @@
 <!-- <div class="row">
 <div class"span4 offset4">
  -->
-<div class="leaderboard" background-image:url('http://fc03.deviantart.net/fs71/f/2012/040/4/d/gurren_lagann_facebook_banner_by_mariusmalek-d4p5jo1.png') >
+<div class="leaderboard">
     <h1>Millä matkaan?</h1>
     <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
 </div>
 
 <div class="hero-unit">
 <form class="form-horizontal" method="GET" action="http://www.junavsbussi.appspot.com/haku">
-  <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika">
   <div class="control-group">
     <label for="inputMista" class="control-label">Mistä</label>
     <div class="controls">
@@ -49,7 +48,7 @@
       <input type="text" class="input-small hasDatepicker" id="inputPvm" name="pvm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}">
 
       <div class="btn-group">
-        <select id="Aikatyyppi" class="input-medium">
+        <select id="inputAikatyyppi" class="input-medium" name="tyyppi">
           <option>Lähtöaika</option>
           <option>Saapumisaika</option>
         </select>
@@ -58,28 +57,32 @@
   </div>
 
   <div class="control-group">
-    <label for="AlennusluokkaValitsin" class="control-label">Alennusluokka</label>
+    <label for="inputAlennusluokka" class="control-label">Alennusluokka</label>
     <div class="controls">
-      <select id="AlennusluokkaValitsin" class="input-medium">
-        <option>Aikuinen</option>
-        <option>Lapsi</option>
-        <option>Nuori</option>
-        <option>Opiskelija</option>
-        <option>Varusmies</option>
-        <option>Siviilipalvelusmies</option>
-        <option>Eläkeläinen</option>
-        <option>Lehdistö</option>
+      <select id="inputAlennusluokka" class="input-medium" name="luokka">
+        <option value="0">Aikuinen</option>
+        <option value="1">Lapsi(4-11 v)</option>
+        <option value="3">Nuori(12-16 v)</option>
+        <option value="2">Opiskelija</option>
+        <option value="5">Varusmies</option>
+        <option value="7">Siviilipalvelusmies</option>
+        <option value="4">Eläkeläinen</option>
+        <option value="6">Lehdistö</option>
       </select>
     </div>
   </div>
 
   <div class="control-group">
-    <label for="KeskikulutusValitsin" class="control-label">Auton keskikulutus</label>
+    <label for="inputKeskikulutus" class="control-label">Auton keskikulutus</label>
     <div class="controls">
-      <select id="KeskikulutusValitsin" class="input-medium">
-        <option>Pieni</option>
-        <option>Keskiverto</option>
-        <option>Suuri</option>
+      <select id="inputKeskikulutus" class="input-large" name="kulutus">
+        <option value="4,11">A-luokka(~4,1l/100km)</option>
+        <option value="4,51">B-luokka(~4,5l/100km)</option>
+        <option value="5,0">C-luokka(~5,0l/100km)</option>
+        <option value="5,61">D-luokka(~5,6l/100km)</option>
+        <option value="6,51">E-luokka(~6,5l/100km)</option>
+        <option value="7,55">F-luokka(~7,5ll/100km)</option>
+        <option value="8,11">G-luokka(~8,1l/100km)</option>
       </select>
       </div>
   </div>
