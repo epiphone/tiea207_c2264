@@ -16,3 +16,4 @@ PVM         TUNNIT      LISÄTIEDOT
 8.5	        2,5		    tapaaminen, kopissa
 9.5         4           kotona
 10.5	    3		kotona, kopissa
+11.5        6           kotona
