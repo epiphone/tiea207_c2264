@@ -17,3 +17,4 @@ PVM         TUNNIT      LISÄTIEDOT
 9.5         4           kotona
 10.5	    3		kotona, kopissa
 11.5        6           kotona
+12.5        5           kotona

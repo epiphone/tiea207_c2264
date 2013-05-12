@@ -1,4 +1,3 @@
-function init() {
 Date.prototype.addHours = function(h) {
    this.setTime(this.getTime() + (h*60*60*1000));
    return this;
@@ -27,9 +26,9 @@ for (var i=0; i<data.length; i++) {
 // ASETUKSET
 var margin = {top: 40, right: 10, bottom: 40, left:10},
     width = 1000,
-    barHeight = 40,
+    barHeight = 60,
     barMargin = 5,
-    height = margin.top + margin.bottom + data.length * (barHeight + barMargin);
+    height = d3.max([margin.top + margin.bottom + data.length * (barHeight + barMargin), 400]);
 
 
 // SKAALAUS
@@ -39,7 +38,11 @@ var x = d3.time.scale()
 
 var y = d3.scale.linear()
     .domain([0, data.length])
-    .range([height - margin.top - margin.bottom, 0]);
+    .range([0, height - margin.top - margin.bottom]);
+
+function sort_by_duration(a, b) { return a.total - b.total; }
+function sort_by_dt1(a, b) { return a.dt1 - b.dt1; }
+function sort_by_dt2(a, b) { return a.dt2 - b.dt2; }
 
 
 // AKSELIT
@@ -91,13 +94,14 @@ chart.data(data)
     .enter().append("rect")
     .attr("class", function(d) { return "bar " + d.type; })
     .attr("x", function (d) { return x(d.dt1); })
-    .attr("y", function(d, i) { return y(i) - barHeight; })
+    .attr("y", function(d, i) { return y(i); })
     .attr("rx", "4")
     .attr("ry", "4")
     .attr("width", 0)
     .attr("data-content", function(d) { return d.name; })
     .attr("data-placement", "top")
     .attr("opacity", 0.9)
+    .attr("pointer-events", "none")
     .on("mouseover", function() {
         d3.select(this).transition().duration(300)
             .attr("opacity", 0.5);
@@ -108,7 +112,8 @@ chart.data(data)
     })
     .transition().duration(1400).delay(100)
     .attr("width", function(d) { return x(d.dt2) - x(d.dt1); })
-    .attr("height", function(d) { return barHeight; });
+    .attr("height", function(d) { return barHeight; })
+    .each("end", function() { d3.select(this).attr("pointer-events", "null"); });
 
 
 // AKSELIEN LISÄYS
@@ -126,8 +131,32 @@ svg.append("g")
     .attr("class", "x axis axis-days")
     .attr("transform", "translate(0, " + (height - margin.top - margin.bottom) + ")")
     .call(xAxisDays);
+
+var transition = svg.transition().duration(1750).ease("elastic"),
+    delay = function(d, i) { return i * 50; };
+
+
+// SORT BUTTONS
+function sortByDt1() {
+     svg.selectAll(".bar")
+        .sort(sort_by_dt1)
+        .transition(transition)
+        .delay(delay)
+        .attr("y", function(d, i) { return y(i); });
 }
 
-window.onload = function() {
-    init();
-};
+function sortByDt2() {
+     svg.selectAll(".bar")
+        .sort(sort_by_dt2)
+        .transition(transition)
+        .delay(delay)
+        .attr("y", function(d, i) { return y(i); });
+}
+
+function sortByDuration() {
+     svg.selectAll(".bar")
+        .sort(sort_by_duration)
+        .transition(transition)
+        .delay(delay)
+        .attr("y", function(d, i) { return y(i); });
+}

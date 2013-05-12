@@ -44,11 +44,11 @@ text {
     font-size: 0.7em;
 }
 
-div.tooltip {
+div.info {
     position: absolute;
-    text-align: center;
-    width: 60px;
-    height: 28px;
+    opacity: .7;
+    width: 300px;
+    height: 400px;
     padding: 2px;
     font: 12px sans-serif;
     background: lightsteelblue;
@@ -60,8 +60,13 @@ div.tooltip {
 </head>
 
 <body>
+<div id="option">
+    <input name="updateButton" type="button" value="dt1" onclick="sortByDt1()"/>
+    <input name="updateButton" type="button" value="dt2" onclick="sortByDt2()"/>
+    <input name="updateButton" type="button" value="duration" onclick="sortByDuration()"/>
+</div>
 <div class="results"></div>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="d3.v3.min.js"></script>
 <script src="./d3testi.js"></script>
 </body>
 </html>
