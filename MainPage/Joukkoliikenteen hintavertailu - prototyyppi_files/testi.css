@@ -1,6 +1,6 @@
- body {
-        padding-top: 60px;
-        padding-bottom: 40px;
+body {
+        padding-top: 50px;
+        padding-bottom: 30px;
       }
       .nav li {
       padding-top: 5px;
@@ -9,23 +9,30 @@
       .sidebar-nav {
         padding: 9px 0;
       }
-      .leaderboard {
+  .leaderboard {
   padding: 60px;
   margin-bottom: 30px;
   border-style:solid;
   border-width:5px;
+  background-image:url('ses3.png');
+  background-repeat: no-repeat;
+  background-position: center;
   }
 .leaderboard h1 {
+  font-family: 'Days One', sans-serif;
   font-size: 40px;
   margin-bottom: 5px;
   line-height: 1;
   letter-spacing: -1px;
-  color:#FF6600;
+  color:black;
+  text-shadow: 2px 2px white;
 }
 .leaderboard p {
-  font-size: 18px;
+  font-family: 'Racing Sans One', cursive;
+  font-size: 25px;
   font-weight: 200;
-  line-height: 27px;
+  line-height: 20px;
+  text-shadow: 2px 2px white;
 }
 #ui-datepicker-div{
   visibility:hidden;
@@ -36,5 +43,35 @@
 }
 
 hr{
-  height: 20px
+  height: 20px;
+}
+
+#lomake-container
+{
+  margin-right: auto;
+  margin-left: auto;
+  background-color: red;
+}
+
+#alateksti
+{
+  text-align: center;
+}
+ .page-content.wrapper
+ {
+  padding: 60px;
+  margin-right: 60px;
+  margin-left: 60px;
+ }
+
+#form-container
+{
+  width: 70%;
+  margin: 0 auto;
+  font-family: 'Monda', sans-serif;
+}
+
+.btn btn-primary
+{
+  font-family: 'Monda', sans-serif;
 }
