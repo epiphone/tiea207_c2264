@@ -1,8 +1,13 @@
-Date.prototype.addHours = function(h) {
-   this.setTime(this.getTime() + (h*60*60*1000));
-   return this;
+// UTILS
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
 };
 
+Date.prototype.addMinutes = function (m) {
+    this.setTime(this.getTime() + (m * 60 * 1000));
+    return this;
+};
 
 // DATA
 var query_date = "2012-03-20T23:44";
@@ -87,21 +92,52 @@ svg.append("line")
     .style("stroke-dasharray", "10, 5")
     .attr("stroke", "red");
 
+var minDate = x.domain()[0],
+    maxDate = x.domain()[1],
+    lineY1 = 0,
+    lineY2 = height - margin.top - margin.bottom;
+
+minDate.addMinutes(60 - minDate.getMinutes());
+maxDate.setMinutes(0);
+while (minDate <= maxDate) {
+    var lineX = x(minDate);
+    svg.append("line")
+        .attr("x1", lineX)
+        .attr("x2", lineX)
+        .attr("y1", lineY1)
+        .attr("y2", lineY2)
+        .attr("stroke-width", 1)
+        .style("stroke-dasharray", "10, 5")
+        .attr("stroke", "gray");
+    minDate.addHours(1);
+}
+
 
 // PALIKAT
-var chart = svg.selectAll(".chart");
-chart.data(data)
-    .enter().append("rect")
+var g = svg.selectAll("g")
+    .data(data).enter().append("g")
+    .attr("class", "bar-g");
+
+var rectEnter = g.append("rect")
     .attr("class", function(d) { return "bar " + d.type; })
     .attr("x", function (d) { return x(d.dt1); })
     .attr("y", function(d, i) { return y(i); })
     .attr("rx", "4")
     .attr("ry", "4")
     .attr("width", 0)
-    .attr("data-content", function(d) { return d.name; })
+    .attr("height", function(d) { return barHeight; })
     .attr("data-placement", "top")
     .attr("opacity", 0.9)
-    .attr("pointer-events", "none")
+    .attr("pointer-events", "none");
+
+rectEnter.transition().duration(1400).delay(100)
+    .attr("width", function(d) { return x(d.dt2) - x(d.dt1); })
+    .each("end", function() {
+        d3.select(this)
+            .attr("pointer-events", "null");
+        });
+
+svg.selectAll(".bar")
     .on("mouseover", function() {
         d3.select(this).transition().duration(300)
             .attr("opacity", 0.5);
@@ -109,11 +145,22 @@ chart.data(data)
     .on("mouseout", function() {
         d3.select(this).transition().duration(300)
             .attr("opacity", 0.9);
-    })
-    .transition().duration(1400).delay(100)
-    .attr("width", function(d) { return x(d.dt2) - x(d.dt1); })
+    });
+
+// TEKSTIT
+function generateContent(d) {
+    return d.name + " " + d.price;
+}
+
+g.append("foreignObject")
+    .attr("x", function (d) { return x(d.dt1); })
+    .attr("y", function(d, i) { return y(i); })
+    .attr("width", function(d) { return width - x(d.dt1); })
     .attr("height", function(d) { return barHeight; })
-    .each("end", function() { d3.select(this).attr("pointer-events", "null"); });
+    .attr("pointer-events", "none")
+    .append("xhtml:div")
+        .attr("class", "content")
+        .html(function(d) { return generateContent(d); });
 
 
 // AKSELIEN LISÄYS
@@ -132,30 +179,32 @@ svg.append("g")
     .attr("transform", "translate(0, " + (height - margin.top - margin.bottom) + ")")
     .call(xAxisDays);
 
+
+// SORT BUTTONS
 var transition = svg.transition().duration(1750).ease("elastic"),
     delay = function(d, i) { return i * 50; };
 
-
-// SORT BUTTONS
 function sortByDt1() {
-     svg.selectAll(".bar")
-        .sort(sort_by_dt1)
-        .transition(transition)
-        .delay(delay)
-        .attr("y", function(d, i) { return y(i); });
+    sortBars(sort_by_dt1);
 }
 
 function sortByDt2() {
-     svg.selectAll(".bar")
-        .sort(sort_by_dt2)
-        .transition(transition)
-        .delay(delay)
-        .attr("y", function(d, i) { return y(i); });
+    sortBars(sort_by_dt2);
 }
 
 function sortByDuration() {
-     svg.selectAll(".bar")
-        .sort(sort_by_duration)
+    sortBars(sort_by_duration);
+}
+
+function sortBars(sort_func) {
+    svg.selectAll(".bar-g .bar")
+        .sort(sort_func)
+        .transition(transition)
+        .delay(delay)
+        .attr("y", function(d, i) { return y(i); });
+
+    svg.selectAll(".bar-g foreignObject")
+        .sort(sort_func)
         .transition(transition)
         .delay(delay)
         .attr("y", function(d, i) { return y(i); });
