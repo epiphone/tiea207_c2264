@@ -158,6 +158,7 @@ g.append("foreignObject")
     .attr("width", function(d) { return width - x(d.dt1); })
     .attr("height", function(d) { return barHeight; })
     .attr("pointer-events", "none")
+    .append("xhtml:html").append("xhtml:body")
     .append("xhtml:div")
         .attr("class", "content")
         .html(function(d) { return generateContent(d); });
