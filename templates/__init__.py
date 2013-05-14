@@ -202,13 +202,13 @@ def results_vis (matkat, params, t, dt, pvm):
     
     extend_([u'var query_date = "', escape_(dt, True), u'";\n'])
     extend_([u'var data = [\n'])
-    if "juna" in matkat:
+    if "juna" in matkat and not "virhe" in matkat["juna"]:
         for matka in loop.setup(matkat["juna"]):
             extend_([u'{"transfers":', escape_(len(matka["vaihdot"]), True), u', "type":"juna", "price":', escape_(matka["hinnat"][1], True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
-    if "bussi" in matkat:
+    if "bussi" in matkat and not "virhe" in matkat["bussi"]:
         for matka in loop.setup(matkat["bussi"]):
             extend_([u'{"transfers":', escape_(len(matka["vaihdot"]), True), u', "type":"bussi", "price":', escape_(hinta(matka["hinnat"]), True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
-    if "auto" in matkat:
+    if "auto" in matkat and not "virhe" in matkat["auto"]:
         matka = matkat["auto"]
         extend_([u'{"type":"auto", "price":', escape_(matka["hinnat"][0], True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
         extend_([u'\n'])
