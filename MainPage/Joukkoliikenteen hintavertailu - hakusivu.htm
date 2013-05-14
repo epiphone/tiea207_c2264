@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/style.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/testi.css">
-<link href='http://fonts.googleapis.com/css?family=Denk+One|Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->
 </head>
 <body>
@@ -72,13 +72,20 @@
             <label for="inputKeskikulutus" class="control-label">Auton keskikulutus</label>
             <div class="controls">
               <select id="inputKeskikulutus" class="input-large" name="kulutus">
-                <option value="4,11">A-luokka(~4,1l/100km)</option>
-                <option value="4,51">B-luokka(~4,5l/100km)</option>
-                <option value="5,0">C-luokka(~5,0l/100km)</option>
-                <option value="5,61">D-luokka(~5,6l/100km)</option>
-                <option value="6,51">E-luokka(~6,5l/100km)</option>
-                <option value="7,55">F-luokka(~7,5ll/100km)</option>
-                <option value="8,11">G-luokka(~8,1l/100km)</option>
+                <option value="4,3">Bensiini, A-luokka(~4,3l/100km)</option>
+                <option value="4,7">Bensiini, B-luokka(~4,7l/100km))</option>
+                <option value="5,3">Bensiini, C-luokka(~5,3l/100km)</option>
+                <option value="6,0">Bensiini, D-luokka(~6,0l/100km)</option>
+                <option value="6,9">Bensiini, E-luokka(~6,9l/100km)</option>
+                <option value="7,9">Bensiini, F-luokka(~7,9l/100km)</option>
+                <option value="8,6">Bensiini, G-luokka(~8,6l/100km)</option>
+                <option value="3,8">Diesel, A-luokka(~3,8l/100km)</optio>
+                <option value="4,2">Diesel, B-luokka(~4,2l/100km))</option>
+                <option value="4,7">Diesel, C-luokka(~4,7l/100km)</option>
+                <option value="5,3">Diesel, D-luokka(~5,3l/100km)</option>
+                <option value="6,2">Diesel, E-luokka(~6,2l/100km)</option>
+                <option value="7,1">Diesel, F-luokka(~7,1l/100km)</option>
+                <option value="7,6">Diesel, G-luokka(~7,6l/100km)</option>
               </select>
             </div>
           </div>
@@ -99,7 +106,7 @@
 
           <div class="control group">
             <div class="controls">
-              <button class="btn-custom" type="submit"><i class="icon-search"></i>Hae yhteyksiä</button>
+              <button class="btn-custom" type="submit">Hae yhteyksiä<i class="icon-search"></i></button>
               <!-- <p class="btn btn-primary" type="submit">Hae yhteyksiä</p> -->
             </div>
           </div>
@@ -116,11 +123,10 @@
   <script>
   window.onload = function() {
 // Asetetaan oletuslähtöaika ja lähtöpvm
-var dt = Date.today();
-var dt2 = new Date();
-$("#inputPvm").val(dt.toString("d.M.yyyy"));
-$("#inputTunnit").val(dt2.toString("H"));
-$("#inputMinuutit").val(dt2.toString("mm"));
+  var dt = new Date();
+  $("#inputPvm").val([dt.getDate(), dt.getMonth() + 1, dt.getFullYear()].join("."));
+  $("#inputTunnit").val(dt.getHours() + 1);
+  $("#inputMinuutit").val(dt.getMinutes());
 
 // Lähtöaika/Saapumisaika-valitsin
 $("#aAikatyyppi").click(function() {
@@ -160,7 +166,6 @@ $("input[name='mista'],input[name='mihin']").typeahead({source: vrAsemat});
 <script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery.min.js"></script>
 <script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery-ui.min.js"></script>
 <script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.js"></script>
-<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/date.js"></script>
 
 
 
