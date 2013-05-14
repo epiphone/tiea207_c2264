@@ -18,105 +18,28 @@
       <h1>Millä matkaan?</h1>
       <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
       </div>
-      <div class="hero-unit">
-       <div class="container" id="form-container">
-        <form class="form-horizontal" method="GET" action="http://www.junavsbussi.appspot.com/haku" id="lomake">
-          <div class="control-group">
-            <label for="inputMista" class="control-label">Mistä</label>
-            <div class="controls">
-              <input class="input" id="inputMista" type="text" name="mista" autocomplete="off" required="" autofocus="">
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="inputMihin" class="control-label">Mihin</label>
-            <div class="controls">
-              <input id="inputMihin" type="text" name="mihin" autocomplete="off" required>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="inputTunnit" class="control-label">Aika ja Pvm</label>
-            <div class="controls form-inline">
-              <input type="text" class="input-xmini" id="inputTunnit" name="h" pattern="0[0-9]|1[0-9]|2[0-3]">
-              <small>:</small>
-              <input type="text" class="input-xmini" id="inputMinuutit" name="min" pattern="[0-5][0-9]">
-              <input type="text" class="input-small hasDatepicker" id="inputPvm" name="pvm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}">
-
-              <div class="btn-group">
-                <select id="inputAikatyyppi" class="input-medium" name="tyyppi">
-                  <option>Lähtöaika</option>
-                  <option>Saapumisaika</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="inputAlennusluokka" class="control-label">Alennusluokka</label>
-            <div class="controls">
-              <select id="inputAlennusluokka" class="input-medium" name="luokka">
-                <option value="0">Aikuinen</option>
-                <option value="1">Lapsi(4-11 v)</option>
-                <option value="3">Nuori(12-16 v)</option>
-                <option value="2">Opiskelija</option>
-                <option value="5">Varusmies</option>
-                <option value="7">Siviilipalvelusmies</option>
-                <option value="4">Eläkeläinen</option>
-                <option value="6">Lehdistö</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="inputKeskikulutus" class="control-label">Auton keskikulutus</label>
-            <div class="controls">
-              <select id="inputKeskikulutus" class="input-large" name="kulutus">
-                <option value="4,11">A-luokka(~4,1l/100km)</option>
-                <option value="4,51">B-luokka(~4,5l/100km)</option>
-                <option value="5,0">C-luokka(~5,0l/100km)</option>
-                <option value="5,61">D-luokka(~5,6l/100km)</option>
-                <option value="6,51">E-luokka(~6,5l/100km)</option>
-                <option value="7,55">F-luokka(~7,5ll/100km)</option>
-                <option value="8,11">G-luokka(~8,1l/100km)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <div class="controls">
-              <label class="checkbox inline">
-                <input type="checkbox" name="juna" checked=""> Juna
-              </label>
-              <label class="checkbox inline">
-                <input type="checkbox" name="bussi" checked=""> Bussi
-              </label>
-              <label class="checkbox inline">
-                <input type="checkbox" name="auto" checked=""> Auto
-              </label>
-            </div>
-          </div>
-
-          <div class="control group">
-            <div class="controls">
-              <button class="btn btn-primary" type="submit" style="font-face: 'Arial Black'">Hae yhteyksiä</button>
-              <!-- <p class="btn btn-primary" type="submit">Hae yhteyksiä</p> -->
-            </div>
-          </div>
-        </form>
+      <div class="hero-unit" id="tieto-container">
+       <h3>Sovelluksen tarkoitus</h3>
+       <p>Sovelluksen tarkoituksena on tarjota käyttäjille helppo ja nopea tapa hakea ja vertailla eri tapoja matkustaa paikasta toiseen.</p>
+       <h3>Käyttöohjeet</h3>
+       <p>Alla on sovelluksen käyttöohjeet</p>
+       <h4>Hakeminen</h4>
+       <p>Pääsivulla olevaan hakulomakkeeseen syötät matkaasi koskevat tiedot. Mikäli syötekentän reunat ovat punaiset, on syötteessäsi jotain väärin. Aika ja päivämäärä syötekenttien vieressä olevalla valikolla voi valita onko antamsi ajankohta matkasi lähtö- vai saapumisaika. Alennusluokka valikossa voit kertoa, oletko oikeutettu saamaan alennusta matkalipuistasi, jolloin sovellus voi ilmoittaa oikean hinnan lipuillesi(Alennusehdot luettavissa <a href="http://www.vr.fi/fi/index/junaliput.html">VR:n</a> ja <a href="http://www.matkahuolto.fi/fi/matka/hinnat/alennusehdot/">Matkahuollon</a> sivuilla). Autonkeskikulutus valikossa voit määrittää autosi keskikulutuksen. Kulutus arviot pohjautuvat motiva.fi sivuston tarjoamaan henkilöautojen <a href="http://www.motiva.fi/liikenne/henkiloautoilu/valitse_auto_viisaasti/henkiloautojen_energiamerkinta">energiamerkintä taulukkoon</a>. Viimeisenä kohtana hakulomakkeessa on kolme valintalaatikkoa. Sovellus hakee yhteyksiä kaikille niille kulkuvälineille, joiden valintalaatikko on merkittynä.</p>
+       <p>Kun hakuehdot ovat kunnossa, voit klikata "Hae yhteyksiä" painiketta, jolloin sovellus siirtyy hakutolksiin</p>
+       <h4>Hakutulosten tarkastelu</h4>
+       <p>*TODO*</p>
+       <h3>Mihin hakutulosten hinnat ja aikataulutiedot perustuvat?</h3>
+       <p>Haku tuloksissa näkyvät hinnat ja aikataulut haetaan VR:n ja Matkahuollon sivustoilta. Henkilöautoilun tapauksessa sovellus hakee Google Mapsista syötettyjen paikkojen välisen sijainnin ja viimeisimmän polttoaineen keskihinnan suomessa (http://polttoaine.net), näiden tietojen ja syöttämäsi keskikulutuksen perusteella sovellus laskee haetun matkan bensakulut ja kertoo arvioidun matkan keston. Huom! Henkilöautoilun todelliset kilometrikustannukset koostuu muistakin asioista kuin bensan hinnasta. Lisätietoja ja laskureita on saatavissa <a href="http://www.autoliitto.fi/tietopankki/">Autoliiton tietopankista</a> ja <a href="http://www.trafi.fi/tieliikenne/ekoautoilu/autoilun_kustannuslaskuri">liikenteen turvallisuusviraston sivustolta</a></p>
+      <a href="Joukkoliikenteen hintavertailu - hakusivu.htm" class="btn-custon">Takaisin pääsivulle</a>
       </div>
     </div>
   <hr>
   <div class="container" id="alateksti">
     <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>
     <small> - </small>
-<<<<<<< HEAD
     <a href="">Ohje</a>
     <small> - </small>
     <a href="">Tietoja</a>
-=======
-    <a href="Joukkoliikenteen hintavertailu - tietoja.htm">Ohje ja Tietoja</a>
->>>>>>> lisatty tulossivun hahmottelua, infosivua yms...
   </div>
 
   <script>
