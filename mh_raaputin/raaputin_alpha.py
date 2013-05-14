@@ -7,6 +7,7 @@ Luotu 16.4.2013
 from lxml import html
 import urllib
 import json
+import logging
 try:
     from google.appengine.api import urlfetch
 except ImportError:
@@ -14,7 +15,7 @@ except ImportError:
 
     class Urlfetch:
         """Dummy-luokka scraperin testaamiseksi ilman App Engineä."""
-        def fetch(self, url):
+        def fetch(self, url, deadline):
             response = urllib2.urlopen(url)
 
             class Response:
@@ -69,7 +70,8 @@ class MHScraper:
 
         try:
             sivu = urlfetch.fetch(url, deadline=20)
-        except:
+        except Exception as e:
+            logging.error(e)
             return None
 
         root = html.fromstring(sivu.content)
@@ -313,6 +315,7 @@ class MHScraper:
         if nimi is None:
             return nimi
         uusi_nimi = nimi.replace('ä', "%E4")
+        uusi_nimi = uusi_nimi.replace(" ", "+")
         uusi_nimi = uusi_nimi.replace('Ä', "%C4")
         uusi_nimi = uusi_nimi.replace('ö', "%D6")
         uusi_nimi = uusi_nimi.replace('Ö', "%F6")

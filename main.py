@@ -9,6 +9,7 @@ import web
 from scraper_wrapper import ScraperWrapper
 from datetime import datetime, timedelta
 import time
+import logging
 
 
 ### APUFUNKTIOT ###
@@ -118,16 +119,18 @@ class Haku:
             auto=auto,
             alennusluokka=ale)
 
+        logging.info(str(params))  # TODO debug
         matkat = scraper.hae_matka(**params)
 
         # Asetetaan automatkan lähtöaika: # TODO
         if "auto" in matkat:
             if laika:
-                matkat["auto"]["lahtoaika"] = laika
+                dt = datetime.strptime(laika, SOVELLUS_PVM_FORMAATTI)
+                matkat["auto"]["lahtoaika"] = "%d:%d" % (dt.hour, dt.minute)
             else:
                 tunnit, minuutit = matkat["auto"]["kesto"].split(":")
                 dt = datetime.strptime(saika, SOVELLUS_PVM_FORMAATTI)
-                dt += timedelta(hours=int(tunnit), minutes=int(minuutit))
+                dt -= timedelta(hours=int(tunnit), minutes=int(minuutit))
                 matkat["auto"]["lahtoaika"] = "%d:%d" % (dt.hour, dt.minute)
 
         t = str(round(time.time() - t, 2))
