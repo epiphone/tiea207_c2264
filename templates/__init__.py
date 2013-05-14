@@ -2,40 +2,6 @@ from web.template import CompiledTemplate, ForLoop, TemplateResult
 
 
 # coding: utf-8
-def base (content):
-    __lineoffset__ = -4
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'\n'])
-    extend_([u'<!DOCTYPE html>\n'])
-    extend_([u'<html>\n'])
-    extend_([u'<head>\n'])
-    extend_([u'  <meta charset="utf-8">\n'])
-    extend_([u'  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>\n'])
-    extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])
-    extend_([u'</head>\n'])
-    extend_([u'<body>\n'])
-    extend_([u'\n'])
-    extend_([u'  ', escape_(content, False), u'\n'])
-    extend_([u'\n'])
-    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n'])
-    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>\n'])
-    extend_([u'<script src="/static/js/bootstrap.min.js"></script>\n'])
-    extend_([u'\n'])
-    extend_([u'</body>\n'])
-    extend_([u'</html>\n'])
-
-    return self
-
-base = CompiledTemplate(base, 'templates\\base.html')
-join_ = base._join; escape_ = base._escape
-
-# coding: utf-8
 def index():
     __lineoffset__ = -5
     loop = ForLoop()
@@ -142,7 +108,7 @@ def index():
 
     return self
 
-index = CompiledTemplate(index, 'templates\\index.html')
+index = CompiledTemplate(index, 'templates/index.html')
 join_ = index._join; escape_ = index._escape
 
 # coding: utf-8
@@ -203,6 +169,94 @@ def results (matkat, params, t):
 
     return self
 
-results = CompiledTemplate(results, 'templates\\results.html')
+results = CompiledTemplate(results, 'templates/results.html')
 join_ = results._join; escape_ = results._escape
+
+# coding: utf-8
+def results_vis (matkat, params, t, dt, pvm):
+    __lineoffset__ = -4
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
+    extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
+    for k, v in loop.setup(params.iteritems()):
+        extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
+    extend_([escape_(dt, True), u'=<strong>', escape_(dt, True), u'</strong>\n'])
+    extend_([u'\n'])
+    extend_([u'<div id="option">\n'])
+    extend_([u'    <input type="button" value="l\xe4ht\xf6" onclick="sortByDt1()"/>\n'])
+    extend_([u'    <input type="button" value="saapuminen" onclick="sortByDt2()"/>\n'])
+    extend_([u'    <input type="button" value="kesto" onclick="sortByDuration()"/>\n'])
+    extend_([u'    <input type="button" value="hinta" onclick="sortByPrice()"/>\n'])
+    extend_([u'    <input type="button" value="vaihdot" onclick="sortByTransfers()"/>\n'])
+    extend_([u'</div>\n'])
+    extend_([u'<div class="results"></div>\n'])
+    extend_([u'\n'])
+    extend_([u'<script>\n'])
+    
+    def hinta(hinnat):
+        for h in hinnat:
+            if h:
+                return h
+        return 999.9
+    
+    extend_([u'var query_date = "', escape_(dt, True), u'";\n'])
+    extend_([u'var data = [\n'])
+    if "juna" in matkat:
+        for matka in loop.setup(matkat["juna"]):
+            extend_([u'{"transfers":', escape_(len(matka["vaihdot"]), True), u', "type":"juna", "price":', escape_(matka["hinnat"][1], True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
+    if "bussi" in matkat:
+        for matka in loop.setup(matkat["bussi"]):
+            extend_([u'{"transfers":', escape_(len(matka["vaihdot"]), True), u', "type":"bussi", "price":', escape_(hinta(matka["hinnat"]), True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
+    if "auto" in matkat:
+        matka = matkat["auto"]
+        extend_([u'{"type":"auto", "price":', escape_(matka["hinnat"][0], True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
+        extend_([u'\n'])
+    extend_([u'//{"transfers":3,"duration":"3:20","type":"juna","name":"JunaBussi","price":36.44,"date":"2013-05-16T02:30","total":2}\n'])
+    extend_([u'];\n'])
+    extend_([u'\n'])
+    extend_([u'\n'])
+    extend_([u'\n'])
+    extend_([u'</script>\n'])
+    extend_([u'<script src="/static/js/d3.v3.min.js"></script>\n'])
+    extend_([u'<script src="/static/js/d3testi.js"></script>\n'])
+
+    return self
+
+results_vis = CompiledTemplate(results_vis, 'templates/results_vis.html')
+join_ = results_vis._join; escape_ = results_vis._escape
+
+# coding: utf-8
+def base (content):
+    __lineoffset__ = -4
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
+    extend_([u'<!DOCTYPE html>\n'])
+    extend_([u'<html>\n'])
+    extend_([u'<head>\n'])
+    extend_([u'  <meta charset="utf-8">\n'])
+    extend_([u'  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>\n'])
+    extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])
+    extend_([u'</head>\n'])
+    extend_([u'<body>\n'])
+    extend_([u'\n'])
+    extend_([u'  ', escape_(content, False), u'\n'])
+    extend_([u'\n'])
+    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n'])
+    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>\n'])
+    extend_([u'<script src="/static/js/bootstrap.min.js"></script>\n'])
+    extend_([u'\n'])
+    extend_([u'</body>\n'])
+    extend_([u'</html>\n'])
+
+    return self
+
+base = CompiledTemplate(base, 'templates/base.html')
+join_ = base._join; escape_ = base._escape
 

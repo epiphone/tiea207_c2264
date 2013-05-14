@@ -1,0 +1,44 @@
+$def with (matkat, params, t, dt, pvm)
+
+<strong>$t s</strong>
+$for k, v in params.iteritems():
+  $k=<strong>$v</strong>
+$dt=<strong>$dt</strong>
+
+<div id="option">
+    <input type="button" value="lähtö" onclick="sortByDt1()"/>
+    <input type="button" value="saapuminen" onclick="sortByDt2()"/>
+    <input type="button" value="kesto" onclick="sortByDuration()"/>
+    <input type="button" value="hinta" onclick="sortByPrice()"/>
+    <input type="button" value="vaihdot" onclick="sortByTransfers()"/>
+</div>
+<div class="results"></div>
+
+<script>
+$code:
+    def hinta(hinnat):
+        for h in hinnat:
+            if h:
+                return h
+        return 999.9
+
+var query_date = "$dt";
+var data = [
+$if "juna" in matkat:
+    $for matka in matkat["juna"]:
+        {"transfers":$len(matka["vaihdot"]), "type":"juna", "price":$matka["hinnat"][1],"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
+$if "bussi" in matkat:
+    $for matka in matkat["bussi"]:
+        {"transfers":$len(matka["vaihdot"]), "type":"bussi", "price":$hinta(matka["hinnat"]),"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
+$if "auto" in matkat:
+    $ matka = matkat["auto"]
+    {"type":"auto", "price":$matka["hinnat"][0],"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
+
+//{"transfers":3,"duration":"3:20","type":"juna","name":"JunaBussi","price":36.44,"date":"2013-05-16T02:30","total":2}
+];
+
+
+
+</script>
+<script src="/static/js/d3.v3.min.js"></script>
+<script src="/static/js/d3testi.js"></script>

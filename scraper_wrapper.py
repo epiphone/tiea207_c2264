@@ -45,7 +45,10 @@ class ScraperWrapper:
             self.vr_scraper,
             self.mh_scraper,
             self.auto_scraper]
-        self.paikat = json.load(open("paikat.json", "r"))
+        paikat = json.load(open("paikat.json", "r"))
+        for k, v in paikat.iteritems():
+            paikat[k] = [p.encode("utf-8") if p else None for p in v]
+        self.paikat = paikat
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
             bussi=True, juna=True, auto=True, alennusluokka=0):
@@ -54,9 +57,9 @@ class ScraperWrapper:
         """
         assert type(mista) == type(mihin) == unicode
         assert lahtoaika is not None or saapumisaika is not None
+        logging.info("hae_matka(mista=%s, mihin=%s" % (mista, mihin))
 
-        # Selvitetään haettuja paikkoja vastaavat
-        # MH:n, VR:n ja Google Mapsin paikat:
+        # Selvitetään haettuja paikkoja vastaavat MH:n, VR:n ja Googlen paikat:
         for k, v in self.paikat.iteritems():
             if k == mista:
                 mista = v
@@ -72,10 +75,6 @@ class ScraperWrapper:
             return dict(virhe="mista")
         if not isinstance(mihin, list):
             return dict(virhe="mihin")
-
-        for i in range(3):
-            mista[i] = mista[i].encode("utf-8") if mista[i] else None
-            mihin[i] = mihin[i].encode("utf-8") if mihin[i] else None
 
         mista_mh, mista_vr, mista_auto = mista
         mihin_mh, mihin_vr, mihin_auto = mihin
