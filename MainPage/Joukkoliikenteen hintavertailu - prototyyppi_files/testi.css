@@ -74,8 +74,6 @@ hr{
 .btn btn-primary
 {
   font-family: 'Monda', sans-serif;
-<<<<<<< HEAD
-=======
 }
 
 #tieto-container p
@@ -117,13 +115,4 @@ i
 {
   margin-left:5px;
 
-}
-
-/* Landscape phones and down */
-@media (max-width: 767px) {
-  .leaderboard
-  {
-    background-image: none;
-    text-align: center;
-  }
 }
