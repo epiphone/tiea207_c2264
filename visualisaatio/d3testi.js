@@ -12,13 +12,13 @@ Date.prototype.addMinutes = function (m) {
 // DATA
 var query_date = "2012-03-20T23:44";
 var data = [
-    {"transfers":3,"duration":"3:20","type":"juna","name":"yhteyden nimi","price":"12.40e","date":"2012-03-20T18:30","total":3},
-    {"transfers":3,"duration":"3:20","type":"juna","name":"yhteyden nimi","price":"12.40e","date":"2012-03-20T19:21","total":4},
-    {"transfers":3,"duration":"3:20","type":"bussi","name":"yhteyden nimi","price":"12.40e","date":"2012-03-20T22:00","total":2},
-    {"transfers":3,"duration":"3:20","type":"bussi","name":"yhteyden nimi","price":"12.40e","date":"2012-03-20T23:00","total":1.5},
-    {"transfers":3,"duration":"3:20","type":"auto","name":"yhteyden nimi","price":"12.40e","date":"2012-03-20T23:44","total":0.5},
-    {"transfers":3,"duration":"3:20","type":"bussi","name":"yhteyden nimi","price":"12.40e","date":"2012-03-21T00:10","total":3},
-    {"transfers":3,"duration":"3:20","type":"juna","name":"yhteyden nimi","price":"12.40e","date":"2012-03-21T02:30","total":2}];
+    {"transfers":1,"duration":"3:20","type":"juna","name":"InterCity","price":16.70,"date":"2012-03-20T18:30","total":3},
+    {"transfers":3,"duration":"3:20","type":"juna","name":"Pendolino","price":52.40,"date":"2012-03-20T19:21","total":4},
+    {"transfers":0,"duration":"3:20","type":"bussi","name":"Pikavuoro","price":112.40,"date":"2012-03-20T22:00","total":2},
+    {"transfers":4,"duration":"3:20","type":"bussi","name":"Perus","price":122.40,"date":"2012-03-20T23:00","total":1.5},
+    {"transfers":3,"duration":"3:20","type":"auto","name":"Auto","price":11.00,"date":"2012-03-20T23:44","total":0.5},
+    {"transfers":2,"duration":"3:20","type":"bussi","name":"Pikavuoro","price":2.40,"date":"2012-03-21T00:10","total":3},
+    {"transfers":3,"duration":"3:20","type":"juna","name":"JunaBussi","price":36.44,"date":"2012-03-21T02:30","total":2}];
 
 for (var i=0; i<data.length; i++) {
     dt1 = new Date(data[i].date);
@@ -37,17 +37,16 @@ var margin = {top: 40, right: 10, bottom: 40, left:10},
 
 
 // SKAALAUS
+var firstDt = d3.min(data, function(d) { return d.dt1; }),
+    lastDt = d3.max(data, function(d) { return d.dt2; });
+
 var x = d3.time.scale()
-    .domain([d3.time.hour.offset(data[0].dt1, -1), d3.time.hour.offset(data[data.length - 1].dt2, 1)])
+    .domain([d3.time.hour.offset(firstDt, -1), d3.time.hour.offset(lastDt, 1)])
     .rangeRound([0, width - margin.left - margin.right]);
 
 var y = d3.scale.linear()
     .domain([0, data.length])
     .range([0, height - margin.top - margin.bottom]);
-
-function sort_by_duration(a, b) { return a.total - b.total; }
-function sort_by_dt1(a, b) { return a.dt1 - b.dt1; }
-function sort_by_dt2(a, b) { return a.dt2 - b.dt2; }
 
 
 // AKSELIT
@@ -106,8 +105,8 @@ while (minDate <= maxDate) {
         .attr("x2", lineX)
         .attr("y1", lineY1)
         .attr("y2", lineY2)
-        .attr("stroke-width", 1)
-        .style("stroke-dasharray", "10, 5")
+        .attr("stroke-width", 0.8)
+        .style("stroke-dasharray", "5, 5")
         .attr("stroke", "gray");
     minDate.addHours(1);
 }
@@ -147,9 +146,14 @@ svg.selectAll(".bar")
             .attr("opacity", 0.9);
     });
 
+
 // TEKSTIT
 function generateContent(d) {
-    return d.name + " " + d.price;
+    var dep = d.dt1.toTimeString().substr(0, 5),
+        arr = d.dt2.toTimeString().substr(0, 5);
+    return "<div class='content top'>" + d.name + "</div>" +
+    "<div class='content middle'>" + dep + " - " + arr + "</div>" +
+    "<div class='content bottom'>Vaihtoja: <strong>" + d.transfers + "</strong></div>";
 }
 
 g.append("foreignObject")
@@ -158,9 +162,10 @@ g.append("foreignObject")
     .attr("width", function(d) { return width - x(d.dt1); })
     .attr("height", function(d) { return barHeight; })
     .attr("pointer-events", "none")
-    .append("xhtml:html").append("xhtml:body")
-    .append("xhtml:div")
-        .attr("class", "content")
+    .append("xhtml:body")
+        .attr("class", "content-body")
+    // .append("xhtml:div")
+    //     .attr("class", "content")
         .html(function(d) { return generateContent(d); });
 
 
@@ -182,19 +187,31 @@ svg.append("g")
 
 
 // SORT BUTTONS
+function getSortFunction(param) {
+    return function(a, b) { return a[param] - b[param]; };
+}
+
 var transition = svg.transition().duration(1750).ease("elastic"),
     delay = function(d, i) { return i * 50; };
 
 function sortByDt1() {
-    sortBars(sort_by_dt1);
+    sortBars(getSortFunction("dt1"));
 }
 
 function sortByDt2() {
-    sortBars(sort_by_dt2);
+    sortBars(getSortFunction("dt2"));
 }
 
 function sortByDuration() {
-    sortBars(sort_by_duration);
+    sortBars(getSortFunction("total"));
+}
+
+function sortByPrice() {
+    sortBars(getSortFunction("price"));
+}
+
+function sortByTransfers() {
+    sortBars(getSortFunction("transfers"));
 }
 
 function sortBars(sort_func) {
