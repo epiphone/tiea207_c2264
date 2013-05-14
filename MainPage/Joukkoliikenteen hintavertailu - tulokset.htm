@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://www.junavsbussi.appspot.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Joukkoliikenteen ja henkilöautoilun vertailu</title>
+<meta name="description" content="description tähän">
+<meta name="keywords" content="keywordsit tähän">
+<meta name="author" content="authorit tähän">
+<link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/style.css">
+<link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/testi.css">
+<link href='http://fonts.googleapis.com/css?family=Denk+One|Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+<!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->
+<style>
+.results {
+    overflow-x: auto;
+}
+
+.chart {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.auto {
+    fill: #B14848;
+}
+
+.bussi {
+    fill: #277ECB;
+}
+
+.juna {
+    fill: #69B213;
+}
+
+.axis-days {
+    fill: red;
+}
+
+text {
+    font-family: sans-serif;
+    font-size: 0.7em;
+}
+
+div.info {
+    position: absolute;
+    opacity: .7;
+    width: 300px;
+    height: 400px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="leaderboard">
+      <h1>Millä matkaan?</h1>
+      <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
+      </div>
+      <div class="hero-unit" id="tulos-container">
+      <div>
+
+      </div>
+        <div id="option">
+    <small>Järjestä uudelleen: </small>
+    <input name="updateButton" type="button" value="Hinnan mukaan" onclick="sortByDt1()">
+    <input name="updateButton" type="button" value="dt2" onclick="sortByDt2()">
+    <input name="updateButton" type="button" value="Keston mukaan" onclick="sortByDuration()">
+</div>
+<div class="results" id="tulokset"><svg class="char" width="1000" height="535"><g transform="translate(10, 40)"><line x1="509" x2="509" y1="0" y2="455" stroke-width="1" style="stroke-dasharray: 10px, 5px;" stroke="red"></line><rect class="bar juna" x="82" y="0" rx="4" ry="4" width="245" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar juna" x="151" y="65" rx="4" ry="4" width="327" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar bussi" x="368" y="130" rx="4" ry="4" width="163" data-content="yhteyden nimi" data-placement="top" opacity="0.8999997557805037" height="60"></rect><rect class="bar bussi" x="449" y="195" rx="4" ry="4" width="123" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar auto" x="509" y="260" rx="4" ry="4" width="41" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar bussi" x="544" y="324.99999999999994" rx="4" ry="4" width="245" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar juna" x="735" y="390" rx="4" ry="4" width="163" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><g class="x axis" transform="translate(0, 455)"><g class="tick major" style="opacity: 1;" transform="translate(41,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">20:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(123,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">21:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(204,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">22:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(286,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">23:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(368,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">00:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(449,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">01:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(531,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">02:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(613,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">03:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(694,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">04:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(776,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">05:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(858,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">06:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(939,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">07:00</text></g><path class="domain" d="M0,6V0H980V6"></path></g><g class="x axis" transform="translate(0, 0)"><g class="tick major" style="opacity: 1;" transform="translate(41,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">20:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(123,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">21:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(204,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">22:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(286,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">23:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(368,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">00:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(449,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">01:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(531,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">02:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(613,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">03:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(694,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">04:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(776,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">05:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(858,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">06:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(939,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">07:00</text></g><path class="domain" d="M0,-6V0H980V-6"></path></g><g class="x axis axis-days" transform="translate(0, 455)"><g class="tick major" style="opacity: 1;" transform="translate(368,0)"><line y2="6" x2="0"></line><text y="26" x="0" dy=".71em" style="text-anchor: middle;">21.03.2012</text></g><path class="domain" d="M0,6V0H980V6"></path></g></g></svg></div>
+<script src="./D3 testi_files/d3.v3.min.js"></script>
+<script src="./D3 testi_files/d3testi.js"></script>
+      <a href="Joukkoliikenteen hintavertailu - hakusivu.htm" class="btn-custom">Takaisin pääsivulle</a>
+      </div>
+    </div>
+  <hr>
+  <div class="container" id="alateksti">
+    <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>
+    <small> - </small>
+    <a href="">Ohje</a>
+    <small> - </small>
+    <a href="">Tietoja</a>
+  </div>
+
+  <script>
+  window.onload = function() {
+// Asetetaan oletuslähtöaika ja lähtöpvm
+var dt = Date.today();
+var dt2 = new Date();
+$("#inputPvm").val(dt.toString("dd.MM.yyyy"));
+$("#inputTunnit").val(dt2.toString("HH"));
+$("#inputMinuutit").val(dt2.toString("mm"));
+
+// Lähtöaika/Saapumisaika-valitsin
+$("#aAikatyyppi").click(function() {
+  var btn = $("#btnAikatyyppi")[0],
+  vanhaTyyppi = $(btn).text().trim(),
+  uusiTyyppi = $(this).text().trim();
+  $(this).text(vanhaTyyppi);
+  $(btn).text(uusiTyyppi);
+  if (uusiTyyppi == "Lähtöaika") {
+    $("#inputTyyppi").val("lahtoaika");
+  } else {
+    $("#inputTyyppi").val("saapumisaika");
+  }
+})
+
+$("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
+
+// Datepicker
+var dpSettings = {
+  dateFormat: "dd.mm.yy",
+  dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+  monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"],
+  defaultDate: null
+};
+$("#inputPvm").datepicker(dpSettings);
+// dpSettings["altField"] = "#inputTestiaika";
+// $("#testiaika").datepicker(dpSettings);
+
+// Autocomplete
+var vrAsemat = ['Alavus','Dragsvik','Eno','Enontekiö','Espoo','Haapajärvi','Haapamäki','Haarajoki','Hankasalmi','Hanko','Hanko-Pohjoinen','Harjavalta','Haukivuori','Heinävesi','Helsinki','Helsinki airport','Herrala','Hiekkaharju','Hikiä','Humppila','Huopalahti','Hyvinkää','Hämeenlinna','Höljäkkä','Iisalmi','Iittala','Ilmala','Imatra','Inari','Inkeroinen','Inkoo','Isokyrö','Ivalo','Joensuu','Jokela','Joroinen','Jorvas','Joutseno','Juupajoki','Jyväskylä','Jämsä','Järvelä','Järvenpää','Kajaani','Kannelmäki','Kannus','Karjaa','Karkku','Kauhava','Kauklahti','Kauniainen','Kausala','Kemi','Kemijärvi','Kemijärvi bus station','Kera','Kerava','Kerimäki','Kesälahti','Keuruu','Kiilopää','Kilo','Kilpisjärvi','Kirkkonummi','Kitee','Kittilä','Kiuruvesi','Kohtavaara','Koivuhovi','Koivukylä','Kokemäki','Kokkola','Kolari','Kolho','Kontiomäki','Koria','Korso','Kotka','Kotkan Satama','Kouvola','Kuhmo','Kuopio','Kupittaa','Kuusamo','Kylänlahti','Kymi','Kyminlinna','Kyrölä','Käpylä','Lahti','Laihia','Lapinlahti','Lappeenranta','Lappila','Lappohja','Lapua','Lempäälä','Leppävaara','Levi','Lieksa','Lievestuore','Lohja bus station','Loimaa','Louhela','Loviisa bus station','Luoma','Luosto','Lusto','Malmi','Malminkartano','Mankki','Martinlaakso','Masala','Mikkeli','Misi','Mommila','Muhos','Muijala','Muonio','Muurola','Myllykoski','Myllymäki','Myyrmäki','Mäkkylä','Mäntsälä','Mäntyharju','Nastola','Nivala','Nokia','Nummela','Nuppulinna','Nurmes','Oitti','Olos','Orivesi','Orivesi Keskusta','Oulainen','Oulu','Oulunkylä','Paimenportti','Pallastunturi','Paltamo','Parikkala','Parkano','Parola','Pasila','Pello','Perttilä','Petäjävesi','Pieksämäki','Pietarsaari','Pihlajavesi','Pitäjänmäki','Pohjois-Haaga','Pori','Puistola','Pukinmäki','Punkaharju','Purola','Pyhä','Pyhäsalmi','Pännäinen','Pääskylahti','Raahe','Rantasalmi','Rauma','Rekola','Retretti','Riihimäki','Rovaniemi','Ruka','Runni','Ruukki','Ryttylä','Saariselkä','Salla','Sallatunturi','Salo','Santala','Saunakallio','Savio','Savonlinna','Savonlinna bus station','Seinäjoki','Siilinjärvi','Simpele','Siuntio','Skogby','Sodankylä','Sotkamo','Sukeva','Suomu','Suonenjoki','Tahko','Tammisaari','Tampere','Tapanila','Tavastila','Tervajoki','Tervola','Tikkurila','Toijala','Tolsa','Tornio','Tornio bus station','Tornio- Itäinen','Tuomarila','Turenki','Turku','Turku Satama','Tuuri','Tver','Uimaharju','Utajärvi','Utsjoki','Uusikylä','Vaala','Vaasa','Vainikkala','Vainikkala raja','Valimo','Valtimo','Vammala','Vantaankoski','Varkaus','Veikkola','Vihanti','Vihtari','Viiala','Viinijärvi','Villähde','Vilppula','Virkkala','Vuokatti ras th','Vuokatti urheiluopisto th','Vuonislahti','Vuontispirtti','Ylistaro','Ylitornio','Ylivieska','Ähtäri','Äkäslompolo'];
+$("input[name='mista'],input[name='mihin']").typeahead({source: vrAsemat});
+}
+</script>
+
+
+<!-- <script src="/static/js/jquery.js"></script> -->
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery.min.js"></script>
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery-ui.min.js"></script>
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.js"></script>
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/date.js"></script>
+
+
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>
+

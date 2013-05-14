@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)https://dl.dropboxusercontent.com/u/48166055/vis/d3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>D3 testi</title>
+<meta charset="UTF-8">
+<style>
+.results {
+    overflow-x: auto;
+}
+
+.chart {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.auto {
+    fill: #B14848;
+}
+
+.bussi {
+    fill: #277ECB;
+}
+
+.juna {
+    fill: #69B213;
+}
+
+.axis-days {
+    fill: red;
+}
+
+text {
+    font-family: sans-serif;
+    font-size: 0.7em;
+}
+
+div.info {
+    position: absolute;
+    opacity: .7;
+    width: 300px;
+    height: 400px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+<div id="option">
+    <input name="updateButton" type="button" value="dt1" onclick="sortByDt1()">
+    <input name="updateButton" type="button" value="dt2" onclick="sortByDt2()">
+    <input name="updateButton" type="button" value="duration" onclick="sortByDuration()">
+</div>
+<div class="results"><svg class="char" width="1000" height="535"><g transform="translate(10, 40)"><line x1="509" x2="509" y1="0" y2="455" stroke-width="1" style="stroke-dasharray: 10px, 5px;" stroke="red"></line><rect class="bar juna" x="82" y="0" rx="4" ry="4" width="245" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar juna" x="151" y="65" rx="4" ry="4" width="327" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar bussi" x="368" y="130" rx="4" ry="4" width="163" data-content="yhteyden nimi" data-placement="top" opacity="0.8999997557805037" height="60"></rect><rect class="bar bussi" x="449" y="195" rx="4" ry="4" width="123" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar auto" x="509" y="260" rx="4" ry="4" width="41" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar bussi" x="544" y="324.99999999999994" rx="4" ry="4" width="245" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><rect class="bar juna" x="735" y="390" rx="4" ry="4" width="163" data-content="yhteyden nimi" data-placement="top" opacity="0.9" height="60"></rect><g class="x axis" transform="translate(0, 455)"><g class="tick major" style="opacity: 1;" transform="translate(41,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">20:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(123,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">21:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(204,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">22:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(286,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">23:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(368,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">00:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(449,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">01:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(531,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">02:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(613,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">03:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(694,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">04:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(776,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">05:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(858,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">06:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(939,0)"><line y2="6" x2="0"></line><text y="11" x="0" dy=".71em" style="text-anchor: middle;">07:00</text></g><path class="domain" d="M0,6V0H980V6"></path></g><g class="x axis" transform="translate(0, 0)"><g class="tick major" style="opacity: 1;" transform="translate(41,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">20:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(123,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">21:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(204,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">22:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(286,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">23:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(368,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">00:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(449,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">01:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(531,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">02:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(613,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">03:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(694,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">04:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(776,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">05:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(858,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">06:00</text></g><g class="tick major" style="opacity: 1;" transform="translate(939,0)"><line y2="-6" x2="0"></line><text y="-11" x="0" dy="0em" style="text-anchor: middle;">07:00</text></g><path class="domain" d="M0,-6V0H980V-6"></path></g><g class="x axis axis-days" transform="translate(0, 455)"><g class="tick major" style="opacity: 1;" transform="translate(368,0)"><line y2="6" x2="0"></line><text y="26" x="0" dy=".71em" style="text-anchor: middle;">21.03.2012</text></g><path class="domain" d="M0,6V0H980V6"></path></g></g></svg></div>
+<script src="./D3 testi_files/d3.v3.min.js"></script>
+<script src="./D3 testi_files/d3testi.js"></script>
+
+
+</body></html>

@@ -3,16 +3,21 @@
 <head>
 <title>D3 testi</title>
 <meta charset="UTF-8">
+<link href="bootstrap.min.css" rel="stylesheet">
 <style>
+.content-body {
+    margin: 5px 0 0 6px;
+    background-color: transparent;
+    color: black;
+}
+
 .results {
     overflow-x: auto;
 }
 
 .content {
-    position: absolute;
     pointer-events: all;
     font: 300 14px sans-serif;
-
 }
 
 .chart {
@@ -68,11 +73,14 @@ div.info {
 
 <body>
 <div id="option">
-    <input name="updateButton" type="button" value="dt1" onclick="sortByDt1()"/>
-    <input name="updateButton" type="button" value="dt2" onclick="sortByDt2()"/>
-    <input name="updateButton" type="button" value="duration" onclick="sortByDuration()"/>
+    <input type="button" value="lähtö" onclick="sortByDt1()"/>
+    <input type="button" value="saapuminen" onclick="sortByDt2()"/>
+    <input type="button" value="kesto" onclick="sortByDuration()"/>
+    <input type="button" value="hinta" onclick="sortByPrice()"/>
+    <input type="button" value="vaihdot" onclick="sortByTransfers()"/>
 </div>
 <div class="results"></div>
+<script src="./bootstrap.min.js"></script>
 <script src="d3.v3.min.js"></script>
 <script src="./d3testi.js"></script>
 </body>

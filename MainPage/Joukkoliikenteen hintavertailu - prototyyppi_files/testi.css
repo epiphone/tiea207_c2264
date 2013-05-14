@@ -74,4 +74,42 @@ hr{
 .btn btn-primary
 {
   font-family: 'Monda', sans-serif;
+<<<<<<< HEAD
+=======
+}
+
+#tieto-container p
+{
+    font-size: 17px
+}
+
+#tulokset
+{
+  background-color: white;
+}
+
+#option
+{
+  margin-left: auto;
+  margin-right: auto;
+  width: 450px;
+}
+
+.btn-custom {
+  font-family: 'Monda', sans-serif;
+  background-color: hsl(360, 0%, 48%) !important;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f9f9f9", endColorstr="#7a7a7a");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#f9f9f9), to(#7a7a7a));
+  background-image: -moz-linear-gradient(top, #f9f9f9, #7a7a7a);
+  background-image: -ms-linear-gradient(top, #f9f9f9, #7a7a7a);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f9f9f9), color-stop(100%, #7a7a7a));
+  background-image: -webkit-linear-gradient(top, #f9f9f9, #7a7a7a);
+  background-image: -o-linear-gradient(top, #f9f9f9, #7a7a7a);
+  background-image: linear-gradient(#f9f9f9, #7a7a7a);
+  border-color: #7a7a7a #7a7a7a hsl(360, 0%, 35.5%);
+  color: #333 !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.82);
+  -webkit-font-smoothing: antialiased;
+>>>>>>> lisatty tulossivun hahmottelua, infosivua yms...
 }
