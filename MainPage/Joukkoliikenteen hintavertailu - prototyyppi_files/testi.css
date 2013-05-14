@@ -111,5 +111,19 @@ hr{
   color: #333 !important;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.82);
   -webkit-font-smoothing: antialiased;
->>>>>>> lisatty tulossivun hahmottelua, infosivua yms...
+}
+
+i
+{
+  margin-left:5px;
+
+}
+
+/* Landscape phones and down */
+@media (max-width: 767px) {
+  .leaderboard
+  {
+    background-image: none;
+    text-align: center;
+  }
 }
