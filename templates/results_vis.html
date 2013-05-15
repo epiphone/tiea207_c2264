@@ -26,15 +26,13 @@ var query_date = "$dt";
 var data = [
 $if "juna" in matkat and not "virhe" in matkat["juna"]:
     $for matka in matkat["juna"]:
-        {"transfers":$len(matka["vaihdot"]), "type":"juna", "price":$matka["hinnat"][1],"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
+        {"transfers":$len(matka["vaihdot"]), "type":"juna", "price":$hinta(matka["hinnat"]),"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
 $if "bussi" in matkat and not "virhe" in matkat["bussi"]:
     $for matka in matkat["bussi"]:
         {"transfers":$len(matka["vaihdot"]), "type":"bussi", "price":$hinta(matka["hinnat"]),"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
 $if "auto" in matkat and not "virhe" in matkat["auto"]:
     $ matka = matkat["auto"]
     {"type":"auto", "price":$matka["hinnat"][0],"date":"$formatoi_aika_js(pvm, matka["lahtoaika"])", "total":$kesto_tunneiksi(matka["kesto"]), "duration":"$matka["kesto"]", "name":"$matka["mista"] - $matka["mihin"]"},
-
-//{"transfers":3,"duration":"3:20","type":"juna","name":"JunaBussi","price":36.44,"date":"2013-05-16T02:30","total":2}
 ];
 
 

@@ -11,6 +11,7 @@ from henkiloauto_scraper import AutoScraper
 from vr_scraper import VRScraper
 from hinta_scraper import hinta_scraper
 
+from math import ceil
 from thread_helper import do_threaded_work
 import logging
 import json
@@ -51,7 +52,7 @@ class ScraperWrapper:
         self.paikat = paikat
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
-            bussi=True, juna=True, auto=True, alennusluokka=0):
+            bussi=True, juna=True, auto=True, alennusluokka=0, max_lkm=6):
         """
         Palauttaa valitulle matkalle löytyneet yhteydet.
         """
@@ -116,12 +117,15 @@ class ScraperWrapper:
                             # TODO Virheiden käsittely
                             return tulos, tyyppi
                         else:
-                            # TODO Atm cache-arvo vanhenee
                             memcache.set(cache_avain, tulos, 60 * 60 * 48)
                     else:
                         tulos = {"virhe": "ei yhteyksiä"}
                 except IOError:
                     tulos = {"virhe": "sivun avaaminen epäonnistui"}
+
+            if tyyppi != "auto" and not "virhe" in tulos:
+                tulos = self.rajaa_tulokset(tulos, max_lkm, lahtoaika,
+                    saapumisaika)
 
             # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
@@ -139,7 +143,9 @@ class ScraperWrapper:
         return matkat
 
     def hae_bensan_hinnat(self):
-        """Hakee bensan hinnat hinta_scraper-moduulia käyttäen."""
+        """
+        Hakee bensan hinnat hinta_scraper-moduulia käyttäen.
+        """
         hinnat = memcache.get("hinnat")
         if hinnat not in [None, []]:
             # Hinnat löytyivät välimuistista
@@ -149,14 +155,54 @@ class ScraperWrapper:
         try:
             hinnat = hinta_scraper.hae_hinta()
             if not hinnat:
-                logging.info("Polttoainehintojen skreippaaminen epäonnistui.")
+                logging.error("Polttoainehintojen skreippaaminen epäonnistui.")
                 return HINNAT_BACKUP
         except IOError:
-            logging.info("Polttoaine-urlin avaaminen epäonnistui")
+            logging.error("Polttoaine-urlin avaaminen epäonnistui")
             return HINNAT_BACKUP
 
         memcache.set("hinnat", hinnat, 60 * 60 * 24 * 7)
         return hinnat
 
+    def rajaa_tulokset(self, tulos, max_lkm, lahtoaika, saapumisaika):
+        """
+        Rajaa hakutuloksista halutun määrän tuloksia.
+        """
+        if len(tulos) <= max_lkm:
+            return tulos
+
+        if lahtoaika:
+            aika = lahtoaika.split()[1]
+            attr = "lahtoaika"
+        else:
+            aika = saapumisaika.split()[1]
+            attr = "saapumisaika"
+
+        ret = None
+
+        for i, matka in enumerate(tulos):
+            if matka[attr] > aika:
+                askeleet_vas = min(int(ceil((max_lkm - 1) / 2.0)), i)
+                askeleet_oik = max_lkm - 1 - askeleet_vas
+                askeleet_vas += (i + askeleet_oik + 1) - len(tulos)
+                print "i=%d, vas=%d, oik=%d" % (i, askeleet_vas, askeleet_oik)
+                ret = tulos[i - askeleet_vas:i + askeleet_oik + 1]
+
+        if not ret:
+            ret = tulos[-max_lkm:]
+
+        # TODO debug
+        assert len(ret) == min(max_lkm, len(tulos))
+        return ret
+
+
 # Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()
+tdt = "2013-05-16 22:22"
+oulu = u"oulu"
+tampere = u"tampere"
+
+
+def test(aika="15:00"):
+    matkat = wrapper.hae_matka(oulu, tampere, tdt)
+    return matkat, wrapper.rajaa_tulokset(matkat["bussi"], 6, "asd " + aika, None)
