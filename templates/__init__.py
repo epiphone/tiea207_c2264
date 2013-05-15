@@ -173,15 +173,21 @@ results = CompiledTemplate(results, 'templates/results.html')
 join_ = results._join; escape_ = results._escape
 
 # coding: utf-8
-def results_vis (matkat, params, t, dt, pvm):
+def results_vis (matkat, params, t, dt):
     __lineoffset__ = -4
     loop = ForLoop()
     self = TemplateResult(); extend_ = self.extend
     extend_([u'\n'])
+    extend_([u'DEBUG\n'])
     extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
     for k, v in loop.setup(params.iteritems()):
         extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
-    extend_([escape_(dt, True), u'=<strong>', escape_(dt, True), u'</strong>\n'])
+    extend_([u'dt=<strong>', escape_(dt, True), u'</strong>\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="container-fluid">\n'])
+    extend_([u'<div class="row-fluid">\n'])
+    extend_([u'<div class="span3" style="background-color:purple;"></div>\n'])
+    extend_([u'<div class="span9" style="background-color:gray;">\n'])
     extend_([u'\n'])
     extend_([u'<div id="option">\n'])
     extend_([u'    <input type="button" value="l\xe4ht\xf6" onclick="sortByDt1()"/>\n'])
@@ -191,32 +197,27 @@ def results_vis (matkat, params, t, dt, pvm):
     extend_([u'    <input type="button" value="vaihdot" onclick="sortByTransfers()"/>\n'])
     extend_([u'</div>\n'])
     extend_([u'<div class="results"></div>\n'])
-    extend_([u'\n'])
+    extend_([u'</div> <!-- /.span* -->\n'])
+    extend_([u'</div> <!-- /.container -->\n'])
+    extend_([u'</div> <!-- /.row -->\n'])
     extend_([u'<script>\n'])
-    
-    def hinta(hinnat):
-        for h in hinnat:
-            if h:
-                return h
-        return 999.9
-    
     extend_([u'var query_date = "', escape_(dt, True), u'";\n'])
     extend_([u'var data = [\n'])
-    if "juna" in matkat and not "virhe" in matkat["juna"]:
-        for matka in loop.setup(matkat["juna"]):
-            extend_([u'{"transfers":', escape_(len(matka["vaihdot"]), True), u', "type":"juna", "price":', escape_(hinta(matka["hinnat"]), True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
-    if "bussi" in matkat and not "virhe" in matkat["bussi"]:
-        for matka in loop.setup(matkat["bussi"]):
-            extend_([u'{"transfers":', escape_(len(matka["vaihdot"]), True), u', "type":"bussi", "price":', escape_(hinta(matka["hinnat"]), True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
+    extend_([u'\n'])
     if "auto" in matkat and not "virhe" in matkat["auto"]:
-        matka = matkat["auto"]
-        extend_([u'{"type":"auto", "price":', escape_(matka["hinnat"][0], True), u',"date":"', escape_(formatoi_aika_js(pvm, matka["lahtoaika"]), True), u'", "total":', escape_(kesto_tunneiksi(matka["kesto"]), True), u', "duration":"', escape_(matka["kesto"], True), u'", "name":"', escape_(matka["mista"], True), u' - ', escape_(matka["mihin"], True), u'"},\n'])
+        m = matkat["auto"]
+        extend_([u'{"luokka":"auto","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":0,"tyyppi":"Auto"},\n'])
         extend_([u'\n'])
-    extend_([u'//{"transfers":3,"duration":"3:20","type":"juna","name":"JunaBussi","price":36.44,"date":"2013-05-16T02:30","total":2}\n'])
-    extend_([u'];\n'])
-    extend_([u'\n'])
-    extend_([u'\n'])
-    extend_([u'\n'])
+    
+    mh_ja_vr = []
+    for x in ["juna", "bussi"]:
+        if x in matkat and not "virhe" in matkat[x]:
+            mh_ja_vr += matkat[x]
+    
+    for m in loop.setup(mh_ja_vr):
+        extend_([u'{"luokka":"', escape_(m["luokka"], True), u'","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":', escape_(m["vaihdot_lkm"], True), u',"tyyppi":"', escape_(m["tyyppi"], True), u'"},\n'])
+        extend_([u'\n'])
+    extend_([u']\n'])
     extend_([u'</script>\n'])
     extend_([u'<script src="/static/js/d3.v3.min.js"></script>\n'])
     extend_([u'<script src="/static/js/d3testi.js"></script>\n'])

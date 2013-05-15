@@ -107,7 +107,6 @@ class ScraperWrapper:
             tulos = memcache.get(cache_avain)
             if tulos is not None:
                 logging.info("CACHE HIT, key:" + cache_avain)
-                # return tulos, tyyppi
             else:
                 try:
                     tulos = scraper.hae_matka(

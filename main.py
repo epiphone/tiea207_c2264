@@ -12,36 +12,12 @@ import time
 import logging
 
 
-### APUFUNKTIOT ###
+### APUFUNKTIOT & TEMPLATEFUNKTIOT ###
 
 
 LOMAKE_PVM_FORMAATTI = "%d.%m.%Y %H:%M"
 SOVELLUS_PVM_FORMAATTI = "%Y-%m-%d %H:%M"
 JS_PVM_FORMAATTI = "%Y-%m-%dT%H:%M"
-
-
-def formatoi_aika(h, mins, pvm):
-    """Formatoi parametrien tunnit, minuutit ja päivämäärän
-    muotoon YYYY-mm-dd HH:MM
-
-    >>> formatoi_aika(4, 56, "1.12.2012")
-    '2012-12-01 04:56'
-    """
-    pvm_str = "%s %s:%s" % (pvm, h, mins)
-    dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
-    return datetime.strftime(dt, SOVELLUS_PVM_FORMAATTI)
-
-
-def formatoi_aika_js(pvm, klo):
-    """
-    Formatoi aikamerkkijonon javascriptin Date-olion ymmärtämään muotoon.
-
-    >>> formatoi_aika_js("15.05.2013", "11:30")
-    '2013-05-15T11:30'
-    """
-    pvm_str = " ".join([pvm, klo])
-    dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
-    return datetime.strftime(dt, JS_PVM_FORMAATTI)
 
 
 def kesto_tunneiksi(kesto):
@@ -52,10 +28,70 @@ def kesto_tunneiksi(kesto):
     5.5
     """
     tunnit, minuutit = kesto.split(":")
-    return round(float(tunnit) + float(minuutit) / 60, 1)
+    return round(float(tunnit) + float(minuutit) / 60, 2)
+
+
+def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
+    """
+    Lisää skreipattuihin matkatietoihin lisätietoja.
+
+    mm. lasketaan kestomerkkijonosta tunnit, ja lisätään javascriptin
+    Date-luokan ymmärtämiä aikamerkkijonoja.
+    """
+    aika_js = lambda x: "T".join(x.split())
+
+    if "auto" in matkat and not "virhe" in matkat["auto"]:
+        auto = matkat["auto"]
+        auto["luokka"] = "auto"
+
+        # TODO tulevaisuudessa vain yksi hinta
+        if isinstance(auto["hinnat"], list):
+            auto["hinta"] = auto["hinnat"][0]
+
+        auto["tunnit"] = kesto_tunneiksi(auto["kesto"])
+        if lahtoaika:
+            auto["js_aika"] = aika_js(lahtoaika)
+        else:
+            dt = datetime.strptime(saapumisaika, SOVELLUS_PVM_FORMAATTI)
+            dt -= timedelta(hours=auto["tunnit"])
+            auto["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
+
+    for luokka in ["juna", "bussi"]:
+        if not luokka in matkat or "virhe" in matkat[luokka]:
+            continue
+
+        for matka in matkat[luokka]:
+            matka["luokka"] = luokka
+
+            # TODO tulevaisuudessa vain yksi hinta
+            for hinta in matka["hinnat"] + [999.9]:
+                if hinta:
+                    matka["hinta"] = hinta
+                    break
+
+            pvm_str = " ".join([pvm, matka["lahtoaika"]])
+            dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
+            matka["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
+            matka["vaihdot_lkm"] = len(matka["vaihdot"]) - 1
+            matka["tunnit"] = kesto_tunneiksi(matka["kesto"])
+            matka["tyyppi"] = " - ".join(v["tunnus"] for v in matka["vaihdot"])
+
+
+def formatoi_aika(h, mins, pvm):
+    """
+    Formatoi parametrien tunnit, minuutit ja päivämäärän
+    muotoon YYYY-mm-dd HH:MM
+
+    >>> formatoi_aika(4, 56, "1.12.2012")
+    '2012-12-01 04:56'
+    """
+    pvm_str = "%s %s:%s" % (pvm, h, mins)
+    dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
+    return datetime.strftime(dt, SOVELLUS_PVM_FORMAATTI)
 
 
 ### GLOBAALIT & ASETUKSET ###
+
 
 # Reititykset:
 urls = (
@@ -64,10 +100,7 @@ urls = (
 )
 
 scraper = ScraperWrapper()
-globs = {
-    "formatoi_aika_js": formatoi_aika_js,
-    "kesto_tunneiksi": kesto_tunneiksi}
-render = web.template.render("templates/", base="base", globals=globs)
+render = web.template.render("templates/", base="base")
 
 
 ### SIVUT ###
@@ -121,24 +154,13 @@ class Haku:
 
         logging.info(str(params))  # TODO debug
         matkat = scraper.hae_matka(**params)
-
-        # Asetetaan automatkan lähtöaika: # TODO
-        if "auto" in matkat:
-            if laika:
-                dt = datetime.strptime(laika, SOVELLUS_PVM_FORMAATTI)
-                matkat["auto"]["lahtoaika"] = "%d:%d" % (dt.hour, dt.minute)
-            else:
-                tunnit, minuutit = matkat["auto"]["kesto"].split(":")
-                dt = datetime.strptime(saika, SOVELLUS_PVM_FORMAATTI)
-                dt -= timedelta(hours=int(tunnit), minutes=int(minuutit))
-                matkat["auto"]["lahtoaika"] = "%d:%d" % (dt.hour, dt.minute)
+        taydenna_matkatiedot(matkat, pvm, laika, saika)
 
         t = str(round(time.time() - t, 2))
         if visualisaatio:
             dt = laika or saika
             dt = dt.split()[0] + "T" + dt.split()[1]
-            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt,
-                pvm=pvm)
+            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt)
         return render.results(matkat=matkat, params=params, t=t)
 
 
