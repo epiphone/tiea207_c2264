@@ -126,3 +126,20 @@ i
   margin-left:5px;
 
 }
+
+#taulukot
+{
+  padding-top: 20px;
+  font-size: 11px;
+}
+
+.img-polaroid
+{
+  height: 35px;
+  width: 35px;
+}
+
+#takaisin-form
+{
+  padding-top: 20px;
+}
