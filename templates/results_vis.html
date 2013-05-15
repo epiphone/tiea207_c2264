@@ -8,95 +8,15 @@ dt=<strong>$dt</strong>
 
 <div class="container-fluid">
 <div class="row-fluid">
-<div class="span3" style="background-color:purple;">
-<form class="form-horizontal" method="GET" action="Joukkoliikenteen hintavertailu - tulokset.htm" id="lomake">
-    <div class="control-group">
-        <label for="inputMista" class="control-label">Mistä</label>
-        <div class="controls">
-            <input class="input" id="inputMista" type="text" name="mista" autocomplete="off" required="" autofocus="" pattern="[a-zA-ZäÄåÅöÖ]+">
-        </div>
-    </div>
-
-    <div class="control-group">
-        <label for="inputMihin" class="control-label">Mihin</label>
-        <div class="controls">
-            <input id="inputMihin" type="text" name="mihin" autocomplete="off" required="" "[a-zA-ZäÄåÅöÖ]+">
-        </div>
-    </div>
-
-          <div class="control-group">
-            <label for="inputTunnit" class="control-label">Aika ja Pvm</label>
-            <div class="controls form-inline">
-              <input type="text" class="input-xmini" id="inputTunnit" name="h" pattern="[0-9]|0[0-9]|1[0-9]|2[0-3]">
-              <small>:</small>
-              <input type="text" class="input-xmini" id="inputMinuutit" name="min" pattern="[0-9]|0[0-9]|[1-5][0-9]">
-              <input type="text" class="input-small hasDatepicker" id="inputPvm" name="pvm" pattern="([1-9]|1[0-9]|2[0-9]|3[1]).([1-9]|1[12]).[0-9]{4}">
-
-              <div class="btn-group">
-                <select id="inputAikatyyppi" class="input-medium" name="tyyppi">
-                  <option>Lähtöaika</option>
-                  <option>Saapumisaika</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="inputAlennusluokka" class="control-label">Alennusluokka</label>
-            <div class="controls">
-              <select id="inputAlennusluokka" class="input-medium" name="luokka">
-                <option value="0">Aikuinen</option>
-                <option value="1">Lapsi(4-11 v)</option>
-                <option value="3">Nuori(12-16 v)</option>
-                <option value="2">Opiskelija</option>
-                <option value="5">Varusmies</option>
-                <option value="7">Siviilipalvelusmies</option>
-                <option value="4">Eläkeläinen</option>
-                <option value="6">Lehdistö</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="inputKeskikulutus" class="control-label">Auton keskikulutus</label>
-            <div class="controls">
-              <select id="inputKeskikulutus" class="input-large" name="kulutus">
-                <option value="95|4,5">95E, Pieni (4,5l/100km)</option>
-                <option value="95|6,5">95E, Keski(6,5l/100km)</option>
-                <option value="95|8,5">95E, Suuri (8,5l/100km)</option>
-                <option class="select-dash" disabled="disabled">----</option>
-                <option value="98|4,5">98E, Pieni (4,5l/100km)</option>
-                <option value="98|6,5">98E, Keski (6,5l/100km)</option>
-                <option value="98|8,5">98E, Suuri (8,5l/100km)</option>
-                <option class="select-dash" disabled="disabled">----</option>
-                <option value="Di|3,7">Di, Pieni (3,7l/100km)</option>
-                <option value="Di|5,7">Di, Keski (5,7l/100km)</option>
-                <option value="Di|7,7">Di, Suuri (7,7l/100km)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <div class="controls">
-              <label class="checkbox inline">
-                <input type="checkbox" name="juna" checked=""> Juna
-              </label>
-              <label class="checkbox inline">
-                <input type="checkbox" name="bussi" checked=""> Bussi
-              </label>
-              <label class="checkbox inline">
-                <input type="checkbox" name="auto" checked=""> Auto
-              </label>
-            </div>
-          </div>
-
-          <div class="control group">
-            <div class="controls">
-              <button class="btn-custom" type="submit">Hae yhteyksiä<i class="icon-search"></i></button>
-              <!-- <p class="btn btn-primary" type="submit">Hae yhteyksiä</p> -->
-            </div>
-          </div>
-        </form>
+<div class="well span3">
+    <form method="GET" action="/" id="lomake">
+        <h3>Hae matka</h3>
+        <label for"inputMista">Mistä</label>
+        <input name="mista" id="inputMista" type="text" class="input-large"/>
+        <label for"inputMinne">Minne</label>
+        <input name="minne" id="inputMinne" type="text" class="input-large"/>
+        <input type="submit" class="btn btn-primary"/>
+    </form>
 </div>
 <div class="span9">
 
