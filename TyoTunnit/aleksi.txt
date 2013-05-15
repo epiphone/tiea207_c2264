@@ -1,5 +1,5 @@
 PVM         TUNNIT      LISÄTIEDOT
-<10.4       ~10
+<10.4       ~15
 10.4        4           tapaaminen, kopissa, kotona
 15.4        2           kopissa
 16.4        3           kopissa
@@ -20,3 +20,4 @@ PVM         TUNNIT      LISÄTIEDOT
 12.5        5           kotona
 13.5	    5		kopissa, kotona
 14.5	    6		kopissa, kotona
+15.5        8       kopissa
