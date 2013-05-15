@@ -74,7 +74,7 @@ class MHScraper:
 
         if (alennusluokka == 1 or alennusluokka == 2
             or alennusluokka == 5 or alennusluokka == 7):
-            if linja == "vakio" and hinta < 15.50:
+            if linja.lower() == "vakio" and hinta < 15.50:
                 
                 if alennusluokka == 1:
                     try:
@@ -88,7 +88,7 @@ class MHScraper:
                     except KeyError:
                         return None
                 
-            if linja == "pika" and hinta < 18.80:
+            if linja.lower() == "pika" and hinta < 18.80:
                 
                 if alennusluokka == 1:
                     try:
@@ -106,13 +106,13 @@ class MHScraper:
 
         if alennusluokka == 3 or alennusluokka == 4 or alennusluokka == 6:
             
-            if linja == "vakio" and hinta < 15.50:
+            if linja.lower() == "vakio" and hinta < 15.50:
                 try:
                     return [self.vakio_hinnat[hinta][2], tarjous]                
                 except KeyError:
                     return None
                 
-            if linja == "pika" and hinta < 18.80:
+            if linja.lower() == "pika" and hinta < 18.80:
                 try:
                     return [self.pika_hinnat[hinta][2], tarjous]                    
                 except KeyError:
@@ -192,7 +192,7 @@ class MHScraper:
                 if children[1].text_content().strip() ==  "":
                     vaihtoa = matkat_lista[-1]['vaihdot'][-1]
                     vaihtoa['mihin'] = asema_mihin
-                    vaihtoa['tyyppi'] = children[6].text_content().split()[0]
+                    vaihtoa['tyyppi'] = children[6].text_content().split()[0].title()
                     vaihtoa['tunnus'] = children[6].text_content()
                     continue
 
@@ -212,7 +212,7 @@ class MHScraper:
                                  'saapumisaika': children[3].text_content(),
                                  'mista': asema_mista,
                                  'mihin': asema_mihin,
-                                 'tyyppi': children[6].text_content().split()[0],
+                                 'tyyppi': children[6].text_content().split()[0].title(),
                                  'tunnus': children[6].text_content(),}
                                  ]
                                 }
@@ -290,7 +290,7 @@ class MHScraper:
                 if children[1].text_content().strip() ==  "":
                     vaihtoa = matkat_lista[-1]['vaihdot'][-1]
                     vaihtoa['mihin'] = asema_mihin
-                    vaihtoa['tyyppi'] = children[6].text_content().split()[0]
+                    vaihtoa['tyyppi'] = children[6].text_content().split()[0].title()
                     vaihtoa['tunnus'] = children[6].text_content()
                     continue
 
@@ -313,7 +313,7 @@ class MHScraper:
                          'saapumisaika': children[3].text_content(),
                          'mista': asema_mista,
                          'mihin': asema_mihin,
-                         'tyyppi': children[6].text_content().split()[0],
+                         'tyyppi': children[6].text_content().split()[0].title(),
                          'tunnus': children[6].text_content(),}
                             ]
                         }
