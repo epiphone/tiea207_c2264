@@ -9,7 +9,7 @@ body {
       .sidebar-nav {
         padding: 9px 0;
       }
-  .leaderboard {
+  #banneri {
   padding: 60px;
   margin-bottom: 30px;
   border-style:solid;
@@ -18,7 +18,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   }
-.leaderboard h1 {
+#banneri h1 {
   font-family: 'Days One', sans-serif;
   font-size: 40px;
   margin-bottom: 5px;
@@ -27,13 +27,23 @@ body {
   color:black;
   text-shadow: 2px 2px white;
 }
-.leaderboard p {
+#banneri p {
   font-family: 'Racing Sans One', cursive;
   font-size: 25px;
   font-weight: 200;
   line-height: 20px;
   text-shadow: 2px 2px white;
 }
+
+#mini-lomake
+{
+  border-width: 5px;
+  padding-top: 20px;
+  margin-bottom: 30px;
+  background-color: #EEEEEE;
+  padding-bottom: 10px;
+}
+
 #ui-datepicker-div{
   visibility:hidden;
 }

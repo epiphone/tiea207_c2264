@@ -14,7 +14,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="leaderboard">
+    <div class="leaderboard" id="banneri">
       <h1>Millä matkaan?</h1>
       <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
       </div>
@@ -71,21 +71,18 @@
           <div class="control-group">
             <label for="inputKeskikulutus" class="control-label">Auton keskikulutus</label>
             <div class="controls">
-              <select id="inputKeskikulutus" class="input-xlarge" name="kulutus">
-                <option value="4,3">Bensiini, A-luokka(~4,3l/100km)</option>
-                <option value="4,7">Bensiini, B-luokka(~4,7l/100km)</option>
-                <option value="5,3">Bensiini, C-luokka(~5,3l/100km)</option>
-                <option value="6,0">Bensiini, D-luokka(~6,0l/100km)</option>
-                <option value="6,9">Bensiini, E-luokka(~6,9l/100km)</option>
-                <option value="7,9">Bensiini, F-luokka(~7,9l/100km)</option>
-                <option value="8,6">Bensiini, G-luokka(~8,6l/100km)</option>
-                <option value="3,8">Diesel, A-luokka(~3,8l/100km)</optio>
-                <option value="4,2">Diesel, B-luokka(~4,2l/100km)</option>
-                <option value="4,7">Diesel, C-luokka(~4,7l/100km)</option>
-                <option value="5,3">Diesel, D-luokka(~5,3l/100km)</option>
-                <option value="6,2">Diesel, E-luokka(~6,2l/100km)</option>
-                <option value="7,1">Diesel, F-luokka(~7,1l/100km)</option>
-                <option value="7,6">Diesel, G-luokka(~7,6l/100km)</option>
+              <select id="inputKeskikulutus" class="input-large" name="kulutus">
+                <option value="95|4,5">95E, Pieni (4,5l/100km)</option>
+                <option value="95|6,5">95E, Keski(6,5l/100km)</option>
+                <option value="95|8,5">95E, Suuri (8,5l/100km)</option>
+                <option class="select-dash" disabled="disabled">----</option>
+                <option value="98|4,5">98E, Pieni (4,5l/100km)</option>
+                <option value="98|6,5">98E, Keski (6,5l/100km)</option>
+                <option value="98|8,5">98E, Suuri (8,5l/100km)</option>
+                <option class="select-dash" disabled="disabled">----</option>
+                <option value="Di|3,7">Di, Pieni (3,7l/100km)</option>
+                <option value="Di|5,7">Di, Keski (5,7l/100km)</option>
+                <option value="Di|7,7">Di, Suuri (7,7l/100km)</option>
               </select>
             </div>
           </div>
