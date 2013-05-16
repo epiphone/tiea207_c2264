@@ -199,7 +199,8 @@ class MHScraper:
                 if len(children) == 2:
                     continue
 
-                matka = {'lahtoaika': children[1].text_content(),
+                matka = {'url': url,
+                         'lahtoaika': children[1].text_content(),
                          'saapumisaika': children[3].text_content(),
                          'mista': asema_mista,
                          'mihin': asema_mihin,
@@ -298,6 +299,7 @@ class MHScraper:
                     continue
 
                 matka = {
+                    'url': url,
                     'lahtoaika': children[1].text_content(),
                     'saapumisaika': children[3].text_content(),
                     'mista': asema_mista,
@@ -498,13 +500,13 @@ def testaa():
     mista = ["helsinki", "oulu", "kuopio", "tampere", "savonlinna"]
 
     for k, v in paikat.iteritems():
-
+        pvm = "2013-05-15 12:01"
         mh_paikka = v
         index = 0
         if mh_paikka[0] is not None:
             mh_matka = scraper.hae_matka(mista[index],
                                          mh_paikka[0].encode("utf-8"),
-                                         None, "2013-05-15 12:01")
+                                         None, pvm)
 
         if mh_paikka[0] is None:
             print k
@@ -516,7 +518,7 @@ def testaa():
             if index == len(mista):
                 break
             mh_matka = scraper.hae_matka(mista[index],
-                       mh_paikka[0].encode("utf-8"), None, "2013-05-15 12:01")
+                       mh_paikka[0].encode("utf-8"), None, pvm)
 
         if mh_matka is None:
             print mista[index-1] + " -> " + k
@@ -534,13 +536,22 @@ def main():
 
     scraper = MHScraper()
 
-    matka = scraper.hae_matka("kuopio", "lahti",
-                              None, "2013-05-15 12:01")
+    matka = scraper.hae_matka("jyväskylä", "ivalo",
+                              None, "2013-05-16 12:01")
     
     for rivi in matka:
-        ale = scraper.laske_alennus(rivi['hinnat'],
-        6, rivi['vaihdot'][0]['tyyppi'])
-        print rivi['hinnat'] + ale
+        asd = 1
+        lista = []
+        lista.append(str(rivi['hinnat'][0]))
+        while (asd < 7):
+            ale = scraper.laske_alennus(rivi['hinnat'],
+                                        asd, rivi['vaihdot'][0]['tyyppi'])
+            if ale is None:
+                lista.append(None)
+            else:
+                lista.append(str(ale[0]))
+            asd = asd+1
+        print lista
         
 #    print scraper.laske_alennus([None, None], 1, "pika")
 
@@ -565,6 +576,7 @@ def main():
                                         matka['laituri'],
                                         matka['kesto'],
                                         matka['hinnat'])
+                print matka['url']
 
                 for i, yhteys in enumerate(matka['vaihdot']):
                     print str(i+1) + ". VaihtoYhteys"
