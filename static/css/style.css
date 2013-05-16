@@ -1,3 +1,33 @@
+/* INDEX */
+.index-container {
+    background-color: #EEEEEE;
+    margin: 0 auto;
+    max-width: 70%;
+    border-radius: 0 0 20px 20px;
+    padding: 10px;
+}
+
+.banner {
+    background-image: url("/static/img/ses3.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 190px;
+    margin: 0 auto 60px;
+    border: 5px solid;
+    border-radius: 2px;
+}
+
+.form-container {
+    margin: 0 auto;
+    max-width: 550px;
+}
+
+.footer {
+    text-align: center;
+}
+
+
+/* DATEPICKER */
 .ui-datepicker {
     background-color: white;
     border: 1px solid lightgray;
