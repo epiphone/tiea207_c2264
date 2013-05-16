@@ -31,7 +31,7 @@
 /* TULOSSIVUN SIVUPALKKI */
 .sidebar-nav-fixed {
     position: fixed;
-    width: 21.97%;
+    width: 20%;
 }
 
 @media (max-width: 767px) {
@@ -45,6 +45,17 @@
         position: static;
         width: auto;
     }
+}
+
+.breaker {
+  width: 100%;
+  height: 1px;
+  border-top: 1px dotted #CCC;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size:1px;
+  line-height:0;
+  float:left;
 }
 
 

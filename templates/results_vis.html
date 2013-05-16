@@ -77,18 +77,22 @@ dt=<strong>$dt</strong>
 
 
 <!-- Hakutulokset -->
-<div class="span9" style="height:1000px;">
-<div id="option">
-    <input type="button" value="lähtö" onclick="sortByDt1()"/>
-    <input type="button" value="saapuminen" onclick="sortByDt2()"/>
-    <input type="button" value="kesto" onclick="sortByDuration()"/>
-    <input type="button" value="hinta" onclick="sortByPrice()"/>
-    <input type="button" value="vaihdot" onclick="sortByTransfers()"/>
+<div class="span9">
+<div class="results-header">
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="sortByDt1()">Lähtö</button>
+    <button class="btn btn-primary" onclick="sortByDt2()">Saapuminen</button>
+    <button class="btn btn-primary" onclick="sortByDuration()">Kesto</button>
+    <button class="btn btn-primary" onclick="sortByPrice()">Hinta</button>
+    <button class="btn btn-primary" onclick="sortByTransfers()">Vaihdot</button>
+  </div>
 </div>
+
 <div class="results"></div>
 </div> <!-- /.span* -->
 </div> <!-- /.container -->
 </div> <!-- /.row -->
+
 <script>
 var query_date = "$dt";
 var data = [
