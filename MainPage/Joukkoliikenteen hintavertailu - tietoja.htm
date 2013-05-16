@@ -14,7 +14,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="leaderboard">
+    <div class="leaderboard" id="banneri">
       <h1>Millä matkaan?</h1>
       <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
       </div>
@@ -36,64 +36,17 @@
       <button class="btn-custom" type="submit" id="takaisinNappi"><i class="icon-arrow-left"></i>Takaisin pääsivulle</button>
       </form>
       </div>
-    </div>
+
   <hr>
   <div class="container" id="alateksti">
-    <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>
+    <a href="Joukkoliikenteen hintavertailu - tietoja.htm">Ohje ja tietoja</a>
     <small> - </small>
-    <a href="">Ohje ja tietoja</a>
+    <a href="Joukkoliikenteen hintavertailu - palaute.htm">Anna palautetta</a>
+    <small> - </small>
+    <a href="Joukkoliikenteen hintavertailu - vikailmoitus.htm">Jätä vikailmoitus</a>
+    <br>
+    <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>
   </div>
 
-  <script>
-  window.onload = function() {
-// Asetetaan oletuslähtöaika ja lähtöpvm
-var dt = Date.today();
-var dt2 = new Date();
-$("#inputPvm").val(dt.toString("dd.MM.yyyy"));
-$("#inputTunnit").val(dt2.toString("HH"));
-$("#inputMinuutit").val(dt2.toString("mm"));
-
-// Lähtöaika/Saapumisaika-valitsin
-$("#aAikatyyppi").click(function() {
-  var btn = $("#btnAikatyyppi")[0],
-  vanhaTyyppi = $(btn).text().trim(),
-  uusiTyyppi = $(this).text().trim();
-  $(this).text(vanhaTyyppi);
-  $(btn).text(uusiTyyppi);
-  if (uusiTyyppi == "Lähtöaika") {
-    $("#inputTyyppi").val("lahtoaika");
-  } else {
-    $("#inputTyyppi").val("saapumisaika");
-  }
-})
-
-$("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
-
-// Datepicker
-var dpSettings = {
-  dateFormat: "dd.mm.yy",
-  dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
-  monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"],
-  defaultDate: null
-};
-$("#inputPvm").datepicker(dpSettings);
-// dpSettings["altField"] = "#inputTestiaika";
-// $("#testiaika").datepicker(dpSettings);
-
-// Autocomplete
-var vrAsemat = ['Alavus','Dragsvik','Eno','Enontekiö','Espoo','Haapajärvi','Haapamäki','Haarajoki','Hankasalmi','Hanko','Hanko-Pohjoinen','Harjavalta','Haukivuori','Heinävesi','Helsinki','Helsinki airport','Herrala','Hiekkaharju','Hikiä','Humppila','Huopalahti','Hyvinkää','Hämeenlinna','Höljäkkä','Iisalmi','Iittala','Ilmala','Imatra','Inari','Inkeroinen','Inkoo','Isokyrö','Ivalo','Joensuu','Jokela','Joroinen','Jorvas','Joutseno','Juupajoki','Jyväskylä','Jämsä','Järvelä','Järvenpää','Kajaani','Kannelmäki','Kannus','Karjaa','Karkku','Kauhava','Kauklahti','Kauniainen','Kausala','Kemi','Kemijärvi','Kemijärvi bus station','Kera','Kerava','Kerimäki','Kesälahti','Keuruu','Kiilopää','Kilo','Kilpisjärvi','Kirkkonummi','Kitee','Kittilä','Kiuruvesi','Kohtavaara','Koivuhovi','Koivukylä','Kokemäki','Kokkola','Kolari','Kolho','Kontiomäki','Koria','Korso','Kotka','Kotkan Satama','Kouvola','Kuhmo','Kuopio','Kupittaa','Kuusamo','Kylänlahti','Kymi','Kyminlinna','Kyrölä','Käpylä','Lahti','Laihia','Lapinlahti','Lappeenranta','Lappila','Lappohja','Lapua','Lempäälä','Leppävaara','Levi','Lieksa','Lievestuore','Lohja bus station','Loimaa','Louhela','Loviisa bus station','Luoma','Luosto','Lusto','Malmi','Malminkartano','Mankki','Martinlaakso','Masala','Mikkeli','Misi','Mommila','Muhos','Muijala','Muonio','Muurola','Myllykoski','Myllymäki','Myyrmäki','Mäkkylä','Mäntsälä','Mäntyharju','Nastola','Nivala','Nokia','Nummela','Nuppulinna','Nurmes','Oitti','Olos','Orivesi','Orivesi Keskusta','Oulainen','Oulu','Oulunkylä','Paimenportti','Pallastunturi','Paltamo','Parikkala','Parkano','Parola','Pasila','Pello','Perttilä','Petäjävesi','Pieksämäki','Pietarsaari','Pihlajavesi','Pitäjänmäki','Pohjois-Haaga','Pori','Puistola','Pukinmäki','Punkaharju','Purola','Pyhä','Pyhäsalmi','Pännäinen','Pääskylahti','Raahe','Rantasalmi','Rauma','Rekola','Retretti','Riihimäki','Rovaniemi','Ruka','Runni','Ruukki','Ryttylä','Saariselkä','Salla','Sallatunturi','Salo','Santala','Saunakallio','Savio','Savonlinna','Savonlinna bus station','Seinäjoki','Siilinjärvi','Simpele','Siuntio','Skogby','Sodankylä','Sotkamo','Sukeva','Suomu','Suonenjoki','Tahko','Tammisaari','Tampere','Tapanila','Tavastila','Tervajoki','Tervola','Tikkurila','Toijala','Tolsa','Tornio','Tornio bus station','Tornio- Itäinen','Tuomarila','Turenki','Turku','Turku Satama','Tuuri','Tver','Uimaharju','Utajärvi','Utsjoki','Uusikylä','Vaala','Vaasa','Vainikkala','Vainikkala raja','Valimo','Valtimo','Vammala','Vantaankoski','Varkaus','Veikkola','Vihanti','Vihtari','Viiala','Viinijärvi','Villähde','Vilppula','Virkkala','Vuokatti ras th','Vuokatti urheiluopisto th','Vuonislahti','Vuontispirtti','Ylistaro','Ylitornio','Ylivieska','Ähtäri','Äkäslompolo'];
-$("input[name='mista'],input[name='mihin']").typeahead({source: vrAsemat});
-}
-</script>
-
-
-<!-- <script src="/static/js/jquery.js"></script> -->
-<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery.min.js"></script>
-<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery-ui.min.js"></script>
-<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.js"></script>
-<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/date.js"></script>
-
-
-
-<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>
+</body></html>
 

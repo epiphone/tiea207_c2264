@@ -11,6 +11,7 @@ from henkiloauto_scraper import AutoScraper
 from vr_scraper import VRScraper
 from hinta_scraper import hinta_scraper
 
+from math import ceil
 from thread_helper import do_threaded_work
 import logging
 import json
@@ -51,12 +52,13 @@ class ScraperWrapper:
         self.paikat = paikat
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
-            bussi=True, juna=True, auto=True, alennusluokka=0):
+            bussi=True, juna=True, auto=True, alennusluokka=0, max_lkm=6,
+            polttoaine=0, kulutus=6.5):
         """
         Palauttaa valitulle matkalle löytyneet yhteydet.
         """
         assert type(mista) == type(mihin) == unicode
-        assert lahtoaika is not None or saapumisaika is not None
+        assert lahtoaika is not None or saapumisaika is not None  # TODO debug
         logging.info("hae_matka(mista=%s, mihin=%s" % (mista, mihin))
 
         # Selvitetään haettuja paikkoja vastaavat MH:n, VR:n ja Googlen paikat:
@@ -106,7 +108,6 @@ class ScraperWrapper:
             tulos = memcache.get(cache_avain)
             if tulos is not None:
                 logging.info("CACHE HIT, key:" + cache_avain)
-                # return tulos, tyyppi
             else:
                 try:
                     tulos = scraper.hae_matka(
@@ -116,18 +117,22 @@ class ScraperWrapper:
                             # TODO Virheiden käsittely
                             return tulos, tyyppi
                         else:
-                            # TODO Atm cache-arvo vanhenee
                             memcache.set(cache_avain, tulos, 60 * 60 * 48)
                     else:
                         tulos = {"virhe": "ei yhteyksiä"}
                 except IOError:
                     tulos = {"virhe": "sivun avaaminen epäonnistui"}
 
+            if tyyppi != "auto" and not "virhe" in tulos:
+                tulos = self.rajaa_tulokset(tulos, max_lkm, lahtoaika,
+                    saapumisaika)
+
             # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
-                hinnat = self.hae_bensan_hinnat()
+                hinta = self.hae_bensan_hinnat()[polttoaine]
                 pit = tulos["matkanpituus"]
-                tulos["hinnat"] = [round(pit*(6.0/100.0)*h, 2) for h in hinnat]
+                tulos["polttoaineen_hinta"] = hinta
+                tulos["hinta"] = round(pit * (kulutus / 100.0) * hinta, 2)
 
             assert tulos is not None  # TODO debug
             return tulos, tyyppi
@@ -139,7 +144,9 @@ class ScraperWrapper:
         return matkat
 
     def hae_bensan_hinnat(self):
-        """Hakee bensan hinnat hinta_scraper-moduulia käyttäen."""
+        """
+        Hakee bensan hinnat hinta_scraper-moduulia käyttäen.
+        """
         hinnat = memcache.get("hinnat")
         if hinnat not in [None, []]:
             # Hinnat löytyivät välimuistista
@@ -149,14 +156,52 @@ class ScraperWrapper:
         try:
             hinnat = hinta_scraper.hae_hinta()
             if not hinnat:
-                logging.info("Polttoainehintojen skreippaaminen epäonnistui.")
+                logging.error("Polttoainehintojen skreippaaminen epäonnistui.")
                 return HINNAT_BACKUP
         except IOError:
-            logging.info("Polttoaine-urlin avaaminen epäonnistui")
+            logging.error("Polttoaine-urlin avaaminen epäonnistui")
             return HINNAT_BACKUP
 
         memcache.set("hinnat", hinnat, 60 * 60 * 24 * 7)
         return hinnat
 
+    def rajaa_tulokset(self, tulos, max_lkm, lahtoaika, saapumisaika):
+        """
+        Rajaa hakutuloksista halutun määrän tuloksia.
+        """
+        if len(tulos) <= max_lkm:
+            return tulos
+
+        if lahtoaika:
+            aika = lahtoaika.split()[1]
+            attr = "lahtoaika"
+        else:
+            aika = saapumisaika.split()[1]
+            attr = "saapumisaika"
+
+        ret = None
+
+        for i, matka in enumerate(tulos):
+            if matka[attr] > aika:
+                askeleet_vas = min(int(ceil((max_lkm - 1) / 2.0)), i)
+                askeleet_oik = max_lkm - 1 - askeleet_vas
+                askeleet_vas += (i + askeleet_oik + 1) - len(tulos)
+                ret = tulos[i - askeleet_vas:i + askeleet_oik + 1]
+
+        if not ret:
+            ret = tulos[-max_lkm:]
+
+        assert len(ret) == min(max_lkm, len(tulos))  # TODO debug
+        return ret
+
+
 # Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()
+tdt = "2013-05-16 22:22"
+oulu = u"oulu"
+tampere = u"tampere"
+
+
+def test(aika="15:00"):
+    matkat = wrapper.hae_matka(oulu, tampere, tdt)
+    return matkat, wrapper.rajaa_tulokset(matkat["bussi"], 6, "asd " + aika, None)

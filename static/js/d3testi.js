@@ -9,14 +9,20 @@ Date.prototype.addMinutes = function (m) {
     return this;
 };
 
+function getSortFunction(param) {
+    return function(a, b) { return a[param] - b[param]; };
+}
+
+
 // DATA
 for (var i=0; i<data.length; i++) {
-    dt1 = new Date(data[i].date);
-    dt2 = new Date(dt1.getTime()).addHours(data[i].total);
+    dt1 = new Date(data[i].lahtoaika);
+    dt2 = new Date(dt1.getTime()).addHours(data[i].tunnit);
     data[i].dt1 = dt1;
     data[i].dt2 = dt2;
 }
 
+data = data.sort(getSortFunction("dt1"));
 
 // ASETUKSET
 var margin = {top: 40, right: 10, bottom: 40, left:10},
@@ -64,7 +70,7 @@ var xAxisTop = d3.svg.axis()
 
 // CONTAINER
 var svg = d3.select(".results").append("svg")
-    .attr("class", "char")
+    .attr("class", "chart")
     .attr("width", width)
     .attr("height", height)
   .append("g")
@@ -108,7 +114,7 @@ var g = svg.selectAll("g")
     .attr("class", "bar-g");
 
 var rectEnter = g.append("rect")
-    .attr("class", function(d) { return "bar " + d.type; })
+    .attr("class", function(d) { return "bar " + d.luokka; })
     .attr("x", function (d) { return x(d.dt1); })
     .attr("y", function(d, i) { return y(i); })
     .attr("rx", "4")
@@ -141,9 +147,9 @@ svg.selectAll(".bar")
 function generateContent(d) {
     var dep = d.dt1.toTimeString().substr(0, 5),
         arr = d.dt2.toTimeString().substr(0, 5);
-    return "<div class='content top'>" + d.name + "</div>" +
+    return "<div class='content top'>" + d.tyyppi + "</div>" +
     "<div class='content middle'>" + dep + " - " + arr + "</div>" +
-    "<div class='content bottom'>Vaihtoja: <strong>" + d.transfers + "</strong></div>";
+    "<div class='content bottom'>Vaihtoja: <strong>" + d.vaihdot_lkm + "</strong></div>";
 }
 
 g.append("foreignObject")
@@ -154,8 +160,6 @@ g.append("foreignObject")
     .attr("pointer-events", "none")
     .append("xhtml:body")
         .attr("class", "content-body")
-    // .append("xhtml:div")
-    //     .attr("class", "content")
         .html(function(d) { return generateContent(d); });
 
 
@@ -177,10 +181,6 @@ svg.append("g")
 
 
 // SORT BUTTONS
-function getSortFunction(param) {
-    return function(a, b) { return a[param] - b[param]; };
-}
-
 var transition = svg.transition().duration(1750).ease("elastic"),
     delay = function(d, i) { return i * 50; };
 
@@ -193,15 +193,15 @@ function sortByDt2() {
 }
 
 function sortByDuration() {
-    sortBars(getSortFunction("total"));
+    sortBars(getSortFunction("tunnit"));
 }
 
 function sortByPrice() {
-    sortBars(getSortFunction("price"));
+    sortBars(getSortFunction("hinta"));
 }
 
 function sortByTransfers() {
-    sortBars(getSortFunction("transfers"));
+    sortBars(getSortFunction("vaihdot_lkm"));
 }
 
 function sortBars(sort_func) {

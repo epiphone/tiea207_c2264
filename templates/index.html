@@ -1,7 +1,45 @@
-<div class="container">
-<div class="hero-unit">
+<!--
+CSS juttuja
 
-<h1>Joukkoliikenteen hintavertailu</h1><small>prototyyppi</small>
+#banneri {
+padding: 60px;
+margin-bottom: 30px;
+
+background-image:url('ses3.png');
+background-repeat: no-repeat;
+background-position: center;
+}
+
+#banneri h1 {
+  font-family: 'Days One', sans-serif;
+  font-size: 40px;
+  margin-bottom: 5px;
+  line-height: 1;
+  letter-spacing: -1px;
+  color:black;
+  text-shadow: 2px 2px white;
+}
+#banneri p {
+  font-family: 'Racing Sans One', cursive;
+  font-size: 25px;
+  font-weight: 200;
+  line-height: 20px;
+  text-shadow: 2px 2px white;
+}
+
+-->
+
+<div class="container index-container">
+<div class="hidden-phone banner" id="banneri">
+  <h1>Millä matkaan?</h1>
+  <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
+</div>
+<div class="visible-phone banner" style="text-align: center; background-color: #EEEEEE">
+<h2>Millä matkaan?</h2>
+<h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
+
+<div class="form-container">
+
 <form class="form-horizontal" method="GET" action="/haku">
   <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>
   <div class="control-group">
@@ -12,7 +50,7 @@
   </div>
 
   <div class="control-group">
-    <label for="inputMihin" class="control-label">Mihin</label>
+    <label for="inputMihin" class="control-label">Minne</label>
     <div class="controls">
       <input id="inputMihin" type="text" name="mihin" autocomplete="off" required/>
     </div>
@@ -20,18 +58,60 @@
 
   <div class="control-group">
     <label for="inputTunnit" class="control-label">Aika ja Pvm</label>
-    <div class="controls form-inline">
-      <input type="text" class="input-xmini" id="inputTunnit" name="h"/>
-      <input type="text" class="input-xmini" id="inputMinuutit" name="min"/>
-      <input type="text" class="input-small" id="inputPvm" name="pvm"/>
+      <div class="controls form-inline">
+        <input type="text" class="input-xmini" id="inputTunnit" name="h" pattern="([01]?[0-9]|2[0-3])">
+        <small>:</small>
+        <input type="text" class="input-xmini" id="inputMinuutit" name="min" pattern="[0-5]?[0-9]">
+        <input type="text" class="input-small" id="inputPvm" name="pvm" autocomplete="off" required pattern="([0-2]?[0-9]|3[0-1])\.([1-9]|0[1-9]|1[0-2])\.(20)?1[3-9]">
 
-      <div class="btn-group">
-        <button id="btnAikatyyppi" class="btn dropdown-toggle" data-toggle="dropdown">Saapumisaika<span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li><a id="aAikatyyppi">Lähtöaika</a></li>
-        </ul>
+        <div class="btn-group">
+          <select id="inputAikatyyppi" class="input-medium" name="tyyppi">
+            <option value="saapumisaika">Saapumisaika</option>
+            <option value="lahtoaika">Lähtöaika</option>
+          </select>
+        </div>
       </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+       <div id="datepicker" style="font-family: default; font-size: 12px; line-height: 18px;">
+       </div>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label for="inputAlennusluokka" class="control-label">Alennusluokka</label>
+    <div class="controls">
+      <select id="inputAlennusluokka" class="input-medium" name="ale">
+        <option value="0">Aikuinen</option>
+        <option value="1">Lapsi (4-11v)</option>
+        <option value="3">Nuori (12-16v)</option>
+        <option value="2">Opiskelija</option>
+        <option value="5">Varusmies</option>
+        <option value="7">Siviilipalvelusmies</option>
+        <option value="4">Eläkeläinen</option>
+        <option value="6">Lehdistö</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label for="inputKeskikulutus" class="control-label">Auton keskikulutus</label>
+    <div class="controls">
+      <select id="inputKeskikulutus" class="input-large" name="kulutus">
+        <option value="0">95E, Pieni (4,5l/100km)</option>
+        <option value="1">95E, Keski(6,5l/100km)</option>
+        <option value="2">95E, Suuri (8,5l/100km)</option>
+        <option class="select-dash" disabled>----</option>
+        <option value="3">98E, Pieni (4,5l/100km)</option>
+        <option value="4">98E, Keski (6,5l/100km)</option>
+        <option value="5">98E, Suuri (8,5l/100km)</option>
+        <option class="select-dash" disabled>----</option>
+        <option value="6">Di, Pieni (3,7l/100km)</option>
+        <option value="7">Di, Keski (5,7l/100km)</option>
+        <option value="8">Di, Suuri (7,7l/100km)</option>
+      </select>
     </div>
   </div>
 
@@ -51,45 +131,41 @@
 
   <div class="control group">
     <div class="controls">
-      <button class="btn btn-primary" type="submit">Hae yhteyksiä</button>
+      <button class="btn btn-primary" type="submit">Hae yhteyksiä <i class="icon-search icon-white"></i></button>
     </div>
   </div>
 </form>
 
-</div> <!-- /.hero-unit -->
+</div> <!-- /.form-container -->
 </div> <!-- /.container -->
 
+<hr>
+<div class="container footer">
+  <a href="Joukkoliikenteen hintavertailu - tietoja.htm">Ohje ja tietoja</a>
+  <small> - </small>
+  <a href="Joukkoliikenteen hintavertailu - palaute.htm">Anna palautetta</a>
+  <small> - </small>
+  <a href="Joukkoliikenteen hintavertailu - vikailmoitus.htm">Jätä vikailmoitus</a>
+  <br>
+  <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>
+</div>
+
+
 <script src="static/js/paikannimet.js"></script>
+
+<script>
+  $(function() {
+    $( "#datepicker" ).datepicker({ altField: "#inputPvm", minDate: 0, altFormat: "d.m.yy", dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+  monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]});
+  });
+  </script>
+
 <script>
 window.onload = function() {
   // Asetetaan oletuslähtöaika ja lähtöpvm
   var dt = new Date();
-  $$("#inputPvm").val([dt.getDate(), dt.getMonth() + 1, dt.getFullYear()].join("."));
   $$("#inputTunnit").val(dt.getHours() + 1);
   $$("#inputMinuutit").val(dt.getMinutes());
-
-  // Lähtöaika/Saapumisaika-valitsin
-  $$("#aAikatyyppi").click(function() {
-    var btn = $$("#btnAikatyyppi")[0],
-        vanhaTyyppi = $$(btn).text().trim(),
-        uusiTyyppi = $$(this).text().trim();
-    $$(this).text(vanhaTyyppi);
-    $$(btn).text(uusiTyyppi);
-    if (uusiTyyppi == "Lähtöaika") {
-      $$("#inputTyyppi").val("lahtoaika");
-    } else {
-      $$("#inputTyyppi").val("saapumisaika");
-    }
-  })
-
-  $$("#inputTyyppi").val("saapumisaika"); // Asetetaan oletusarvo
-
-  // Datepicker
-  var dpSettings = {
-    dateFormat: "dd.mm.yy",
-    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
-    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"],
-    defaultDate: null
   };
   $$("#inputPvm").datepicker(dpSettings);
 
