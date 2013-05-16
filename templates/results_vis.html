@@ -82,12 +82,14 @@ dt=<strong>$dt</strong>
 <!-- Hakutulokset -->
 <div class="span9 well">
 <div class="results-header">
+  <h3>$params["mista"].title() - $params["mihin"].title()</h3>
+  <small>Järjestys:</small>
   <div class="btn-group">
-    <button class="btn btn-primary" onclick="sortByDt1()">Lähtö</button>
-    <button class="btn btn-primary" onclick="sortByDt2()">Saapuminen</button>
-    <button class="btn btn-primary" onclick="sortByDuration()">Kesto</button>
-    <button class="btn btn-primary" onclick="sortByPrice()">Hinta</button>
-    <button class="btn btn-primary" onclick="sortByTransfers()">Vaihdot</button>
+    <button class="btn btn-link btn-small" id="dt1Btn" onclick="sortByDt1()" disabled>Lähtö</button>
+    <button class="btn btn-link btn-small" id="dt2Btn" onclick="sortByDt2()">Saapuminen</button>
+    <button class="btn btn-link btn-small" id="durationBtn" onclick="sortByDuration()">Kesto</button>
+    <button class="btn btn-link btn-small" id="priceBtn" onclick="sortByPrice()">Hinta</button>
+    <button class="btn btn-link btn-small" id="transfersBtn" onclick="sortByTransfers()">Vaihdot</button>
   </div>
 </div>
 

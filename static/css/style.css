@@ -158,6 +158,9 @@
 .chart {
     font-family: Arial, sans-serif;
     font-size: 10px;
+    background-color: #FCFCFC;
+    border: 1px solid #C1CDCD;
+    border-radius: 8px;
 }
 
 .axis path, .axis line {
