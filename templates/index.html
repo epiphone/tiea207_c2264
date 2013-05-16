@@ -1,14 +1,18 @@
 <div class="container index-container">
-<div class="hidden-phone banner" id="banneri">
-  <h1>Millä matkaan?</h1>
-  <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
-</div>
-<div class="visible-phone banner" style="text-align: center; background-color: #EEEEEE">
-  <h2>Millä matkaan?</h2>
-  <h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
-</div>
-<div class="form-container">
 
+<div class="header">
+  <div class="hidden-phone">
+    <h1>Millä matkaan?</h1>
+    <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus</p>
+  </div>
+
+  <div class="visible-phone">
+    <h2>Millä matkaan?</h2>
+    <h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
+  </div>
+</div> <!-- /.header -->
+
+<div class="form-container">
 <form class="form-horizontal" method="GET" action="/haku">
   <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>
   <div class="control-group">
@@ -110,15 +114,12 @@
 
 <hr>
 <div class="container footer">
-  <a href="Joukkoliikenteen hintavertailu - tietoja.htm">Ohje ja tietoja</a>
+  <a href="/info">Ohje ja tietoja</a>
   <small> - </small>
-  <a href="Joukkoliikenteen hintavertailu - palaute.htm">Anna palautetta</a>
-  <small> - </small>
-  <a href="Joukkoliikenteen hintavertailu - vikailmoitus.htm">Jätä vikailmoitus</a>
+  <a href="/palaute">Anna palautetta</a>
   <br>
   <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>
 </div>
-
 
 <script src="static/js/paikannimet.js"></script>
 <script>
