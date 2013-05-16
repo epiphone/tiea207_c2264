@@ -6,7 +6,9 @@
 <meta name="description" content="description tähän">
 <meta name="keywords" content="keywordsit tähän">
 <meta name="author" content="authorit tähän">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap-responsive.min.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/style.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/testi.css">
 <link href='http://fonts.googleapis.com/css?family=Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -14,16 +16,23 @@
 </head>
 <body>
   <div class="container">
-    <div class="leaderboard" id="banneri">
+    <div class="hidden-phone banner" id="banneri">
       <h1>Millä matkaan?</h1>
       <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
       </div>
-      <div class="hero-unit">
-        <iframe src="https://docs.google.com/forms/d/1E3b4vcBFInJcmSzqCz8iGUJMlTOEBUOmdW5qza2z2D8/viewform?embedded=true" width="760" height="541" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+    <div class="visible-phone banner" style="text-align: center; background-color: #EEEEEE">
+    <h2>Millä matkaan?</h2>
+    <h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
+    </div>
+      <div class="row">
+      <div class="span12" id="testi-rowi">
+        <iframe class="hidden-phone" src="https://docs.google.com/forms/d/1E3b4vcBFInJcmSzqCz8iGUJMlTOEBUOmdW5qza2z2D8/viewform?embedded=true" width="600" height="585" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+      <a class="visible-phone" href="https://docs.google.com/forms/d/1E3b4vcBFInJcmSzqCz8iGUJMlTOEBUOmdW5qza2z2D8/viewform">Siirry tästä vikailmoituslomakkeeseen</a>
       <form id="takaisin-form" action="Joukkoliikenteen hintavertailu - hakusivu.htm">
-      <button class="btn-custom" type="submit" id="takaisinNappi"><i class="icon-arrow-left"></i>Takaisin pääsivulle</button>
+      <button class="btn-custom" type="submit" id="takaisinNappi" style="margin-bottom: 10px;"><i class="icon-arrow-left"></i>Takaisin pääsivulle</button>
       </form>
     </div>
+  </div>
   <hr>
   <div class="container" id="alateksti">
     <a href="Joukkoliikenteen hintavertailu - tietoja.htm">Ohje ja tietoja</a>
