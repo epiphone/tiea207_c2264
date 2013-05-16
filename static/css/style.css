@@ -28,6 +28,25 @@
 }
 
 
+/* TULOSSIVUN SIVUPALKKI */
+.sidebar-nav-fixed {
+    position: fixed;
+}
+
+@media (max-width: 767px) {
+    .sidebar-nav-fixed {
+        width: auto;
+    }
+}
+
+@media (max-width: 979px) {
+    .sidebar-nav-fixed {
+        position: static;
+        width: auto;
+    }
+}
+
+
 /* DATEPICKER */
 .ui-datepicker {
     background-color: white;
