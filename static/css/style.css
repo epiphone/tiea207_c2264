@@ -9,13 +9,32 @@
 }
 
 .banner {
-    background-image: url("/static/img/banner.png");
+    background-image: url("/static/img/ses3.png");
     background-position: center center;
     background-repeat: no-repeat;
     height: 190px;
-    margin: 0 auto 60px;
+    margin: 0 auto 30px;
     border: 5px solid;
     border-radius: 2px;
+    padding: 60px;
+}
+
+.banner h1 {
+    font-family: 'Days One', sans-serif;
+    font-size: 40px;
+    margin-bottom: 5px;
+    line-height: 1;
+    letter-spacing: -1px;
+    color:black;
+    text-shadow: 2px 2px white;
+}
+
+.banner p {
+    font-family: 'Racing Sans One', cursive;
+    font-size: 25px;
+    font-weight: 200;
+    line-height: 20px;
+    text-shadow: 2px 2px white;
 }
 
 .form-container {

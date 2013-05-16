@@ -1,43 +1,12 @@
-<!--
-CSS juttuja
-
-#banneri {
-padding: 60px;
-margin-bottom: 30px;
-
-background-image:url('ses3.png');
-background-repeat: no-repeat;
-background-position: center;
-}
-
-#banneri h1 {
-  font-family: 'Days One', sans-serif;
-  font-size: 40px;
-  margin-bottom: 5px;
-  line-height: 1;
-  letter-spacing: -1px;
-  color:black;
-  text-shadow: 2px 2px white;
-}
-#banneri p {
-  font-family: 'Racing Sans One', cursive;
-  font-size: 25px;
-  font-weight: 200;
-  line-height: 20px;
-  text-shadow: 2px 2px white;
-}
-
--->
-
 <div class="container index-container">
 <div class="hidden-phone banner" id="banneri">
   <h1>Millä matkaan?</h1>
   <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
 </div>
 <div class="visible-phone banner" style="text-align: center; background-color: #EEEEEE">
-<h2>Millä matkaan?</h2>
-<h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
-
+  <h2>Millä matkaan?</h2>
+  <h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
+</div>
 <div class="form-container">
 
 <form class="form-horizontal" method="GET" action="/haku">
@@ -152,21 +121,23 @@ background-position: center;
 
 
 <script src="static/js/paikannimet.js"></script>
-
-<script>
-  $(function() {
-    $( "#datepicker" ).datepicker({ altField: "#inputPvm", minDate: 0, altFormat: "d.m.yy", dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
-  monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]});
-  });
-  </script>
-
 <script>
 window.onload = function() {
   // Asetetaan oletuslähtöaika ja lähtöpvm
   var dt = new Date();
+  $$("#inputPvm").val([dt.getDate(), dt.getMonth() + 1, dt.getFullYear()].join("."));
   $$("#inputTunnit").val(dt.getHours() + 1);
   $$("#inputMinuutit").val(dt.getMinutes());
+
+  // Datepicker
+  var dpSettings = {
+    altField: "#inputPvm",
+    minDate: 0,
+    altFormat: "d.m.yy",
+    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]
   };
+
   $$("#inputPvm").datepicker(dpSettings);
 
   // Autocomplete
