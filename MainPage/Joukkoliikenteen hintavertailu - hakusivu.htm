@@ -6,18 +6,32 @@
 <meta name="description" content="description tähän">
 <meta name="keywords" content="keywordsit tähän">
 <meta name="author" content="authorit tähän">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap-responsive.min.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/style.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/testi.css">
 <link href='http://fonts.googleapis.com/css?family=Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery.min.js"></script>
+<script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery-ui.min.js"></script>
+<script>
+  $(function() {
+    $( "#datepicker" ).datepicker({ altField: "#inputPvm", minDate: 0, altFormat: "d.m.yy", dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+  monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]});
+  });
+  </script>
 </head>
 <body>
   <div class="container">
-    <div class="leaderboard" id="banneri">
+    <div class="hidden-phone banner" id="banneri">
       <h1>Millä matkaan?</h1>
       <p>Julkisen liikenteen ja henkilöautoilun vertailusovellus<p>
       </div>
+    <div class="visible-phone banner" style="text-align: center; background-color: #EEEEEE">
+    <h2>Millä matkaan?</h2>
+    <h4>Julkisen liikenteen ja henkilöautoilun vertailusovellus</h4>
+    </div>
       <div class="hero-unit">
        <div class="container" id="form-container">
         <!-- action="http://www.junavsbussi.appspot.com/haku" -->
@@ -50,6 +64,13 @@
                   <option>Saapumisaika</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <div id="datepicker" style="font-family: default; font-size: 12px; line-height: 18px;">
+            </div>
             </div>
           </div>
 
@@ -130,19 +151,6 @@
   $("#inputTunnit").val(dt.getHours() + 1);
   $("#inputMinuutit").val(dt.getMinutes());
 
-// Lähtöaika/Saapumisaika-valitsin
-$("#aAikatyyppi").click(function() {
-  var btn = $("#btnAikatyyppi")[0],
-  vanhaTyyppi = $(btn).text().trim(),
-  uusiTyyppi = $(this).text().trim();
-  $(this).text(vanhaTyyppi);
-  $(btn).text(uusiTyyppi);
-  if (uusiTyyppi == "Lähtöaika") {
-    $("#inputTyyppi").val("lahtoaika");
-  } else {
-    $("#inputTyyppi").val("saapumisaika");
-  }
-})
 
 $("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
 
