@@ -52,12 +52,13 @@ class ScraperWrapper:
         self.paikat = paikat
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
-            bussi=True, juna=True, auto=True, alennusluokka=0, max_lkm=6):
+            bussi=True, juna=True, auto=True, alennusluokka=0, max_lkm=6,
+            polttoaine=0, kulutus=6.5):
         """
         Palauttaa valitulle matkalle löytyneet yhteydet.
         """
         assert type(mista) == type(mihin) == unicode
-        assert lahtoaika is not None or saapumisaika is not None
+        assert lahtoaika is not None or saapumisaika is not None  # TODO debug
         logging.info("hae_matka(mista=%s, mihin=%s" % (mista, mihin))
 
         # Selvitetään haettuja paikkoja vastaavat MH:n, VR:n ja Googlen paikat:
@@ -128,9 +129,10 @@ class ScraperWrapper:
 
             # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
             if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
-                hinnat = self.hae_bensan_hinnat()
+                hinta = self.hae_bensan_hinnat()[polttoaine]
                 pit = tulos["matkanpituus"]
-                tulos["hinnat"] = [round(pit*(6.0/100.0)*h, 2) for h in hinnat]
+                tulos["polttoaineen_hinta"] = hinta
+                tulos["hinta"] = round(pit * (kulutus / 100.0) * hinta, 2)
 
             assert tulos is not None  # TODO debug
             return tulos, tyyppi
@@ -184,14 +186,12 @@ class ScraperWrapper:
                 askeleet_vas = min(int(ceil((max_lkm - 1) / 2.0)), i)
                 askeleet_oik = max_lkm - 1 - askeleet_vas
                 askeleet_vas += (i + askeleet_oik + 1) - len(tulos)
-                print "i=%d, vas=%d, oik=%d" % (i, askeleet_vas, askeleet_oik)
                 ret = tulos[i - askeleet_vas:i + askeleet_oik + 1]
 
         if not ret:
             ret = tulos[-max_lkm:]
 
-        # TODO debug
-        assert len(ret) == min(max_lkm, len(tulos))
+        assert len(ret) == min(max_lkm, len(tulos))  # TODO debug
         return ret
 
 

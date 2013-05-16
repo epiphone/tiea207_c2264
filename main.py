@@ -12,12 +12,96 @@ import time
 import logging
 
 
-### APUFUNKTIOT & TEMPLATEFUNKTIOT ###
+### GLOBAALIT & ASETUKSET ###
 
 
 LOMAKE_PVM_FORMAATTI = "%d.%m.%Y %H:%M"
 SOVELLUS_PVM_FORMAATTI = "%Y-%m-%d %H:%M"
 JS_PVM_FORMAATTI = "%Y-%m-%dT%H:%M"
+
+# (x, y) missä x on polttoaine (95, 98, diesel) ja y on keskikulutus (l/100km)
+KULUTUSLUOKAT = [(0, 4.5), (0, 6.5), (0, 8.5), (1, 4.5), (1, 6.5), (1, 8.5),
+    (2, 3.7), (2, 5.7), (2, 7.7)]
+
+# Reititykset:
+urls = (
+    "/", "Index",
+    "/haku", "Haku"
+)
+
+scraper = ScraperWrapper()
+render = web.template.render("templates/", base="base")
+
+
+### SIVUT ###
+
+
+class Index:
+    def GET(self):
+        """Pääsivu, joka sisältää hakuikkunan."""
+        return render.index()
+
+
+class Haku:
+    def GET(self):
+        """Sivu, joka esittää haun tulokset."""
+        # Mitataan matkaselvityksen kesto:  # TODO debug
+        t = time.time()
+
+        # Poimitaan parametrit URLista:
+        inp = web.input(h=None, min=None, pvm=None, juna=False, bussi=False,
+            auto=False, tyyppi="saapumisaika", vis=False, ale=0, kulutus=0)
+        mista, mihin = inp.mista, inp.mihin
+        h, mins, pvm = inp.h, inp.min, inp.pvm
+        juna, bussi, auto = inp.juna, inp.bussi, inp.auto
+        ale, kulutusluokka = int(inp.ale), int(inp.kulutus)
+        aikatyyppi = inp.tyyppi
+        visualisaatio = True if inp.vis else False
+
+        # Validoitaan parametrit:
+        if not mista or not mihin:
+            return "Lähtö- ja saapumispaikka tulee määrittää."  # TODO
+        if not ale in range(7):
+            return "Virheellinen alennusluokka."  # TODO
+        if not kulutusluokka in range(9):
+            return "Virheellinen kulutusluokka."  # TODO
+        if any(x is None or x == "" for x in [h, mins, pvm]):
+            return "Aika ja pvm tulee määrittää."  # TODO
+
+        polttoaine, kulutus = KULUTUSLUOKAT[int(kulutusluokka)]
+
+        # Haettiinko saapumis- vai lähtöajan perusteella:
+        aika = formatoi_aika(h, mins, pvm)
+        if aikatyyppi == "saapumisaika":
+            saika, laika = aika, None
+        else:
+            saika, laika = None, aika
+
+        params = dict(
+            mista=mista.lower(),
+            mihin=mihin.lower(),
+            lahtoaika=laika,
+            saapumisaika=saika,
+            bussi=bussi,
+            juna=juna,
+            auto=auto,
+            alennusluokka=ale,
+            polttoaine=polttoaine,
+            kulutus=kulutus)
+
+        logging.info(str(params))  # TODO debug
+        matkat = scraper.hae_matka(**params)
+        taydenna_matkatiedot(matkat, pvm, laika, saika)
+
+        t = str(round(time.time() - t, 2))
+        if visualisaatio:
+            dt = laika or saika
+            dt = dt.split()[0] + "T" + dt.split()[1]
+            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt)
+        return render.results(matkat=matkat, params=params, t=t)
+
+
+### APUFUNKTIOT & TEMPLATEFUNKTIOT ###
 
 
 def kesto_tunneiksi(kesto):
@@ -43,10 +127,6 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
     if "auto" in matkat and not "virhe" in matkat["auto"]:
         auto = matkat["auto"]
         auto["luokka"] = "auto"
-
-        # TODO tulevaisuudessa vain yksi hinta
-        if isinstance(auto["hinnat"], list):
-            auto["hinta"] = auto["hinnat"][0]
 
         auto["tunnit"] = kesto_tunneiksi(auto["kesto"])
         if lahtoaika:
@@ -88,80 +168,6 @@ def formatoi_aika(h, mins, pvm):
     pvm_str = "%s %s:%s" % (pvm, h, mins)
     dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
     return datetime.strftime(dt, SOVELLUS_PVM_FORMAATTI)
-
-
-### GLOBAALIT & ASETUKSET ###
-
-
-# Reititykset:
-urls = (
-    "/", "Index",
-    "/haku", "Haku"
-)
-
-scraper = ScraperWrapper()
-render = web.template.render("templates/", base="base")
-
-
-### SIVUT ###
-
-
-class Index:
-    def GET(self):
-        """Pääsivu, joka sisältää hakuikkunan."""
-        return render.index()
-
-
-class Haku:
-    def GET(self):
-        """Sivu, joka esittää haun tulokset."""
-        # Mitataan matkaselvityksen kesto:  # TODO debug
-        t = time.time()
-
-        # Poimitaan parametrit URLista:
-        inp = web.input(h=None, min=None, pvm=None, ale="0", juna=False,
-            bussi=False, auto=False, aikatyyppi="saapumisaika", vis=False)
-        mista, mihin = inp.mista, inp.mihin
-        h, mins, pvm, ale = inp.h, inp.min, inp.pvm, inp.ale
-        juna, bussi, auto = inp.juna, inp.bussi, inp.auto
-        aikatyyppi = inp.aikatyyppi
-        visualisaatio = True if inp.vis else False
-
-        # Validoitaan parametrit:
-        if not mista or not mihin:
-            return "Lähtö- ja saapumispaikka tulee määrittää."  # TODO
-        if not int(ale) in range(7):
-            return "Virheellinen alennusluokka."  # TODO
-        if any(x is None or x == "" for x in [h, mins, pvm]):
-            return "Aika ja pvm tulee määrittää."  # TODO
-
-        # Haettiinko saapumis- vai lähtöajan perusteella:
-        aika = formatoi_aika(h, mins, pvm)
-        if aikatyyppi == "saapumisaika":
-            saika, laika = aika, None
-        else:
-            saika, laika = None, aika
-
-        params = dict(
-            mista=mista.lower(),
-            mihin=mihin.lower(),
-            lahtoaika=laika,
-            saapumisaika=saika,
-            bussi=bussi,
-            juna=juna,
-            auto=auto,
-            alennusluokka=ale)
-
-        logging.info(str(params))  # TODO debug
-        matkat = scraper.hae_matka(**params)
-        taydenna_matkatiedot(matkat, pvm, laika, saika)
-
-        t = str(round(time.time() - t, 2))
-        if visualisaatio:
-            dt = laika or saika
-            dt = dt.split()[0] + "T" + dt.split()[1]
-            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt)
-        return render.results(matkat=matkat, params=params, t=t)
 
 
 ### INIT ###

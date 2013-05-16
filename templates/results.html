@@ -41,11 +41,8 @@ $else:
       <strong>$matkat["auto"]["mista"] - $matkat["auto"]["mihin"]</strong><br>
       Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
       Kesto: $matkat["auto"]["kesto"]<br>
-      $if "hinnat" in matkat["auto"]:
-        $ h1, h2, strong = matkat["auto"]["hinnat"]
-        Hinnat: <b>$h1</b>€ (95E10), <b>$h2</b>€ (98E), <b>$strong</b>€ (Diesel)<br>
-      $else:
-        Hintojen hakeminen epäonnistui.
+      Hinta: $matkat["auto"]["hinta"]<br>
+      Polttoaineen hinta: $matkat["auto"]["polttoaineen_hinta"]
     <br>
 
 <a href="/">Takaisin</a>
