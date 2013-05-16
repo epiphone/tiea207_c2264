@@ -7,123 +7,140 @@
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/style.css">
 <link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/testi.css">
+<!-- Otetaan tyyli erillisestä tiedostosta (onko tarkoitus ottaa yhdestä yhteisestä tiedostosta?) -->
+<link rel="stylesheet" type="text/css" href="./Joukkoliikenteen hintavertailu - prototyyppi_files/taulukkoTyyli.css">
 
 </head>
 	
 <body>
-
-	<div>
-	<h3> Henkilöauto </h3>
-	<table class="table table-striped">
-	<thead>
-	<tr>
-		<th>Lähtöaika</th>
-		<th>Perillä</th>
-		<th>Pituus</th>
-		<th>Hinta</th>
-		<th>Url</th>
-	</tr>
-	</thead>
-	<tbody>
-		<td>12:00</td>
-		<td>13:51</td>
-		<td>147,0</td>
-		<td>14.21€ (95E10), 14.68€ (98E), 13.09€ (Diesel)</td>
-		<td>
-			<a href="http://maps.google.com">Kartalle</a>
-		</td>
-	</tbody>
-	</table>
 	
-	</div>
-	<h3> Juna ja bussi </h3>
+  <div class="container" >
+  <div>
+  <table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Lähtöaika</th>
+	<th>Perillä</th>
+	<th>Kesto</th>
+	<th>Pituus</th>
+	<th>Hinta</th>
+	<th></th>
+  </tr>
+  </thead>
+	<tbody>
+	  <td>12:00</td>
+	  <td>13:51</td>
+	  <td>1 h 51 min</td>
+	  <td>147,0</td>
+	  <td>14.21€ (95E10), 14.68€ (98E), 13.09€ (Diesel)</td>
+	  <td>
+		<a href="http://maps.google.com">Kartalle</a>
+	  </td>
+	</tbody>
+  </table>
+	
+  </div>
+	<hr>
 	<table class="table table-striped" id="tulokset">
-	<thead>
-	<tr>
-		<th> </th>
-		<th>
+	  <thead>
+	    <tr>
+		  <th> </th>
+		  <th>
 			<a href="">Lähtöaika</a>
-		</th>
-		<th>
+		  </th>
+		  <th>
 			<a href="">Perillä</a>
-		</th>
-		<th> Vaihdot</th>
-		<th>
+		  </th>
+		  <th>
+			<a href="">Kesto</a>
+		  </th>
+		  <th>
 			<a href="">Hinta</a>
-		</th>
-		<th> Url</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr>
-		<td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-juna-varit.png" class="img-polaroid"></td>
-		<td>13:45</td>
-		<td>15:35</td>
-		<td>
+		  </th>
+		  <th></th>
+		</tr>
+	  </thead>
+	  
+	  <tbody>
+	    <tr>
+		  <td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-juna-varit-resize.png" class="img-polaroid"></td>
+		  <td>13:45</td>
+		  <td>15:35</td>
+		  <td>1 h 41 min</td>
+		  <td>Perus: 12,80€ <br>Ennakko: 10,80€ <br>Extra: 17,80€ <br>
+		  </td>
+		  <td>
+			<a href="http://www.vr.fi">Ostosivulle</a>
+		  </td>
+		</tr>
+	
+		<tr>
+		  <td id="vaihdot"> Vaihdot:</td>
+		  <td colspan="5">
 			<ol>
-				<li>Pikajuna Jyväskylä - Pieksämäki (13:45 - 14:34)</li>
-				<li>InterCity Pieksämäki - Kuopio (14:44 - 15:43)</li>
+		  	  <li>Pikajuna Jyväskylä - Pieksämäki (13:45 - 14:34)</li>
+			  <li>InterCity Pieksämäki - Kuopio (14:44 - 15:43)</li>
 			</ol>
-		</td>
-		<td>12,80</td>
-		<td>
-			<a href="http://www.vr.fi">Tästä ostosivulle</a>
-		</td>
-	</tr>
+		  </td>
+		</tr>
 	
-	<tr>
-		<td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-juna-varit.png" class="img-polaroid"> </td>
-		<td>16:45</td>
-		<td>18:57</td>
-		<td>
+		<tr>
+		  <td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-juna-varit-resize.png" class="img-polaroid"> </td>
+		  <td>16:45</td>
+		  <td>18:57</td>
+		  <td>1 h 51 min</td>
+		  <td>Perus: 12,80€ <br>Ennakko: 10,80€ <br>Extra: 17,80€ <br>
+		  </td>
+		  <td>
+			<a href="http://www.vr.fi">Ostosivulle</a>
+		  </td>
+		</tr>
+	
+		<tr>
+		  <td id="vaihdot"> Vaihdot:</td>
+		  <td colspan="5">
 			<ol>
-				<li>InterCity Jyväskylä - Pieksämäki (16:45 - 17:34)</li>
-				<li>InterCity Pieksämäki - Kuopio (17:45 - 18:57)</li>
+			  <li>InterCity Jyväskylä - Pieksämäki (16:45 - 17:34)</li>
+			  <li>InterCity Pieksämäki - Kuopio (17:45 - 18:57)</li>
 			</ol>
-		</td>
-		<td>12,80</td>
-		<td>
-			<a href="http://www.vr.fi">Tästä ostosivulle</a>
-		</td>
-	</tr>
+		  </td>
+		</tr>
 	
-	<tr>
-		<td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-bussi-varit.png" class="img-polaroid"></td>
-		<td>06:30</td>
-		<td>08:45</td>
-		<td>
-		</td>
-		<td>25,60</td>
-		<td>
-			<a href="http://www.matkahuolto.fi">Tästä ostosivulle</a>
-		</td>
-	</tr>
+		<tr>
+		  <td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-bussi-varit-resize.png" class="img-polaroid"></td>
+		  <td>06:30</td>
+		  <td>08:45</td>
+		  <td>1 h 51 min</td>
+		  <td>25,60€</td>
+		  <td>
+			<a href="http://www.matkahuolto.fi">Ostosivulle</a>
+		  </td>
+		</tr>
 	
-	<tr>
-		<td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-bussi-varit.png" class="img-polaroid"></td>
-		<td>08:05</td>
-		<td>11:40</td>
-		<td>
-		</td>
-		<td>32,70</td>
-		<td>
-			<a href="http://www.matkahuolto.fi">Tästä ostosivulle</a>
-		</td>
-	</tr>
+		<tr>
+		  <td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-bussi-varit-resize.png" class="img-polaroid"></td>
+		  <td>08:05</td>
+		  <td>11:40</td>
+		  <td>1 h 51 min</td>
+		  <td>32,70€<br> Tarjous: 25,50€</td>
+		  <td>
+			<a href="http://www.matkahuolto.fi">Ostosivulle</a>
+		  </td>
+		</tr>
 	
-	<tr>
-		<td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-bussi-varit.png" class="img-polaroid"></td>
-		<td>10:45</td>
-		<td>13:00</td>
-		<td>
-		</td>
-		<td>25,60</td>
-		<td>
-			<a href="http://www.matkahuolto.fi">Tästä ostosivulle</a>
-		</td>
-	</tr>
-	</tbody>
+		<tr>
+		  <td> <img src="./Joukkoliikenteen hintavertailu - prototyyppi_files/icon-bussi-varit-resize.png" class="img-polaroid"></td>
+		  <td>10:45</td>
+		  <td>13:00</td>
+		  <td>1 h 51 min</td>
+		  <td>25,60€</td>
+		  <td>
+			<a href="http://www.matkahuolto.fi">Ostosivulle</a>
+		  </td>
+		</tr>
+	  </tbody>
 	</table>
+  </div>
 	
 </body>
 	
