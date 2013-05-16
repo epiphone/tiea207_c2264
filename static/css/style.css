@@ -54,7 +54,12 @@
 /* TULOSSIVUN SIVUPALKKI */
 .sidebar-nav-fixed {
     position: fixed;
-    width: 20%;
+    width: 18%;
+    font-size: 12px;
+    border-radius: 20px 20px 20px 20px;
+    /*-moz-box-shadow: 1px 2px 3px #484848;
+    -webkit-box-shadow: 1px 1px 3px #484848;
+    box-shadow: 1px 1px 3px #484848;*/
 }
 
 @media (max-width: 767px) {
@@ -68,6 +73,20 @@
         position: static;
         width: auto;
     }
+}
+
+.sidebar-nav-fixed input {
+    height: 15px;
+}
+
+.sidebar-nav-fixed label {
+    font-size: 12px;
+    margin: 5px 0 0 0;
+}
+
+.sidebar-nav-fixed select {
+    font-size: 12px;
+    height: 26px;
 }
 
 .breaker {
@@ -92,11 +111,6 @@
 
 .ui-datepicker-current-day {
     background-color: lightblue;
-}
-
-.ui-datepicker-inline {
-    width: 216px;
-    height: auto;
 }
 
 .ui-datepicker-calendar {

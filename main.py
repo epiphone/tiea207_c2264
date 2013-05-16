@@ -22,7 +22,8 @@ JS_PVM_FORMAATTI = "%Y-%m-%dT%H:%M"
 # (x, y) missä x on polttoaine (95, 98, diesel) ja y on keskikulutus (l/100km)
 KULUTUSLUOKAT = [(0, 4.5), (0, 6.5), (0, 8.5), (1, 4.5), (1, 6.5), (1, 8.5),
     (2, 3.7), (2, 5.7), (2, 7.7)]
-
+ALENNUSLUOKAT = ["Aikuinen", "Lapsi (4-11v)", "Nuori (12-16v)", "Opiskelija",
+    "Varusmies", "Siviilipalvelusmies", "Eläkeläinen", "Lehdistö"]
 # Reititykset:
 urls = (
     "/", "Index",
@@ -93,11 +94,14 @@ class Haku:
         matkat = scraper.hae_matka(**params)
         taydenna_matkatiedot(matkat, pvm, laika, saika)
 
+        # TODO turhat parametrit pois
         t = str(round(time.time() - t, 2))
         if visualisaatio:
             dt = laika or saika
             dt = dt.split()[0] + "T" + dt.split()[1]
-            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt)
+            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt,
+                pvm=pvm, h=h, mins=mins, aikatyyppi=aikatyyppi,
+                aleluokka=ale, aleluokat=ALENNUSLUOKAT)
         return render.results(matkat=matkat, params=params, t=t)
 
 
