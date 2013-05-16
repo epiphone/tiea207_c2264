@@ -7,7 +7,7 @@ def index():
     loop = ForLoop()
     self = TemplateResult(); extend_ = self.extend
     extend_([u'<div class="container index-container">\n'])
-    extend_([u'<div class="banner"></div>\n'])
+    extend_([u'<div class="hidden-phone banner"></div>\n'])
     extend_([u'\n'])
     extend_([u'<div class="form-container">\n'])
     extend_([u'\n'])
@@ -279,6 +279,7 @@ def base (content):
     extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
     extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
     extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'])
     extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
     extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
     extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])

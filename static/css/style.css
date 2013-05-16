@@ -2,13 +2,14 @@
 .index-container {
     background-color: #EEEEEE;
     margin: 0 auto;
+    min-width: 550px;
     max-width: 70%;
     border-radius: 0 0 20px 20px;
     padding: 10px;
 }
 
 .banner {
-    background-image: url("/static/img/ses3.png");
+    background-image: url("/static/img/banner.png");
     background-position: center center;
     background-repeat: no-repeat;
     height: 190px;
