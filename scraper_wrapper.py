@@ -197,7 +197,7 @@ class ScraperWrapper:
 
 # Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()
-tdt = "2013-05-16 22:22"
+tdt = "2013-05-22 22:22"
 oulu = u"oulu"
 tampere = u"tampere"
 

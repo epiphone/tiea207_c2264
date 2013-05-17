@@ -8,14 +8,37 @@
     padding: 10px;
 }
 
-.banner {
-    background-image: url("/static/img/banner.png");
+.header .hidden-phone {
+    background-image: url("/static/img/ses3.png");
     background-position: center center;
     background-repeat: no-repeat;
     height: 190px;
-    margin: 0 auto 60px;
+    margin: 0 auto 30px;
     border: 5px solid;
     border-radius: 2px;
+}
+
+.header .hidden-phone h1 {
+    font-family: 'Days One', sans-serif;
+    font-size: 40px;
+    margin-bottom: 5px;
+    line-height: 1;
+    letter-spacing: -1px;
+    color:black;
+    text-shadow: 2px 2px white;
+}
+
+.header .hidden-phone p {
+    font-family: 'Racing Sans One', cursive;
+    font-size: 25px;
+    font-weight: 200;
+    line-height: 20px;
+    text-shadow: 2px 2px white;
+}
+
+.header .visible-phone {
+    text-align: center;
+    margin-bottom: 60px;
 }
 
 .form-container {
@@ -25,6 +48,56 @@
 
 .footer {
     text-align: center;
+}
+
+
+/* TULOSSIVUN SIVUPALKKI */
+.sidebar-nav-fixed {
+    position: fixed;
+    width: 18%;
+    font-size: 12px;
+    border-radius: 20px 20px 20px 20px;
+    /*-moz-box-shadow: 1px 2px 3px #484848;
+    -webkit-box-shadow: 1px 1px 3px #484848;
+    box-shadow: 1px 1px 3px #484848;*/
+}
+
+@media (max-width: 767px) {
+    .sidebar-nav-fixed {
+        width: auto;
+    }
+}
+
+@media (max-width: 979px) {
+    .sidebar-nav-fixed {
+        position: static;
+        width: auto;
+    }
+}
+
+.sidebar-nav-fixed input {
+    height: 15px;
+}
+
+.sidebar-nav-fixed label {
+    font-size: 12px;
+    margin: 5px 0 0 0;
+}
+
+.sidebar-nav-fixed select {
+    font-size: 12px;
+    height: 26px;
+}
+
+.breaker {
+  width: 100%;
+  height: 1px;
+  border-top: 1px dotted #CCC;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size:1px;
+  line-height:0;
+  float:left;
 }
 
 
@@ -38,11 +111,6 @@
 
 .ui-datepicker-current-day {
     background-color: lightblue;
-}
-
-.ui-datepicker-inline {
-    width: 216px;
-    height: auto;
 }
 
 .ui-datepicker-calendar {
@@ -90,6 +158,9 @@
 .chart {
     font-family: Arial, sans-serif;
     font-size: 10px;
+    background-color: #FCFCFC;
+    border: 1px solid #C1CDCD;
+    border-radius: 8px;
 }
 
 .axis path, .axis line {
