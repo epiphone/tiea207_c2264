@@ -67,8 +67,8 @@ class MHScraper:
     def laske_alennus(self, perus_hinta, alennusluokka, linja):
         """lasketaan alennushinta"""
         hinta = perus_hinta[0]
-        hinnat = perus_hinta[1]
         tarjous = perus_hinta[1]
+                
         if alennusluokka == 0:
             return perus_hinta
 
@@ -80,13 +80,19 @@ class MHScraper:
                     try:
                         return [self.vakio_hinnat[hinta][0], tarjous]
                     except KeyError:
-                        return None
+                        try:
+                            return [self.pika_hinnat[hinta][0], tarjous]
+                        except KeyError:
+                            return None
                     
                 else:
                     try:
                         return [self.vakio_hinnat[hinta][1], tarjous]
                     except KeyError:
-                        return None
+                        try:
+                            return [self.pika_hinnat[hinta][1], tarjous]
+                        except KeyError:
+                            return None
                 
             if linja.lower() == "pika" and hinta < 18.80:
                 
@@ -94,15 +100,21 @@ class MHScraper:
                     try:
                         return [self.pika_hinnat[hinta][0], tarjous]
                     except KeyError:
-                        return None
+                        try:
+                            return [self.vakio_hinnat[hinta][0], tarjous]
+                        except KeyError:
+                            return None
                 else:
                     try:
                         return [self.pika_hinnat[hinta][1], tarjous]            
                     except KeyError:
-                        return None
+                        try:
+                            return [self.vakio_hinnat[hinta][1], tarjous] 
+                        except KeyError:
+                            return None
 
             uusihinta = hinta/2
-            return [round(uusihinta, 1), tarjous]            
+            return [round(uusihinta, 1), tarjous]
 
         if alennusluokka == 3 or alennusluokka == 4 or alennusluokka == 6:
             
@@ -110,13 +122,20 @@ class MHScraper:
                 try:
                     return [self.vakio_hinnat[hinta][2], tarjous]                
                 except KeyError:
-                    return None
+                    try:
+                        return [self.pika_hinnat[hinta][2], tarjous]
+                    except KeyError:
+                        return None
+                     
                 
             if linja.lower() == "pika" and hinta < 18.80:
                 try:
                     return [self.pika_hinnat[hinta][2], tarjous]                    
                 except KeyError:
-                    return None
+                    try:
+                        return [self.vakio_hinnat[hinta][2], tarjous]
+                    except KeyError:
+                        return None
 
             uusihinta = hinta - (hinta*0.3)
             return [round(uusihinta, 1), tarjous]            
@@ -536,22 +555,23 @@ def main():
 
     scraper = MHScraper()
 
-    matka = scraper.hae_matka("jyväskylä", "ivalo",
-                              None, "2013-05-16 12:01")
+    matka = scraper.hae_matka("helsinki", "espoon keskus (espoo)",
+                              None, "2013-05-20 12:01")
     
-    for rivi in matka:
-        asd = 1
-        lista = []
-        lista.append(str(rivi['hinnat'][0]))
-        while (asd < 7):
-            ale = scraper.laske_alennus(rivi['hinnat'],
-                                        asd, rivi['vaihdot'][0]['tyyppi'])
-            if ale is None:
-                lista.append(None)
-            else:
-                lista.append(str(ale[0]))
-            asd = asd+1
-        print lista
+    if matka is not None:
+        for rivi in matka:
+            asd = 1
+            lista = []
+            lista.append(str(rivi['hinnat'][0]))
+            while (asd < 7):
+                ale = scraper.laske_alennus(rivi['hinnat'],
+                                            asd, rivi['vaihdot'][0]['tyyppi'])
+                if ale is None:
+                    lista.append(None)
+                else:
+                    lista.append(str(ale[0]))
+                asd = asd+1
+            print lista
         
 #    print scraper.laske_alennus([None, None], 1, "pika")
 
