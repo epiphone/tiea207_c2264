@@ -99,12 +99,12 @@ class VRScraper:
             if hinnat[1]:
                 hinta_lukuna = hinnat[1]
                 hinnat[1] = hinta_lukuna / 2
-                hinnat[1] = round(hinnat[1], 2)
+                hinnat[1] = round(hinnat[1], 1)
                 if hinnat[1] < 2.60:
                     hinnat[1] = 2.60
             if hinnat[2]:
                 hinnat[2] = hinnat[2] / 2
-                hinnat[2] = round(hinnat[2], 2)
+                hinnat[2] = round(hinnat[2], 1)
 
         return hinnat
 
