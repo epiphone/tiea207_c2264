@@ -57,6 +57,12 @@
     border-radius: 20px 20px 20px 20px;
 }
 
+/*INFO-JA PALAUTESIVU*/
+.tekstikappale {
+    margin-bottom: 25px;
+}
+
+
 /* TULOSSIVUN SIVUPALKKI */
 .sidebar-nav-fixed {
     position: fixed;

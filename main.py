@@ -30,7 +30,9 @@ ALENNUSLUOKAT = [(0, "Aikuinen"), (1, "Lapsi (4-11v)"), (3, "Nuori (12-16v)"),
 # Reititykset:
 urls = (
     "/", "Index",
-    "/haku", "Haku"
+    "/haku", "Haku",
+    "/info", "Info",
+    "/palaute", "Palaute"
 )
 
 scraper = ScraperWrapper()
@@ -109,6 +111,22 @@ class Haku:
         return render.results(matkat=matkat, params=params, t=t, dt=dt,
             pvm=pvm, h=h, mins=mins, aikatyyppi=aikatyyppi,
             aleluokka=ale, aleluokat=ALENNUSLUOKAT)
+
+
+class Info:
+    def GET(self):
+        """
+        Palauttaa staattisen infosivun.
+        """
+        return render.info()
+
+
+class Palaute:
+    def GET(self):
+        """
+        Palauttaa palautesivun.
+        """
+        return render.palaute()
 
 
 ### APUFUNKTIOT & TEMPLATEFUNKTIOT ###
