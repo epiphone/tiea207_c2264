@@ -53,16 +53,16 @@
     text-align: center;
 }
 
+.well {
+    margin-top: 10px;
+    border-radius: 20px 20px 20px 20px;
+}
 
 /* TULOSSIVUN SIVUPALKKI */
 .sidebar-nav-fixed {
     position: fixed;
     width: 18%;
     font-size: 12px;
-    border-radius: 20px 20px 20px 20px;
-    /*-moz-box-shadow: 1px 2px 3px #484848;
-    -webkit-box-shadow: 1px 1px 3px #484848;
-    box-shadow: 1px 1px 3px #484848;*/
 }
 
 @media (max-width: 767px) {

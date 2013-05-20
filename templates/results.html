@@ -1,10 +1,10 @@
 $def with (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat)
 
-DEBUG
-<strong>$t s</strong>
-$for k, v in params.iteritems():
-  $k=<strong>$v</strong>
-dt=<strong>$dt</strong>
+$#DEBUG
+$#<strong>$t s</strong>
+$#$for k, v in params.iteritems():
+$#  $k=<strong>$v</strong>
+$#dt=<strong>$dt</strong>
 
 <div class="container-fluid">
 <div class="row-fluid">
@@ -82,7 +82,7 @@ dt=<strong>$dt</strong>
 <!-- Hakutulokset -->
 <div class="span9 well">
 <div class="results-header">
-  <h3>$params["mista"].title() - $params["mihin"].title()</h3>
+  <h3>$params["mista"].title() - $params["mihin"].title() <small>$pvm</small></h3>
   <small>Järjestys:</small>
   <div class="btn-group">
     <button class="btn btn-link btn-small disabled" onclick="sortByDt1()" >Lähtö</button>

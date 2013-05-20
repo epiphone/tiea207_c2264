@@ -11,7 +11,6 @@ import web
 from scraper_wrapper import ScraperWrapper
 from datetime import datetime, timedelta
 import time
-import logging
 
 
 ### GLOBAALIT & ASETUKSET ###
@@ -93,7 +92,8 @@ class Haku:
             auto=auto,
             aleluokka=ale,
             polttoaine=polttoaine,
-            kulutus=kulutus)
+            kulutus=kulutus,
+            max_lkm=5)
 
         matkat = scraper.hae_matka(**params)
         # TODO virheenkäsittely
