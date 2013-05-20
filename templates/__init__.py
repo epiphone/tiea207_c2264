@@ -2,6 +2,42 @@ from web.template import CompiledTemplate, ForLoop, TemplateResult
 
 
 # coding: utf-8
+def base (content):
+    __lineoffset__ = -4
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
+    extend_([u'<!DOCTYPE html>\n'])
+    extend_([u'<html>\n'])
+    extend_([u'<head>\n'])
+    extend_([u'  <meta charset="utf-8">\n'])
+    extend_([u'  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>\n'])
+    extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
+    extend_([u'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])
+    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
+    extend_([u'  <link href="http://fonts.googleapis.com/css?family=Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext" rel="stylesheet" type="text/css">\n'])
+    extend_([u'</head>\n'])
+    extend_([u'<body>\n'])
+    extend_([u'\n'])
+    extend_([u'  ', escape_(content, False), u'\n'])
+    extend_([u'\n'])
+    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n'])
+    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>\n'])
+    extend_([u'<script src="/static/js/bootstrap.min.js"></script>\n'])
+    extend_([u'\n'])
+    extend_([u'</body>\n'])
+    extend_([u'</html>\n'])
+
+    return self
+
+base = CompiledTemplate(base, 'templates\\base.html')
+join_ = base._join; escape_ = base._escape
+
+# coding: utf-8
 def index (aleluokat):
     __lineoffset__ = -4
     loop = ForLoop()
@@ -151,8 +187,127 @@ def index (aleluokat):
 
     return self
 
-index = CompiledTemplate(index, 'templates/index.html')
+index = CompiledTemplate(index, 'templates\\index.html')
 join_ = index._join; escape_ = index._escape
+
+# coding: utf-8
+def info():
+    __lineoffset__ = -5
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'<div class="container">\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="header">\n'])
+    extend_([u'  <div class="hidden-phone">\n'])
+    extend_([u'    <h1>Mill\xe4 matkaan?</h1>\n'])
+    extend_([u'    <p>Julkisen liikenteen ja henkil\xf6autoilun vertailusovellus</p>\n'])
+    extend_([u'  </div>\n'])
+    extend_([u'\n'])
+    extend_([u'  <div class="visible-phone">\n'])
+    extend_([u'    <h2>Mill\xe4 matkaan?</h2>\n'])
+    extend_([u'    <h4>Julkisen liikenteen hintavertailusovellus</h4>\n'])
+    extend_([u'  </div>\n'])
+    extend_([u'</div> <!-- /.header -->\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="info-container">\n'])
+    extend_([u'\n'])
+    extend_([u'  <div class="tekstikappale">\n'])
+    extend_([u'       <h3>Sovelluksen tarkoitus</h3>\n'])
+    extend_([u'       <p>Sovelluksen tarkoituksena on tarjota k\xe4ytt\xe4jille helppo ja nopea tapa hakea ja vertailla eri tapoja matkustaa paikasta toiseen.</p>\n'])
+    extend_([u'       </div>\n'])
+    extend_([u'       <div class="tekstikappale">\n'])
+    extend_([u'       <h3>K\xe4ytt\xf6ohjeet</h3>\n'])
+    extend_([u'       <p>Alla on sovelluksen k\xe4ytt\xf6ohjeet</p>\n'])
+    extend_([u'       </div>\n'])
+    extend_([u'        <div class="tekstikappale">\n'])
+    extend_([u'       <h4>Hakeminen</h4>\n'])
+    extend_([u'       <p>P\xe4\xe4sivulla olevaan hakulomakkeeseen sy\xf6t\xe4t matkaasi koskevat tiedot. Mik\xe4li sy\xf6tekent\xe4n reunat ovat punaiset, on sy\xf6tteess\xe4si jotain v\xe4\xe4rin. Aika ja p\xe4iv\xe4m\xe4\xe4r\xe4 sy\xf6tekenttien vieress\xe4 olevalla valikolla voi valita onko antamasi ajankohta matkasi l\xe4ht\xf6- vai saapumisaika. Alennusluokka-valikossa voit kertoa, oletko oikeutettu saamaan alennusta matkalipuistasi, jolloin sovellus voi ilmoittaa oikean hinnan lipuillesi (alennusehdot luettavissa <a href="http://www.vr.fi/fi/index/junaliput.html">VR:n</a> ja <a href="http://www.matkahuolto.fi/fi/matka/hinnat/alennusehdot/">Matkahuollon</a> sivuilla). Keskikulutus-valikossa voit m\xe4\xe4ritt\xe4\xe4 autosi keskikulutuksen. Kulutusarviot pohjautuvat motiva.fi-sivuston tarjoamaan henkil\xf6autojen <a href="http://www.motiva.fi/liikenne/henkiloautoilu/valitse_auto_viisaasti/henkiloautojen_energiamerkinta">energiamerkint\xe4taulukkoon</a>. Viimeisen\xe4 kohtana hakulomakkeessa on kolme valintalaatikkoa. Sovellus hakee yhteyksi\xe4 kaikille niille kulkuv\xe4lineille, joiden valintalaatikko on merkittyn\xe4.</p>\n'])
+    extend_([u'       <p>Kun hakuehdot ovat kunnossa, voit klikata "Hae yhteyksi\xe4"-painiketta, jolloin sovellus siirtyy hakutuloksiin</p>\n'])
+    extend_([u'       </div>\n'])
+    extend_([u'        <div class="tekstikappale">\n'])
+    extend_([u'       <h4>Hakutulosten tarkastelu</h4>\n'])
+    extend_([u'       <p>Tulossivulla n\xe4et hakuehtojasi vastaavat yhteydet. Visualisoinnissa yksi palikka vastaa yht\xe4 yhteytt\xe4 (v\xe4rikoodit: Punainen = Henkil\xf6auto, Sininen = Bussi, Vihre\xe4 = Juna). Voit j\xe4rjestell\xe4 palikoita haluamasi kriteerin mukaan kuvan yl\xe4puolella olevista painikkeista. Klikkaamalla palkkia, siirryt sit\xe4 vastaavan yhteyden tietojen kohdalle alla olevassa taulukossa. Taulukossa n\xe4et yhteyden yksityiskohtaisemmat tiedot ja pystyt my\xf6s taulukossa olevasta linkist\xe4 siirtym\xe4\xe4n joko ostamaan lippua tai tarkastelemaan ajoreitti\xe4. Mik\xe4li tahdot suorittaa uuden haun, voit k\xe4ytt\xe4\xe4 sivun vasemmassa laidassa olevaa hakulomaketta.</p>\n'])
+    extend_([u'       </div>\n'])
+    extend_([u'       <div class="tekstikappale">\n'])
+    extend_([u'       <h3>Mihin hakutulosten hinnat ja aikataulutiedot perustuvat?</h3>\n'])
+    extend_([u'       <p>Hakutuloksissa n\xe4kyv\xe4t hinnat ja aikataulut haetaan VR:n ja Matkahuollon sivustoilta. Henkil\xf6autoilun tapauksessa sovellus hakee Google Mapsista sy\xf6tettyjen paikkojen v\xe4lisen sijainnin ja viimeisimm\xe4n polttoaineen keskihinnan suomessa (http://polttoaine.net), n\xe4iden tietojen ja sy\xf6tt\xe4m\xe4si keskikulutuksen perusteella sovellus laskee haetun matkan bensakulut ja kertoo arvioidun matkan keston.</p>\n'])
+    extend_([u'       <i>Huom! Henkil\xf6autoilun todelliset kilometrikustannukset koostuvat muistakin asioista kuin bensan hinnasta. Lis\xe4tietoja ja laskureita on saatavissa <a href="http://www.autoliitto.fi/tietopankki/">Autoliiton tietopankista</a> ja <a href="http://www.trafi.fi/tieliikenne/ekoautoilu/autoilun_kustannuslaskuri">liikenteen turvallisuusviraston sivustolta.</a></i>\n'])
+    extend_([u'       </div>\n'])
+    extend_([u'       <div class="tekstikappale">\n'])
+    extend_([u'       <h3>Ohjelman l\xe4hdekoodi ja lisenssi</h3>\n'])
+    extend_([u'       <p>Ohjelman l\xe4hdekoodi on vapaasti luettavissa <a href="https://github.com/epiphone/tiea207_c2264">Githubissa.</a> Koodi on julkaistu <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL-lisenssill\xe4.</a></p>\n'])
+    extend_([u'     </div>\n'])
+    extend_([u'\n'])
+    extend_([u'     <div class="control group">\n'])
+    extend_([u'      <div class="controls">\n'])
+    extend_([u'        <a class="btn btn-primary" href=""><i class="icon-arrow-left icon-white"></i> Takaisin p\xe4\xe4sivulle</a>\n'])
+    extend_([u'      </div>\n'])
+    extend_([u'    </div>\n'])
+    extend_([u'\n'])
+    extend_([u'</div> <!-- /.form-container -->\n'])
+    extend_([u'</div> <!-- /.container -->\n'])
+    extend_([u'\n'])
+    extend_([u'<hr>\n'])
+    extend_([u'<div class="container footer">\n'])
+    extend_([u'  <a href="/info">Ohje ja tietoja</a>\n'])
+    extend_([u'  <small> - </small>\n'])
+    extend_([u'  <a href="/palaute">Anna palautetta</a>\n'])
+    extend_([u'  <br>\n'])
+    extend_([u'  <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>\n'])
+    extend_([u'</div>\n'])
+
+    return self
+
+info = CompiledTemplate(info, 'templates\\info.html')
+join_ = info._join; escape_ = info._escape
+
+# coding: utf-8
+def palaute():
+    __lineoffset__ = -5
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'<div class="container info-container">\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="header">\n'])
+    extend_([u'  <div class="hidden-phone">\n'])
+    extend_([u'    <h1>Mill\xe4 matkaan?</h1>\n'])
+    extend_([u'    <p>Julkisen liikenteen ja henkil\xf6autoilun vertailusovellus</p>\n'])
+    extend_([u'  </div>\n'])
+    extend_([u'\n'])
+    extend_([u'  <div class="visible-phone">\n'])
+    extend_([u'    <h2>Mill\xe4 matkaan?</h2>\n'])
+    extend_([u'    <h4>Julkisen liikenteen ja henkil\xf6autoilun vertailusovellus</h4>\n'])
+    extend_([u'  </div>\n'])
+    extend_([u'</div> <!-- /.header -->\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="feedback-container">\n'])
+    extend_([u'\n'])
+    extend_([u'  <iframe src="https://docs.google.com/forms/d/1LPi78AUBg8BzAf4dqxpw27xE7mLNb8hhaIaa0J8fOS4/viewform?embedded=true" width="760" height="583" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>\n'])
+    extend_([u'\n'])
+    extend_([u'  <a class="visible-phone" href="https://docs.google.com/forms/d/1LPi78AUBg8BzAf4dqxpw27xE7mLNb8hhaIaa0J8fOS4/viewform">Siirry t\xe4st\xe4 palautelomakkeeseen</a>\n'])
+    extend_([u'\n'])
+    extend_([u'  <div class="control group">\n'])
+    extend_([u'    <div class="controls">\n'])
+    extend_([u'      <a class="btn btn-primary" href=""><i class="icon-arrow-left icon-white"></i> Takaisin p\xe4\xe4sivulle</a>\n'])
+    extend_([u'    </div>\n'])
+    extend_([u'  </div>\n'])
+    extend_([u'\n'])
+    extend_([u'</div> <!-- /.form-container -->\n'])
+    extend_([u'</div> <!-- /.container -->\n'])
+    extend_([u'\n'])
+    extend_([u'<hr>\n'])
+    extend_([u'<div class="container footer">\n'])
+    extend_([u'  <a href="/info">Ohje ja tietoja</a>\n'])
+    extend_([u'  <small> - </small>\n'])
+    extend_([u'  <a href="/palaute">Anna palautetta</a>\n'])
+    extend_([u'  <br>\n'])
+    extend_([u'  <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>\n'])
+    extend_([u'</div>\n'])
+
+    return self
+
+palaute = CompiledTemplate(palaute, 'templates\\palaute.html')
+join_ = palaute._join; escape_ = palaute._escape
 
 # coding: utf-8
 def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat):
@@ -254,6 +409,17 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
     extend_([u'</div>\n'])
     extend_([u'\n'])
     extend_([u'<div class="results"></div>\n'])
+    extend_([u'<table class="table table-condensed table-results">\n'])
+    extend_([u'  <tr>\n'])
+    extend_([u'    <th>&nbsp;</th>\n'])
+    extend_([u'     <th>L\xe4ht\xf6aika</th>\n'])
+    extend_([u'     <th>Perill\xe4</th>\n'])
+    extend_([u'     <th>Kesto</th>\n'])
+    extend_([u'     <th>Pituus</th>\n'])
+    extend_([u'     <th>Hinta</th>\n'])
+    extend_([u'     <th>&nbsp;</th>\n'])
+    extend_([u'  </tr>\n'])
+    extend_([u'</table>\n'])
     extend_([u'</div> <!-- /.span* -->\n'])
     extend_([u'</div> <!-- /.container -->\n'])
     extend_([u'</div> <!-- /.row -->\n'])
@@ -301,219 +467,6 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
 
     return self
 
-results = CompiledTemplate(results, 'templates/results.html')
+results = CompiledTemplate(results, 'templates\\results.html')
 join_ = results._join; escape_ = results._escape
-
-# coding: utf-8
-def info():
-    __lineoffset__ = -5
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'<div class="container">\n'])
-    extend_([u'\n'])
-    extend_([u'<div class="header">\n'])
-    extend_([u'  <div class="hidden-phone">\n'])
-    extend_([u'    <h1>Mill\xe4 matkaan?</h1>\n'])
-    extend_([u'    <p>Julkisen liikenteen ja henkil\xf6autoilun vertailusovellus</p>\n'])
-    extend_([u'  </div>\n'])
-    extend_([u'\n'])
-    extend_([u'  <div class="visible-phone">\n'])
-    extend_([u'    <h2>Mill\xe4 matkaan?</h2>\n'])
-    extend_([u'    <h4>Julkisen liikenteen hintavertailusovellus</h4>\n'])
-    extend_([u'  </div>\n'])
-    extend_([u'</div> <!-- /.header -->\n'])
-    extend_([u'\n'])
-    extend_([u'<div class="info-container">\n'])
-    extend_([u'\n'])
-    extend_([u'  <div class="tekstikappale">\n'])
-    extend_([u'       <h3>Sovelluksen tarkoitus</h3>\n'])
-    extend_([u'       <p>Sovelluksen tarkoituksena on tarjota k\xe4ytt\xe4jille helppo ja nopea tapa hakea ja vertailla eri tapoja matkustaa paikasta toiseen.</p>\n'])
-    extend_([u'       </div>\n'])
-    extend_([u'       <div class="tekstikappale">\n'])
-    extend_([u'       <h3>K\xe4ytt\xf6ohjeet</h3>\n'])
-    extend_([u'       <p>Alla on sovelluksen k\xe4ytt\xf6ohjeet</p>\n'])
-    extend_([u'       </div>\n'])
-    extend_([u'        <div class="tekstikappale">\n'])
-    extend_([u'       <h4>Hakeminen</h4>\n'])
-    extend_([u'       <p>P\xe4\xe4sivulla olevaan hakulomakkeeseen sy\xf6t\xe4t matkaasi koskevat tiedot. Mik\xe4li sy\xf6tekent\xe4n reunat ovat punaiset, on sy\xf6tteess\xe4si jotain v\xe4\xe4rin. Aika ja p\xe4iv\xe4m\xe4\xe4r\xe4 sy\xf6tekenttien vieress\xe4 olevalla valikolla voi valita onko antamasi ajankohta matkasi l\xe4ht\xf6- vai saapumisaika. Alennusluokka-valikossa voit kertoa, oletko oikeutettu saamaan alennusta matkalipuistasi, jolloin sovellus voi ilmoittaa oikean hinnan lipuillesi (alennusehdot luettavissa <a href="http://www.vr.fi/fi/index/junaliput.html">VR:n</a> ja <a href="http://www.matkahuolto.fi/fi/matka/hinnat/alennusehdot/">Matkahuollon</a> sivuilla). Keskikulutus-valikossa voit m\xe4\xe4ritt\xe4\xe4 autosi keskikulutuksen. Kulutusarviot pohjautuvat motiva.fi-sivuston tarjoamaan henkil\xf6autojen <a href="http://www.motiva.fi/liikenne/henkiloautoilu/valitse_auto_viisaasti/henkiloautojen_energiamerkinta">energiamerkint\xe4taulukkoon</a>. Viimeisen\xe4 kohtana hakulomakkeessa on kolme valintalaatikkoa. Sovellus hakee yhteyksi\xe4 kaikille niille kulkuv\xe4lineille, joiden valintalaatikko on merkittyn\xe4.</p>\n'])
-    extend_([u'       <p>Kun hakuehdot ovat kunnossa, voit klikata "Hae yhteyksi\xe4"-painiketta, jolloin sovellus siirtyy hakutuloksiin</p>\n'])
-    extend_([u'       </div>\n'])
-    extend_([u'        <div class="tekstikappale">\n'])
-    extend_([u'       <h4>Hakutulosten tarkastelu</h4>\n'])
-    extend_([u'       <p>Tulossivulla n\xe4et hakuehtojasi vastaavat yhteydet. Visualisoinnissa yksi palikka vastaa yht\xe4 yhteytt\xe4 (v\xe4rikoodit: Punainen = Henkil\xf6auto, Sininen = Bussi, Vihre\xe4 = Juna). Voit j\xe4rjestell\xe4 palikoita haluamasi kriteerin mukaan kuvan yl\xe4puolella olevista painikkeista. Klikkaamalla palkkia, siirryt sit\xe4 vastaavan yhteyden tietojen kohdalle alla olevassa taulukossa. Taulukossa n\xe4et yhteyden yksityiskohtaisemmat tiedot ja pystyt my\xf6s taulukossa olevasta linkist\xe4 siirtym\xe4\xe4n joko ostamaan lippua tai tarkastelemaan ajoreitti\xe4. Mik\xe4li tahdot suorittaa uuden haun, voit k\xe4ytt\xe4\xe4 sivun vasemmassa laidassa olevaa hakulomaketta.</p>\n'])
-    extend_([u'       </div>\n'])
-    extend_([u'       <div class="tekstikappale">\n'])
-    extend_([u'       <h3>Mihin hakutulosten hinnat ja aikataulutiedot perustuvat?</h3>\n'])
-    extend_([u'       <p>Hakutuloksissa n\xe4kyv\xe4t hinnat ja aikataulut haetaan VR:n ja Matkahuollon sivustoilta. Henkil\xf6autoilun tapauksessa sovellus hakee Google Mapsista sy\xf6tettyjen paikkojen v\xe4lisen sijainnin ja viimeisimm\xe4n polttoaineen keskihinnan suomessa (http://polttoaine.net), n\xe4iden tietojen ja sy\xf6tt\xe4m\xe4si keskikulutuksen perusteella sovellus laskee haetun matkan bensakulut ja kertoo arvioidun matkan keston.</p>\n'])
-    extend_([u'       <i>Huom! Henkil\xf6autoilun todelliset kilometrikustannukset koostuvat muistakin asioista kuin bensan hinnasta. Lis\xe4tietoja ja laskureita on saatavissa <a href="http://www.autoliitto.fi/tietopankki/">Autoliiton tietopankista</a> ja <a href="http://www.trafi.fi/tieliikenne/ekoautoilu/autoilun_kustannuslaskuri">liikenteen turvallisuusviraston sivustolta.</a></i>\n'])
-    extend_([u'       </div>\n'])
-    extend_([u'       <div class="tekstikappale">\n'])
-    extend_([u'       <h3>Ohjelman l\xe4hdekoodi ja lisenssi</h3>\n'])
-    extend_([u'       <p>Ohjelman l\xe4hdekoodi on vapaasti luettavissa <a href="https://github.com/epiphone/tiea207_c2264">Githubissa.</a> Koodi on julkaistu <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL-lisenssill\xe4.</a></p>\n'])
-    extend_([u'     </div>\n'])
-    extend_([u'\n'])
-    extend_([u'     <div class="control group">\n'])
-    extend_([u'      <div class="controls">\n'])
-    extend_([u'        <a class="btn btn-primary" href=""><i class="icon-arrow-left icon-white"></i> Takaisin p\xe4\xe4sivulle</a>\n'])
-    extend_([u'      </div>\n'])
-    extend_([u'    </div>\n'])
-    extend_([u'\n'])
-    extend_([u'</div> <!-- /.form-container -->\n'])
-    extend_([u'</div> <!-- /.container -->\n'])
-    extend_([u'\n'])
-    extend_([u'<hr>\n'])
-    extend_([u'<div class="container footer">\n'])
-    extend_([u'  <a href="/info">Ohje ja tietoja</a>\n'])
-    extend_([u'  <small> - </small>\n'])
-    extend_([u'  <a href="/palaute">Anna palautetta</a>\n'])
-    extend_([u'  <br>\n'])
-    extend_([u'  <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>\n'])
-    extend_([u'</div>\n'])
-
-    return self
-
-info = CompiledTemplate(info, 'templates/info.html')
-join_ = info._join; escape_ = info._escape
-
-# coding: utf-8
-def results_debug (matkat, params, t):
-    __lineoffset__ = -4
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'\n'])
-    extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
-    for k, v in loop.setup(params.iteritems()):
-        extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
-        extend_([u'\n'])
-    if len(matkat) == 0 or matkat is None:
-        extend_([u'<h1>Ei tuloksia</h1>\n'])
-        extend_([u'\n'])
-    else:
-        if "juna" in matkat:
-            extend_([u'<h2>Junayhteydet:</h2>\n'])
-            if "virhe" in matkat["juna"]:
-                extend_([u'<strong>Virhe! ', escape_(matkat["juna"]["virhe"], True), u'</strong>\n'])
-            else:
-                for yhteys in loop.setup(matkat["juna"]):
-                    extend_([u'<strong>#', escape_(loop.index, True), u' ', escape_(yhteys["mista"], True), u' - ', escape_(yhteys["mihin"], True), u'</strong> (', escape_(yhteys["lahtoaika"], True), u' - ', escape_(yhteys["saapumisaika"], True), u') - Kesto: ', escape_(yhteys["kesto"], True), u' Hinta: ', escape_(yhteys["hinnat"][0], True), u'\u20ac<br>\n'])
-                    for vaihto in loop.setup(yhteys["vaihdot"]):
-                        if "lahtopaikka" in vaihto:
-                            extend_([u'<small> - ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["lahtopaikka"], True), u' - ', escape_(vaihto["saapumispaikka"], True), u' (', escape_(vaihto["lahtoaika"], True), u' - ', escape_(vaihto["saapumisaika"], True), u')</small><br>\n'])
-                        elif "mista" in vaihto:
-                            extend_([u'<small> - ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"], True), u' - ', escape_(vaihto["saapumisaika"], True), u')</small><br>\n'])
-                    extend_([u'<br>\n'])
-                    extend_([u'\n'])
-        if "bussi" in matkat:
-            extend_([u'<h2>Bussiyhteydet:</h2>\n'])
-            if "virhe" in matkat["bussi"]:
-                extend_([u'<strong>Virhe!</strong> ', escape_(matkat["bussi"]["virhe"], True), u'\n'])
-            else:
-                for yhteys in loop.setup(matkat["bussi"]):
-                    extend_([u'<strong>#', escape_(loop.index, True), u' ', escape_(yhteys["mista"], True), u' - ', escape_(yhteys["mihin"], True), u'</strong> (', escape_(yhteys["lahtoaika"], True), u' - ', escape_(yhteys["saapumisaika"], True), u') - Kesto: ', escape_(yhteys["kesto"], True), u' Hinta: ', escape_(yhteys["hinnat"][0], True), u'\u20ac<br>\n'])
-                    for vaihto in loop.setup(yhteys["vaihdot"]):
-                        extend_([u'<small> - ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"], True), u' - ', escape_(vaihto["saapumisaika"], True), u')</small><br>\n'])
-                    extend_([u'<br>\n'])
-                    extend_([u'\n'])
-        if "auto" in matkat:
-            extend_([u'<h2>Autoyhteydet:</h2>\n'])
-            if "virhe" in matkat["auto"]:
-                extend_([u'<strong>Virhe!</strong> ', escape_(matkat["auto"]["virhe"], True), u'\n'])
-            else:
-                extend_([u'<strong>', escape_(matkat["auto"]["mista"], True), u' - ', escape_(matkat["auto"]["mihin"], True), u'</strong><br>\n'])
-                extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
-                extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
-                extend_([u'Hinta: ', escape_(matkat["auto"]["hinta"], True), u'<br>\n'])
-                extend_([u'Polttoaineen hinta: ', escape_(matkat["auto"]["polttoaineen_hinta"], True), u'\n'])
-            extend_([u'<br>\n'])
-            extend_([u'\n'])
-    extend_([u'<a href="/">Takaisin</a>\n'])
-
-    return self
-
-results_debug = CompiledTemplate(results_debug, 'templates/results_debug.html')
-join_ = results_debug._join; escape_ = results_debug._escape
-
-# coding: utf-8
-def palaute():
-    __lineoffset__ = -5
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'<div class="container info-container">\n'])
-    extend_([u'\n'])
-    extend_([u'<div class="header">\n'])
-    extend_([u'  <div class="hidden-phone">\n'])
-    extend_([u'    <h1>Mill\xe4 matkaan?</h1>\n'])
-    extend_([u'    <p>Julkisen liikenteen ja henkil\xf6autoilun vertailusovellus</p>\n'])
-    extend_([u'  </div>\n'])
-    extend_([u'\n'])
-    extend_([u'  <div class="visible-phone">\n'])
-    extend_([u'    <h2>Mill\xe4 matkaan?</h2>\n'])
-    extend_([u'    <h4>Julkisen liikenteen ja henkil\xf6autoilun vertailusovellus</h4>\n'])
-    extend_([u'  </div>\n'])
-    extend_([u'</div> <!-- /.header -->\n'])
-    extend_([u'\n'])
-    extend_([u'<div class="feedback-container">\n'])
-    extend_([u'\n'])
-    extend_([u'  <iframe src="https://docs.google.com/forms/d/1LPi78AUBg8BzAf4dqxpw27xE7mLNb8hhaIaa0J8fOS4/viewform?embedded=true" width="760" height="583" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>\n'])
-    extend_([u'\n'])
-    extend_([u'  <a class="visible-phone" href="https://docs.google.com/forms/d/1LPi78AUBg8BzAf4dqxpw27xE7mLNb8hhaIaa0J8fOS4/viewform">Siirry t\xe4st\xe4 palautelomakkeeseen</a>\n'])
-    extend_([u'\n'])
-    extend_([u'  <div class="control group">\n'])
-    extend_([u'    <div class="controls">\n'])
-    extend_([u'      <a class="btn btn-primary" href=""><i class="icon-arrow-left icon-white"></i> Takaisin p\xe4\xe4sivulle</a>\n'])
-    extend_([u'    </div>\n'])
-    extend_([u'  </div>\n'])
-    extend_([u'\n'])
-    extend_([u'</div> <!-- /.form-container -->\n'])
-    extend_([u'</div> <!-- /.container -->\n'])
-    extend_([u'\n'])
-    extend_([u'<hr>\n'])
-    extend_([u'<div class="container footer">\n'])
-    extend_([u'  <a href="/info">Ohje ja tietoja</a>\n'])
-    extend_([u'  <small> - </small>\n'])
-    extend_([u'  <a href="/palaute">Anna palautetta</a>\n'])
-    extend_([u'  <br>\n'])
-    extend_([u'  <a href="https://github.com/epiphone/tiea207_c2264">@Github</a>\n'])
-    extend_([u'</div>\n'])
-
-    return self
-
-palaute = CompiledTemplate(palaute, 'templates/palaute.html')
-join_ = palaute._join; escape_ = palaute._escape
-
-# coding: utf-8
-def base (content):
-    __lineoffset__ = -4
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'\n'])
-    extend_([u'<!DOCTYPE html>\n'])
-    extend_([u'<html>\n'])
-    extend_([u'<head>\n'])
-    extend_([u'  <meta charset="utf-8">\n'])
-    extend_([u'  <title>Joukkoliikenteen hintavertailu - prototyyppi</title>\n'])
-    extend_([u'  <meta name="description" content="description t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="keywords" content="keywordsit t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="author" content="authorit t\xe4h\xe4n">\n'])
-    extend_([u'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-responsive.min.css">\n'])
-    extend_([u'  <link rel="stylesheet" type="text/css" href="/static/css/style.css">\n'])
-    extend_([u'  <link href="http://fonts.googleapis.com/css?family=Days+One|Racing+Sans+One|Monda&subset=latin,latin-ext" rel="stylesheet" type="text/css">\n'])
-    extend_([u'</head>\n'])
-    extend_([u'<body>\n'])
-    extend_([u'\n'])
-    extend_([u'  ', escape_(content, False), u'\n'])
-    extend_([u'\n'])
-    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n'])
-    extend_([u'<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>\n'])
-    extend_([u'<script src="/static/js/bootstrap.min.js"></script>\n'])
-    extend_([u'\n'])
-    extend_([u'</body>\n'])
-    extend_([u'</html>\n'])
-
-    return self
-
-base = CompiledTemplate(base, 'templates/base.html')
-join_ = base._join; escape_ = base._escape
 

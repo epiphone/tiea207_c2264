@@ -115,6 +115,8 @@
     border: 1px solid lightgray;
     width: 180px;
     height: auto;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
 }
 
 .ui-datepicker-current-day {
@@ -169,8 +171,7 @@
 }
 
 .chart {
-    font-family: Arial, sans-serif;
-    font-size: 10px;
+    font: 10px Arial, sans-serif;
     background-color: #FCFCFC;
     border: 1px solid #C1CDCD;
     border-radius: 8px;
