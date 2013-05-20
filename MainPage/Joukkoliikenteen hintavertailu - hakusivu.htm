@@ -15,12 +15,14 @@
 <!-- <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"> -->
 <script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery.min.js"></script>
 <script src="./Joukkoliikenteen hintavertailu - prototyyppi_files/jquery-ui.min.js"></script>
+<!--
 <script>
   $(function() {
     $( "#datepicker" ).datepicker({ altField: "#inputPvm", minDate: 0, altFormat: "d.m.yy", dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
   monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]});
   });
   </script>
+-->
 </head>
 <body>
   <div class="container">
@@ -155,15 +157,18 @@
 $("#inputTyyppi").val("saapumisaika"); // asetetaan oletusarvo
 
 // Datepicker
-var dpSettings = {
-  dateFormat: "dd.mm.yy",
-  dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
-  monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"],
-  defaultDate: null
-};
-$("#inputPvm").datepicker(dpSettings);
-// dpSettings["altField"] = "#inputTestiaika";
-// $("#testiaika").datepicker(dpSettings);
+  var dpSettings = {
+    altField: "#inputPvm",
+    minDate: 0,
+    altFormat: "d.m.yy",
+    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]
+  };
+
+  //Datepicker 2
+  $( "#datepicker" ).datepicker(dpSettings);
+
+   // $$("#inputPvm").datepicker(dpSettings);
 
 // Autocomplete
 var vrAsemat = ['Alavus','Dragsvik','Eno','Enontekiö','Espoo','Haapajärvi','Haapamäki','Haarajoki','Hankasalmi','Hanko','Hanko-Pohjoinen','Harjavalta','Haukivuori','Heinävesi','Helsinki','Helsinki airport','Herrala','Hiekkaharju','Hikiä','Humppila','Huopalahti','Hyvinkää','Hämeenlinna','Höljäkkä','Iisalmi','Iittala','Ilmala','Imatra','Inari','Inkeroinen','Inkoo','Isokyrö','Ivalo','Joensuu','Jokela','Joroinen','Jorvas','Joutseno','Juupajoki','Jyväskylä','Jämsä','Järvelä','Järvenpää','Kajaani','Kannelmäki','Kannus','Karjaa','Karkku','Kauhava','Kauklahti','Kauniainen','Kausala','Kemi','Kemijärvi','Kemijärvi bus station','Kera','Kerava','Kerimäki','Kesälahti','Keuruu','Kiilopää','Kilo','Kilpisjärvi','Kirkkonummi','Kitee','Kittilä','Kiuruvesi','Kohtavaara','Koivuhovi','Koivukylä','Kokemäki','Kokkola','Kolari','Kolho','Kontiomäki','Koria','Korso','Kotka','Kotkan Satama','Kouvola','Kuhmo','Kuopio','Kupittaa','Kuusamo','Kylänlahti','Kymi','Kyminlinna','Kyrölä','Käpylä','Lahti','Laihia','Lapinlahti','Lappeenranta','Lappila','Lappohja','Lapua','Lempäälä','Leppävaara','Levi','Lieksa','Lievestuore','Lohja bus station','Loimaa','Louhela','Loviisa bus station','Luoma','Luosto','Lusto','Malmi','Malminkartano','Mankki','Martinlaakso','Masala','Mikkeli','Misi','Mommila','Muhos','Muijala','Muonio','Muurola','Myllykoski','Myllymäki','Myyrmäki','Mäkkylä','Mäntsälä','Mäntyharju','Nastola','Nivala','Nokia','Nummela','Nuppulinna','Nurmes','Oitti','Olos','Orivesi','Orivesi Keskusta','Oulainen','Oulu','Oulunkylä','Paimenportti','Pallastunturi','Paltamo','Parikkala','Parkano','Parola','Pasila','Pello','Perttilä','Petäjävesi','Pieksämäki','Pietarsaari','Pihlajavesi','Pitäjänmäki','Pohjois-Haaga','Pori','Puistola','Pukinmäki','Punkaharju','Purola','Pyhä','Pyhäsalmi','Pännäinen','Pääskylahti','Raahe','Rantasalmi','Rauma','Rekola','Retretti','Riihimäki','Rovaniemi','Ruka','Runni','Ruukki','Ryttylä','Saariselkä','Salla','Sallatunturi','Salo','Santala','Saunakallio','Savio','Savonlinna','Savonlinna bus station','Seinäjoki','Siilinjärvi','Simpele','Siuntio','Skogby','Sodankylä','Sotkamo','Sukeva','Suomu','Suonenjoki','Tahko','Tammisaari','Tampere','Tapanila','Tavastila','Tervajoki','Tervola','Tikkurila','Toijala','Tolsa','Tornio','Tornio bus station','Tornio- Itäinen','Tuomarila','Turenki','Turku','Turku Satama','Tuuri','Tver','Uimaharju','Utajärvi','Utsjoki','Uusikylä','Vaala','Vaasa','Vainikkala','Vainikkala raja','Valimo','Valtimo','Vammala','Vantaankoski','Varkaus','Veikkola','Vihanti','Vihtari','Viiala','Viinijärvi','Villähde','Vilppula','Virkkala','Vuokatti ras th','Vuokatti urheiluopisto th','Vuonislahti','Vuontispirtti','Ylistaro','Ylitornio','Ylivieska','Ähtäri','Äkäslompolo'];

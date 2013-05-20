@@ -125,6 +125,7 @@ window.onload = function() {
   $$("#inputTunnit").val(dt.getHours() + 1);
   $$("#inputMinuutit").val(dt.getMinutes());
 
+
   // Datepicker
   var dpSettings = {
     altField: "#inputPvm",
@@ -134,7 +135,9 @@ window.onload = function() {
     monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]
   };
 
-  $$("#inputPvm").datepicker(dpSettings);
+  $( "#datepicker" ).datepicker(dpSettings);
+
+  // $$("#inputPvm").datepicker(dpSettings);
 
   // Autocomplete
   $$("input[name='mista'],input[name='mihin']").typeahead({source: paikat});

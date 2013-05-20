@@ -12,10 +12,12 @@
     background-image: url("/static/img/ses3.png");
     background-position: center center;
     background-repeat: no-repeat;
+    background-size: cover;
     height: 190px;
     margin: 0 auto 30px;
     border: 5px solid;
     border-radius: 2px;
+    padding: 60px;
 }
 
 .header .hidden-phone h1 {
@@ -42,6 +44,7 @@
 }
 
 .form-container {
+    font-family: 'Monda', sans-serif;
     margin: 0 auto;
     max-width: 550px;
 }
