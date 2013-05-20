@@ -1,0 +1,48 @@
+$def with (matkat, params, t)
+
+<strong>$t s</strong>
+$for k, v in params.iteritems():
+  $k=<strong>$v</strong>
+
+$if len(matkat) == 0 or matkat is None:
+  <h1>Ei tuloksia</h1>
+
+$else:
+  $if "juna" in matkat:
+    <h2>Junayhteydet:</h2>
+    $if "virhe" in matkat["juna"]:
+      <strong>Virhe! $matkat["juna"]["virhe"]</strong>
+    $else:
+      $for yhteys in matkat["juna"]:
+        <strong>#$loop.index $yhteys["mista"] - $yhteys["mihin"]</strong> ($yhteys["lahtoaika"] - $yhteys["saapumisaika"]) - Kesto: $yhteys["kesto"] Hinta: $yhteys["hinnat"][0]€<br>
+        $for vaihto in yhteys["vaihdot"]:
+          $if "lahtopaikka" in vaihto:
+              <small> - $vaihto["tyyppi"] $vaihto["lahtopaikka"] - $vaihto["saapumispaikka"] ($vaihto["lahtoaika"] - $vaihto["saapumisaika"])</small><br>
+          $elif "mista" in vaihto:
+              <small> - $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"] - $vaihto["saapumisaika"])</small><br>
+        <br>
+
+  $if "bussi" in matkat:
+    <h2>Bussiyhteydet:</h2>
+    $if "virhe" in matkat["bussi"]:
+      <strong>Virhe!</strong> $matkat["bussi"]["virhe"]
+    $else:
+      $for yhteys in matkat["bussi"]:
+        <strong>#$loop.index $yhteys["mista"] - $yhteys["mihin"]</strong> ($yhteys["lahtoaika"] - $yhteys["saapumisaika"]) - Kesto: $yhteys["kesto"] Hinta: $yhteys["hinnat"][0]€<br>
+        $for vaihto in yhteys["vaihdot"]:
+          <small> - $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"] - $vaihto["saapumisaika"])</small><br>
+        <br>
+
+  $if "auto" in matkat:
+    <h2>Autoyhteydet:</h2>
+    $if "virhe" in matkat["auto"]:
+      <strong>Virhe!</strong> $matkat["auto"]["virhe"]
+    $else:
+      <strong>$matkat["auto"]["mista"] - $matkat["auto"]["mihin"]</strong><br>
+      Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
+      Kesto: $matkat["auto"]["kesto"]<br>
+      Hinta: $matkat["auto"]["hinta"]<br>
+      Polttoaineen hinta: $matkat["auto"]["polttoaineen_hinta"]
+    <br>
+
+<a href="/">Takaisin</a>
