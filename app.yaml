@@ -1,4 +1,4 @@
-application: junavsbussi
+application: millamatkaan
 version: 1
 runtime: python27
 api_version: 1
@@ -16,4 +16,3 @@ libraries:
 
 builtins:
 - deferred: on
-- remote_api: on
