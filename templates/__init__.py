@@ -2,10 +2,11 @@ from web.template import CompiledTemplate, ForLoop, TemplateResult
 
 
 # coding: utf-8
-def index():
-    __lineoffset__ = -5
+def index (aleluokat):
+    __lineoffset__ = -4
     loop = ForLoop()
     self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
     extend_([u'<div class="container index-container">\n'])
     extend_([u'\n'])
     extend_([u'<div class="header">\n'])
@@ -22,7 +23,6 @@ def index():
     extend_([u'\n'])
     extend_([u'<div class="form-container">\n'])
     extend_([u'<form class="form-horizontal" method="GET" action="/haku">\n'])
-    extend_([u'  <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>\n'])
     extend_([u'  <div class="control-group">\n'])
     extend_([u'    <label for="inputMista" class="control-label">Mist\xe4</label>\n'])
     extend_([u'    <div class="controls">\n'])
@@ -65,14 +65,8 @@ def index():
     extend_([u'    <label for="inputAlennusluokka" class="control-label">Alennusluokka</label>\n'])
     extend_([u'    <div class="controls">\n'])
     extend_([u'      <select id="inputAlennusluokka" class="input-medium" name="ale">\n'])
-    extend_([u'        <option value="0">Aikuinen</option>\n'])
-    extend_([u'        <option value="1">Lapsi (4-11v)</option>\n'])
-    extend_([u'        <option value="3">Nuori (12-16v)</option>\n'])
-    extend_([u'        <option value="2">Opiskelija</option>\n'])
-    extend_([u'        <option value="5">Varusmies</option>\n'])
-    extend_([u'        <option value="7">Siviilipalvelusmies</option>\n'])
-    extend_([u'        <option value="4">El\xe4kel\xe4inen</option>\n'])
-    extend_([u'        <option value="6">Lehdist\xf6</option>\n'])
+    for val, luokka in loop.setup(aleluokat):
+        extend_(['        ', u'<option value="', escape_(val, True), u'">', escape_(luokka, True), u'</option>\n'])
     extend_([u'      </select>\n'])
     extend_([u'    </div>\n'])
     extend_([u'  </div>\n'])
@@ -160,7 +154,157 @@ index = CompiledTemplate(index, 'templates/index.html')
 join_ = index._join; escape_ = index._escape
 
 # coding: utf-8
-def results (matkat, params, t):
+def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat):
+    __lineoffset__ = -4
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
+    extend_([u'DEBUG\n'])
+    extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
+    for k, v in loop.setup(params.iteritems()):
+        extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
+    extend_([u'dt=<strong>', escape_(dt, True), u'</strong>\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="container-fluid">\n'])
+    extend_([u'<div class="row-fluid">\n'])
+    extend_([u'\n'])
+    extend_([u'<!-- Hakulomake sivupalkissa -->\n'])
+    extend_([u'<div class="span3">\n'])
+    extend_([u'<div class="well sidebar-nav sidebar-nav-fixed">\n'])
+    extend_([u'  <h4>Hae yhteyksi\xe4</h4>\n'])
+    extend_([u'  <div class="breaker"></div>\n'])
+    extend_([u'  <br>\n'])
+    extend_([u'  <form class="form-horizontal" method="GET" action="/haku">\n'])
+    extend_([u'    <label for="inputMista">Mist\xe4</label>\n'])
+    extend_([u'    <input class="input input-medium" id="inputMista" type="text" name="mista" autocomplete="off" value="', escape_(params["mista"].title(), True), u'" required autofocus/>\n'])
+    extend_([u'    <label for="inputMihin">Minne</label>\n'])
+    extend_([u'    <input class="input input-medium" id="inputMihin" type="text" name="mihin" autocomplete="off" value="', escape_(params["mihin"].title(), True), u'" required/>\n'])
+    extend_([u'    <div class="breaker"></div>\n'])
+    extend_([u'    <br>\n'])
+    extend_([u'    <label>Aika ja Pvm</label>\n'])
+    extend_([u'    <input type="text" class="input-xmini" id="inputTunnit" name="h" value="', escape_(h, True), u'" pattern="([01]?[0-9]|2[0-3])">\n'])
+    extend_([u'    <small>:</small>\n'])
+    extend_([u'    <input type="text" class="input-xmini" id="inputMinuutit" name="min" value="', escape_(mins, True), u'" pattern="[0-5]?[0-9]">\n'])
+    extend_([u'    <input type="text" class="input-small" id="inputPvm" name="pvm" autocomplete="off" value="', escape_(pvm, True), u'" pattern="([0-2]?[0-9]|3[0-1])\\.([1-9]|0[1-9]|1[0-2])\\.(20)?1[3-9]">\n'])
+    extend_([u'    <br>\n'])
+    extend_([u'    <select id="inputAikatyyppi" class="input input-medium" name="tyyppi">\n'])
+    extend_([u'      <option value="saapumisaika">Saapumisaika</option>\n'])
+    if aikatyyppi == "lahtoaika":
+        extend_(['      ', u'<option value="lahtoaika" selected>L\xe4ht\xf6aika</option>\n'])
+    else:
+        extend_(['      ', u'<option value="lahtoaika">L\xe4ht\xf6aika</option>\n'])
+    extend_([u'    </select>\n'])
+    extend_([u'    <div class="breaker"></div>\n'])
+    extend_([u'    <br>\n'])
+    extend_([u'    <label>Alennusluokka</label>\n'])
+    extend_([u'    <select class="input input-large" name="ale">\n'])
+    for val, luokka in loop.setup(aleluokat):
+        if aleluokka == val:
+            extend_(['      ', u'<option value="', escape_(val, True), u'" selected>', escape_(luokka, True), u'</option>\n'])
+        else:
+            extend_(['      ', u'<option value="', escape_(val, True), u'">', escape_(luokka, True), u'</option>\n'])
+    extend_([u'    </select>\n'])
+    extend_([u'    <label>Auton keskikulutus</label>\n'])
+    extend_([u'    <select id="inputKeskikulutus" class="input input-large" name="kulutus">\n'])
+    extend_([u'      <option value="0">95E, Pieni (4,5l/100km)</option>\n'])
+    extend_([u'      <option value="1">95E, Keski(6,5l/100km)</option>\n'])
+    extend_([u'      <option value="2">95E, Suuri (8,5l/100km)</option>\n'])
+    extend_([u'      <option class="select-dash" disabled>----</option>\n'])
+    extend_([u'      <option value="3">98E, Pieni (4,5l/100km)</option>\n'])
+    extend_([u'      <option value="4">98E, Keski (6,5l/100km)</option>\n'])
+    extend_([u'      <option value="5">98E, Suuri (8,5l/100km)</option>\n'])
+    extend_([u'      <option class="select-dash" disabled>----</option>\n'])
+    extend_([u'      <option value="6">Di, Pieni (3,7l/100km)</option>\n'])
+    extend_([u'      <option value="7">Di, Keski (5,7l/100km)</option>\n'])
+    extend_([u'      <option value="8">Di, Suuri (7,7l/100km)</option>\n'])
+    extend_([u'    </select>\n'])
+    extend_([u'    <br>\n'])
+    extend_([u'\n'])
+    extend_([u'    <label class="checkbox inline">\n'])
+    extend_([u'      <input type="checkbox" name="juna" checked> Juna\n'])
+    extend_([u'    </label>\n'])
+    extend_([u'    <label class="checkbox inline">\n'])
+    extend_([u'      <input type="checkbox" name="bussi" checked> Bussi\n'])
+    extend_([u'    </label>\n'])
+    extend_([u'    <label class="checkbox inline">\n'])
+    extend_([u'      <input type="checkbox" name="auto" checked> Auto\n'])
+    extend_([u'    </label>\n'])
+    extend_([u'    <br>\n'])
+    extend_([u'    <div class="breaker"></div>\n'])
+    extend_([u'    <br>\n'])
+    extend_([u'    <button class="btn btn-primary" type="submit">Hae yhteyksi\xe4<i class="icon-search icon-white"></i></button>\n'])
+    extend_([u'  </form>\n'])
+    extend_([u'</div> <!-- /.sidebar-nav-fixed -->\n'])
+    extend_([u'</div> <!-- /.span3 -->\n'])
+    extend_([u'\n'])
+    extend_([u'\n'])
+    extend_([u'<!-- Hakutulokset -->\n'])
+    extend_([u'<div class="span9 well">\n'])
+    extend_([u'<div class="results-header">\n'])
+    extend_([u'  <h3>', escape_(params["mista"].title(), True), u' - ', escape_(params["mihin"].title(), True), u'</h3>\n'])
+    extend_([u'  <small>J\xe4rjestys:</small>\n'])
+    extend_([u'  <div class="btn-group">\n'])
+    extend_([u'    <button class="btn btn-link btn-small disabled" onclick="sortByDt1()" >L\xe4ht\xf6</button>\n'])
+    extend_([u'    <button class="btn btn-link btn-small" onclick="sortByDt2()">Saapuminen</button>\n'])
+    extend_([u'    <button class="btn btn-link btn-small" onclick="sortByDuration()">Kesto</button>\n'])
+    extend_([u'    <button class="btn btn-link btn-small" onclick="sortByPrice()">Hinta</button>\n'])
+    extend_([u'    <button class="btn btn-link btn-small" onclick="sortByTransfers()">Vaihdot</button>\n'])
+    extend_([u'  </div>\n'])
+    extend_([u'</div>\n'])
+    extend_([u'\n'])
+    extend_([u'<div class="results"></div>\n'])
+    extend_([u'</div> <!-- /.span* -->\n'])
+    extend_([u'</div> <!-- /.container -->\n'])
+    extend_([u'</div> <!-- /.row -->\n'])
+    extend_([u'\n'])
+    extend_([u'<script src="static/js/paikannimet.js"></script>\n'])
+    extend_([u'<script>\n'])
+    extend_([u'window.onload = function() {\n'])
+    extend_([u'\n'])
+    extend_([u'// Datepicker:\n'])
+    extend_([u'var dpSettings = {\n'])
+    extend_([u'    altField: "#inputPvm",\n'])
+    extend_([u'    minDate: 0,\n'])
+    extend_([u'    altFormat: "d.m.yy",\n'])
+    extend_([u'    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],\n'])
+    extend_([u'    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kes\xe4", "Hein\xe4","Elo","Syys","Loka","Marras","Joulu"]\n'])
+    extend_([u'};\n'])
+    extend_([u'$', u'("#inputPvm").datepicker(dpSettings);\n'])
+    extend_([u'\n'])
+    extend_([u'// Visualisaatio:\n'])
+    extend_([u'var query_date = "', escape_(dt, True), u'";\n'])
+    extend_([u'var data = [\n'])
+    extend_([u'\n'])
+    if "auto" in matkat and not "virhe" in matkat["auto"]:
+        m = matkat["auto"]
+        extend_([u'{"luokka":"auto","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":0,"tyyppi":"Auto"},\n'])
+        extend_([u'\n'])
+    
+    mh_ja_vr = []
+    for x in ["juna", "bussi"]:
+        if x in matkat and not "virhe" in matkat[x]:
+            mh_ja_vr += matkat[x]
+    
+    for m in loop.setup(mh_ja_vr):
+        extend_([u'{"luokka":"', escape_(m["luokka"], True), u'","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":', escape_(m["vaihdot_lkm"], True), u',"tyyppi":"', escape_(m["tyyppi"], True), u'"},\n'])
+    extend_([u'];\n'])
+    extend_([u'\n'])
+    extend_([u'init(data, query_date);\n'])
+    extend_([u'\n'])
+    extend_([u'// Autocomplete\n'])
+    extend_([u'$', u'("input[name=\'mista\'],input[name=\'mihin\']").typeahead({source: paikat});\n'])
+    extend_([u'}\n'])
+    extend_([u'</script>\n'])
+    extend_([u'<script src="/static/js/d3.v3.min.js"></script>\n'])
+    extend_([u'<script src="/static/js/visualisaatio.js"></script>\n'])
+
+    return self
+
+results = CompiledTemplate(results, 'templates/results.html')
+join_ = results._join; escape_ = results._escape
+
+# coding: utf-8
+def results_debug (matkat, params, t):
     __lineoffset__ = -4
     loop = ForLoop()
     self = TemplateResult(); extend_ = self.extend
@@ -214,155 +358,8 @@ def results (matkat, params, t):
 
     return self
 
-results = CompiledTemplate(results, 'templates/results.html')
-join_ = results._join; escape_ = results._escape
-
-# coding: utf-8
-def results_vis (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat):
-    __lineoffset__ = -4
-    loop = ForLoop()
-    self = TemplateResult(); extend_ = self.extend
-    extend_([u'\n'])
-    extend_([u'DEBUG\n'])
-    extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
-    for k, v in loop.setup(params.iteritems()):
-        extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
-    extend_([u'dt=<strong>', escape_(dt, True), u'</strong>\n'])
-    extend_([u'\n'])
-    extend_([u'<div class="container-fluid">\n'])
-    extend_([u'<div class="row-fluid">\n'])
-    extend_([u'\n'])
-    extend_([u'<!-- Hakulomake sivupalkissa -->\n'])
-    extend_([u'<div class="span3">\n'])
-    extend_([u'<div class="well sidebar-nav sidebar-nav-fixed">\n'])
-    extend_([u'  <h4>Hae yhteyksi\xe4</h4>\n'])
-    extend_([u'  <div class="breaker"></div>\n'])
-    extend_([u'  <br>\n'])
-    extend_([u'  <form class="form-horizontal" method="GET" action="Joukkoliikenteen hintavertailu - tulokset.htm" id="lomake">\n'])
-    extend_([u'    <label>Mist\xe4</label>\n'])
-    extend_([u'    <input class="input input-medium" id="inputMista" type="text" name="mista" autocomplete="off" value="', escape_(params["mista"].title(), True), u'" required autofocus/>\n'])
-    extend_([u'    <label>Minne</label>\n'])
-    extend_([u'    <input class="input input-medium" id="inputMihin" type="text" name="mihin" autocomplete="off" value="', escape_(params["mihin"].title(), True), u'" required/>\n'])
-    extend_([u'    <div class="breaker"></div>\n'])
-    extend_([u'    <br>\n'])
-    extend_([u'    <label>Aika ja Pvm</label>\n'])
-    extend_([u'    <input type="text" class="input-xmini" id="inputTunnit" name="h" value="', escape_(h, True), u'" pattern="([01]?[0-9]|2[0-3])">\n'])
-    extend_([u'    <small>:</small>\n'])
-    extend_([u'    <input type="text" class="input-xmini" id="inputMinuutit" name="min" value="', escape_(mins, True), u'" pattern="[0-5]?[0-9]">\n'])
-    extend_([u'    <input type="text" class="input-small" id="inputPvm" name="pvm" autocomplete="off" value="', escape_(pvm, True), u'" pattern="([0-2]?[0-9]|3[0-1])\\.([1-9]|0[1-9]|1[0-2])\\.(20)?1[3-9]">\n'])
-    extend_([u'    <br>\n'])
-    extend_([u'    <select id="inputAikatyyppi" class="input input-medium" name="tyyppi">\n'])
-    extend_([u'      <option value="saapumisaika">Saapumisaika</option>\n'])
-    if aikatyyppi == "lahtoaika":
-        extend_(['      ', u'<option value="lahtoaika" selected>L\xe4ht\xf6aika</option>\n'])
-    else:
-        extend_(['      ', u'<option value="lahtoaika">L\xe4ht\xf6aika</option>\n'])
-    extend_([u'    </select>\n'])
-    extend_([u'    <div class="breaker"></div>\n'])
-    extend_([u'    <br>\n'])
-    extend_([u'    <label>Alennusluokka</label>\n'])
-    extend_([u'    <select class="input input-large" name="ale">\n'])
-    for luokka in loop.setup(aleluokat):
-        if aleluokka == loop.index0:
-            extend_(['      ', u'<option value="', escape_(loop.index0, True), u'" selected>', escape_(luokka, True), u'</option>\n'])
-        else:
-            extend_(['      ', u'<option value="', escape_(loop.index0, True), u'">', escape_(luokka, True), u'</option>\n'])
-    extend_([u'    </select>\n'])
-    extend_([u'    <label>Auton keskikulutus</label>\n'])
-    extend_([u'    <select id="inputKeskikulutus" class="input input-large" name="kulutus">\n'])
-    extend_([u'      <option value="0">95E, Pieni (4,5l/100km)</option>\n'])
-    extend_([u'      <option value="1">95E, Keski(6,5l/100km)</option>\n'])
-    extend_([u'      <option value="2">95E, Suuri (8,5l/100km)</option>\n'])
-    extend_([u'      <option class="select-dash" disabled>----</option>\n'])
-    extend_([u'      <option value="3">98E, Pieni (4,5l/100km)</option>\n'])
-    extend_([u'      <option value="4">98E, Keski (6,5l/100km)</option>\n'])
-    extend_([u'      <option value="5">98E, Suuri (8,5l/100km)</option>\n'])
-    extend_([u'      <option class="select-dash" disabled>----</option>\n'])
-    extend_([u'      <option value="6">Di, Pieni (3,7l/100km)</option>\n'])
-    extend_([u'      <option value="7">Di, Keski (5,7l/100km)</option>\n'])
-    extend_([u'      <option value="8">Di, Suuri (7,7l/100km)</option>\n'])
-    extend_([u'    </select>\n'])
-    extend_([u'    <br>\n'])
-    extend_([u'\n'])
-    extend_([u'    <label class="checkbox inline">\n'])
-    extend_([u'      <input type="checkbox" name="juna" checked=""> Juna\n'])
-    extend_([u'    </label>\n'])
-    extend_([u'    <label class="checkbox inline">\n'])
-    extend_([u'      <input type="checkbox" name="bussi" checked=""> Bussi\n'])
-    extend_([u'    </label>\n'])
-    extend_([u'    <label class="checkbox inline">\n'])
-    extend_([u'      <input type="checkbox" name="auto" checked=""> Auto\n'])
-    extend_([u'    </label>\n'])
-    extend_([u'    <br>\n'])
-    extend_([u'    <div class="breaker"></div>\n'])
-    extend_([u'    <br>\n'])
-    extend_([u'    <button class="btn btn-primary" type="submit">Hae yhteyksi\xe4<i class="icon-search icon-white"></i></button>\n'])
-    extend_([u'  </form>\n'])
-    extend_([u'</div> <!-- /.sidebar-nav-fixed -->\n'])
-    extend_([u'</div> <!-- /.span3 -->\n'])
-    extend_([u'\n'])
-    extend_([u'\n'])
-    extend_([u'<!-- Hakutulokset -->\n'])
-    extend_([u'<div class="span9 well">\n'])
-    extend_([u'<div class="results-header">\n'])
-    extend_([u'  <h3>', escape_(params["mista"].title(), True), u' - ', escape_(params["mihin"].title(), True), u'</h3>\n'])
-    extend_([u'  <small>J\xe4rjestys:</small>\n'])
-    extend_([u'  <div class="btn-group">\n'])
-    extend_([u'    <button class="btn btn-link btn-small" id="dt1Btn" onclick="sortByDt1()" disabled>L\xe4ht\xf6</button>\n'])
-    extend_([u'    <button class="btn btn-link btn-small" id="dt2Btn" onclick="sortByDt2()">Saapuminen</button>\n'])
-    extend_([u'    <button class="btn btn-link btn-small" id="durationBtn" onclick="sortByDuration()">Kesto</button>\n'])
-    extend_([u'    <button class="btn btn-link btn-small" id="priceBtn" onclick="sortByPrice()">Hinta</button>\n'])
-    extend_([u'    <button class="btn btn-link btn-small" id="transfersBtn" onclick="sortByTransfers()">Vaihdot</button>\n'])
-    extend_([u'  </div>\n'])
-    extend_([u'</div>\n'])
-    extend_([u'\n'])
-    extend_([u'<div class="results"></div>\n'])
-    extend_([u'</div> <!-- /.span* -->\n'])
-    extend_([u'</div> <!-- /.container -->\n'])
-    extend_([u'</div> <!-- /.row -->\n'])
-    extend_([u'\n'])
-    extend_([u'<script>\n'])
-    extend_([u'window.onload = function() {\n'])
-    extend_([u'\n'])
-    extend_([u'// Datepicker:\n'])
-    extend_([u'var dpSettings = {\n'])
-    extend_([u'    altField: "#inputPvm",\n'])
-    extend_([u'    minDate: 0,\n'])
-    extend_([u'    altFormat: "d.m.yy",\n'])
-    extend_([u'    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],\n'])
-    extend_([u'    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kes\xe4", "Hein\xe4","Elo","Syys","Loka","Marras","Joulu"]\n'])
-    extend_([u'};\n'])
-    extend_([u'$', u'("#inputPvm").datepicker(dpSettings);\n'])
-    extend_([u'\n'])
-    extend_([u'// Visualisaatio:\n'])
-    extend_([u'var query_date = "', escape_(dt, True), u'";\n'])
-    extend_([u'var data = [\n'])
-    extend_([u'\n'])
-    if "auto" in matkat and not "virhe" in matkat["auto"]:
-        m = matkat["auto"]
-        extend_([u'{"luokka":"auto","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":0,"tyyppi":"Auto"},\n'])
-        extend_([u'\n'])
-    
-    mh_ja_vr = []
-    for x in ["juna", "bussi"]:
-        if x in matkat and not "virhe" in matkat[x]:
-            mh_ja_vr += matkat[x]
-    
-    for m in loop.setup(mh_ja_vr):
-        extend_([u'{"luokka":"', escape_(m["luokka"], True), u'","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":', escape_(m["vaihdot_lkm"], True), u',"tyyppi":"', escape_(m["tyyppi"], True), u'"},\n'])
-        extend_([u'\n'])
-    extend_([u'];\n'])
-    extend_([u'\n'])
-    extend_([u'init(data, query_date);\n'])
-    extend_([u'}\n'])
-    extend_([u'</script>\n'])
-    extend_([u'<script src="/static/js/d3.v3.min.js"></script>\n'])
-    extend_([u'<script src="/static/js/visualisaatio.js"></script>\n'])
-
-    return self
-
-results_vis = CompiledTemplate(results_vis, 'templates/results_vis.html')
-join_ = results_vis._join; escape_ = results_vis._escape
+results_debug = CompiledTemplate(results_debug, 'templates/results_debug.html')
+join_ = results_debug._join; escape_ = results_debug._escape
 
 # coding: utf-8
 def base (content):

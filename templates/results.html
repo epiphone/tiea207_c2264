@@ -1,48 +1,140 @@
-$def with (matkat, params, t)
+$def with (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat)
 
+DEBUG
 <strong>$t s</strong>
 $for k, v in params.iteritems():
   $k=<strong>$v</strong>
+dt=<strong>$dt</strong>
 
-$if len(matkat) == 0 or matkat is None:
-  <h1>Ei tuloksia</h1>
+<div class="container-fluid">
+<div class="row-fluid">
 
-$else:
-  $if "juna" in matkat:
-    <h2>Junayhteydet:</h2>
-    $if "virhe" in matkat["juna"]:
-      <strong>Virhe! $matkat["juna"]["virhe"]</strong>
-    $else:
-      $for yhteys in matkat["juna"]:
-        <strong>#$loop.index $yhteys["mista"] - $yhteys["mihin"]</strong> ($yhteys["lahtoaika"] - $yhteys["saapumisaika"]) - Kesto: $yhteys["kesto"] Hinta: $yhteys["hinnat"][0]€<br>
-        $for vaihto in yhteys["vaihdot"]:
-          $if "lahtopaikka" in vaihto:
-              <small> - $vaihto["tyyppi"] $vaihto["lahtopaikka"] - $vaihto["saapumispaikka"] ($vaihto["lahtoaika"] - $vaihto["saapumisaika"])</small><br>
-          $elif "mista" in vaihto:
-              <small> - $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"] - $vaihto["saapumisaika"])</small><br>
-        <br>
-
-  $if "bussi" in matkat:
-    <h2>Bussiyhteydet:</h2>
-    $if "virhe" in matkat["bussi"]:
-      <strong>Virhe!</strong> $matkat["bussi"]["virhe"]
-    $else:
-      $for yhteys in matkat["bussi"]:
-        <strong>#$loop.index $yhteys["mista"] - $yhteys["mihin"]</strong> ($yhteys["lahtoaika"] - $yhteys["saapumisaika"]) - Kesto: $yhteys["kesto"] Hinta: $yhteys["hinnat"][0]€<br>
-        $for vaihto in yhteys["vaihdot"]:
-          <small> - $vaihto["tyyppi"] $vaihto["mista"] - $vaihto["mihin"] ($vaihto["lahtoaika"] - $vaihto["saapumisaika"])</small><br>
-        <br>
-
-  $if "auto" in matkat:
-    <h2>Autoyhteydet:</h2>
-    $if "virhe" in matkat["auto"]:
-      <strong>Virhe!</strong> $matkat["auto"]["virhe"]
-    $else:
-      <strong>$matkat["auto"]["mista"] - $matkat["auto"]["mihin"]</strong><br>
-      Matkan pituus: $matkat["auto"]["matkanpituus"] km<br>
-      Kesto: $matkat["auto"]["kesto"]<br>
-      Hinta: $matkat["auto"]["hinta"]<br>
-      Polttoaineen hinta: $matkat["auto"]["polttoaineen_hinta"]
+<!-- Hakulomake sivupalkissa -->
+<div class="span3">
+<div class="well sidebar-nav sidebar-nav-fixed">
+  <h4>Hae yhteyksiä</h4>
+  <div class="breaker"></div>
+  <br>
+  <form class="form-horizontal" method="GET" action="/haku">
+    <label for="inputMista">Mistä</label>
+    <input class="input input-medium" id="inputMista" type="text" name="mista" autocomplete="off" value="$params["mista"].title()" required autofocus/>
+    <label for="inputMihin">Minne</label>
+    <input class="input input-medium" id="inputMihin" type="text" name="mihin" autocomplete="off" value="$params["mihin"].title()" required/>
+    <div class="breaker"></div>
+    <br>
+    <label>Aika ja Pvm</label>
+    <input type="text" class="input-xmini" id="inputTunnit" name="h" value="$h" pattern="([01]?[0-9]|2[0-3])">
+    <small>:</small>
+    <input type="text" class="input-xmini" id="inputMinuutit" name="min" value="$mins" pattern="[0-5]?[0-9]">
+    <input type="text" class="input-small" id="inputPvm" name="pvm" autocomplete="off" value="$pvm" pattern="([0-2]?[0-9]|3[0-1])\.([1-9]|0[1-9]|1[0-2])\.(20)?1[3-9]">
+    <br>
+    <select id="inputAikatyyppi" class="input input-medium" name="tyyppi">
+      <option value="saapumisaika">Saapumisaika</option>
+      $if aikatyyppi == "lahtoaika":
+        <option value="lahtoaika" selected>Lähtöaika</option>
+      $else:
+        <option value="lahtoaika">Lähtöaika</option>
+    </select>
+    <div class="breaker"></div>
+    <br>
+    <label>Alennusluokka</label>
+    <select class="input input-large" name="ale">
+      $for val, luokka in aleluokat:
+        $if aleluokka == val:
+          <option value="$val" selected>$luokka</option>
+        $else:
+          <option value="$val">$luokka</option>
+    </select>
+    <label>Auton keskikulutus</label>
+    <select id="inputKeskikulutus" class="input input-large" name="kulutus">
+      <option value="0">95E, Pieni (4,5l/100km)</option>
+      <option value="1">95E, Keski(6,5l/100km)</option>
+      <option value="2">95E, Suuri (8,5l/100km)</option>
+      <option class="select-dash" disabled>----</option>
+      <option value="3">98E, Pieni (4,5l/100km)</option>
+      <option value="4">98E, Keski (6,5l/100km)</option>
+      <option value="5">98E, Suuri (8,5l/100km)</option>
+      <option class="select-dash" disabled>----</option>
+      <option value="6">Di, Pieni (3,7l/100km)</option>
+      <option value="7">Di, Keski (5,7l/100km)</option>
+      <option value="8">Di, Suuri (7,7l/100km)</option>
+    </select>
     <br>
 
-<a href="/">Takaisin</a>
+    <label class="checkbox inline">
+      <input type="checkbox" name="juna" checked> Juna
+    </label>
+    <label class="checkbox inline">
+      <input type="checkbox" name="bussi" checked> Bussi
+    </label>
+    <label class="checkbox inline">
+      <input type="checkbox" name="auto" checked> Auto
+    </label>
+    <br>
+    <div class="breaker"></div>
+    <br>
+    <button class="btn btn-primary" type="submit">Hae yhteyksiä<i class="icon-search icon-white"></i></button>
+  </form>
+</div> <!-- /.sidebar-nav-fixed -->
+</div> <!-- /.span3 -->
+
+
+<!-- Hakutulokset -->
+<div class="span9 well">
+<div class="results-header">
+  <h3>$params["mista"].title() - $params["mihin"].title()</h3>
+  <small>Järjestys:</small>
+  <div class="btn-group">
+    <button class="btn btn-link btn-small disabled" onclick="sortByDt1()" >Lähtö</button>
+    <button class="btn btn-link btn-small" onclick="sortByDt2()">Saapuminen</button>
+    <button class="btn btn-link btn-small" onclick="sortByDuration()">Kesto</button>
+    <button class="btn btn-link btn-small" onclick="sortByPrice()">Hinta</button>
+    <button class="btn btn-link btn-small" onclick="sortByTransfers()">Vaihdot</button>
+  </div>
+</div>
+
+<div class="results"></div>
+</div> <!-- /.span* -->
+</div> <!-- /.container -->
+</div> <!-- /.row -->
+
+<script src="static/js/paikannimet.js"></script>
+<script>
+window.onload = function() {
+
+// Datepicker:
+var dpSettings = {
+    altField: "#inputPvm",
+    minDate: 0,
+    altFormat: "d.m.yy",
+    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+    monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]
+};
+$$("#inputPvm").datepicker(dpSettings);
+
+// Visualisaatio:
+var query_date = "$dt";
+var data = [
+
+$if "auto" in matkat and not "virhe" in matkat["auto"]:
+    $ m = matkat["auto"]
+    {"luokka":"auto","lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto"},
+
+$code:
+    mh_ja_vr = []
+    for x in ["juna", "bussi"]:
+        if x in matkat and not "virhe" in matkat[x]:
+            mh_ja_vr += matkat[x]
+
+$for m in mh_ja_vr:
+    {"luokka":"$m["luokka"]","lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":$m["vaihdot_lkm"],"tyyppi":"$m["tyyppi"]"},
+];
+
+init(data, query_date);
+
+// Autocomplete
+$$("input[name='mista'],input[name='mihin']").typeahead({source: paikat});
+}
+</script>
+<script src="/static/js/d3.v3.min.js"></script>
+<script src="/static/js/visualisaatio.js"></script>

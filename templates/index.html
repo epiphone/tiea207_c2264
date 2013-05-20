@@ -1,3 +1,5 @@
+$def with (aleluokat)
+
 <div class="container index-container">
 
 <div class="header">
@@ -14,7 +16,6 @@
 
 <div class="form-container">
 <form class="form-horizontal" method="GET" action="/haku">
-  <input type="hidden" id="inputTyyppi" name="aikatyyppi" value="saapumisaika"/>
   <div class="control-group">
     <label for="inputMista" class="control-label">Mistä</label>
     <div class="controls">
@@ -57,14 +58,8 @@
     <label for="inputAlennusluokka" class="control-label">Alennusluokka</label>
     <div class="controls">
       <select id="inputAlennusluokka" class="input-medium" name="ale">
-        <option value="0">Aikuinen</option>
-        <option value="1">Lapsi (4-11v)</option>
-        <option value="3">Nuori (12-16v)</option>
-        <option value="2">Opiskelija</option>
-        <option value="5">Varusmies</option>
-        <option value="7">Siviilipalvelusmies</option>
-        <option value="4">Eläkeläinen</option>
-        <option value="6">Lehdistö</option>
+        $for val, luokka in aleluokat:
+          <option value="$val">$luokka</option>
       </select>
     </div>
   </div>

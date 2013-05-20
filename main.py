@@ -2,7 +2,9 @@
 """
 Joukkoliikenteen hintavertailusovellus.
 
+Reititykset, templatet yms.
 
+Aleksi Pekkala
 """
 
 import web
@@ -22,8 +24,10 @@ JS_PVM_FORMAATTI = "%Y-%m-%dT%H:%M"
 # (x, y) missä x on polttoaine (95, 98, diesel) ja y on keskikulutus (l/100km)
 KULUTUSLUOKAT = [(0, 4.5), (0, 6.5), (0, 8.5), (1, 4.5), (1, 6.5), (1, 8.5),
     (2, 3.7), (2, 5.7), (2, 7.7)]
-ALENNUSLUOKAT = ["Aikuinen", "Lapsi (4-11v)", "Nuori (12-16v)", "Opiskelija",
-    "Varusmies", "Siviilipalvelusmies", "Eläkeläinen", "Lehdistö"]
+ALENNUSLUOKAT = [(0, "Aikuinen"), (1, "Lapsi (4-11v)"), (3, "Nuori (12-16v)"),
+    (2, "Opiskelija"), (5, "Varusmies"), (7, "Siviilipalvelusmies"),
+    (4, "Eläkeläinen"), (6, "Lehdistö")]
+
 # Reititykset:
 urls = (
     "/", "Index",
@@ -40,7 +44,7 @@ render = web.template.render("templates/", base="base")
 class Index:
     def GET(self):
         """Pääsivu, joka sisältää hakuikkunan."""
-        return render.index()
+        return render.index(aleluokat=ALENNUSLUOKAT)
 
 
 class Haku:
@@ -51,13 +55,13 @@ class Haku:
 
         # Poimitaan parametrit URLista:
         inp = web.input(h=None, min=None, pvm=None, juna=False, bussi=False,
-            auto=False, tyyppi="saapumisaika", vis=False, ale=0, kulutus=0)
+            auto=False, tyyppi="saapumisaika", debug=False, ale=0, kulutus=0)
         mista, mihin = inp.mista, inp.mihin
         h, mins, pvm = inp.h, inp.min, inp.pvm
         juna, bussi, auto = inp.juna, inp.bussi, inp.auto
         ale, kulutusluokka = int(inp.ale), int(inp.kulutus)
         aikatyyppi = inp.tyyppi
-        visualisaatio = True if inp.vis else False
+        debug_view = True if inp.debug else False
 
         # Validoitaan parametrit:
         if not mista or not mihin:
@@ -96,13 +100,14 @@ class Haku:
 
         # TODO turhat parametrit pois
         t = str(round(time.time() - t, 2))
-        if visualisaatio:
-            dt = laika or saika
-            dt = dt.split()[0] + "T" + dt.split()[1]
-            return render.results_vis(matkat=matkat, params=params, t=t, dt=dt,
-                pvm=pvm, h=h, mins=mins, aikatyyppi=aikatyyppi,
-                aleluokka=ale, aleluokat=ALENNUSLUOKAT)
-        return render.results(matkat=matkat, params=params, t=t)
+        if debug_view:
+            return render.results_debug(matkat=matkat, params=params, t=t)
+
+        dt = laika or saika
+        dt = dt.split()[0] + "T" + dt.split()[1]
+        return render.results(matkat=matkat, params=params, t=t, dt=dt,
+            pvm=pvm, h=h, mins=mins, aikatyyppi=aikatyyppi,
+            aleluokka=ale, aleluokat=ALENNUSLUOKAT)
 
 
 ### APUFUNKTIOT & TEMPLATEFUNKTIOT ###
