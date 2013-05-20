@@ -16,6 +16,7 @@ body {
   background-image:url('ses3.png');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: cover;
   }
 #banneri h1 {
   font-family: 'Days One', sans-serif;
@@ -186,4 +187,9 @@ i
   font-size:1px;
   line-height:0;
   float:left;
+}
+
+.tekstikappale
+{
+  margin-bottom: 25px;
 }
