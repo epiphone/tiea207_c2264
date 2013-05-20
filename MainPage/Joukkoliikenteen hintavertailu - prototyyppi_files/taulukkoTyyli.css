@@ -1,13 +1,19 @@
 .table td {
   vertical-align: middle;
-  
 }
 
 td[id="vaihdot"] {
   vertical-align: top;
-  text-align: right;
+  text-align: center;
   font-weight: bold;
-  
-}#ekaikoni {
-  margin-left:1em;
 }
+
+.no-borders td {
+  border-top: none;
+  background-color: #F5F5F5;
+}
+
+.vaihdot td {
+  background-color: #F5F5F5;
+}
+
