@@ -97,7 +97,7 @@ class VRScraper:
             return hinnat
         else:
             if hinnat[1]:
-                hinta_lukuna = float(hinnat[1])
+                hinta_lukuna = hinnat[1]
                 hinnat[1] = hinta_lukuna / 2
                 hinnat[1] = round(hinnat[1], 2)
                 if hinnat[1] < 2.60:
@@ -191,19 +191,24 @@ class VRScraper:
                 if len(elementit) >= 1:
                     hinnan_label = elementit[0].text_content()[:-2].replace(",", ".")
                     if len(hinnan_label) > 0:
-                        lista_hinnoista.append(hinnan_label)
+                        lista_hinnoista.append(float(hinnan_label))
                         continue
                     else:
                         teksti = hinta.text_content().replace(u"€", "")
                         teksti = ' '.join(teksti.split())
                         teksti = teksti.replace(",", ".")
-                        lista_hinnoista.append(teksti)
+                        lista_hinnoista.append(float(teksti))
                         continue
                 else:
                     lista_hinnoista.append(None)
 
             if len(lista_hinnoista) < 3:
                 lista_hinnoista.append(None)
+
+            if len(lista_hinnoista) > 3:
+                del lista_hinnoista[0]
+
+                lista_hinnoista
 
             return lista_hinnoista
         except:
@@ -294,12 +299,17 @@ class VRScraper:
                 yhteyden_tiedot['kesto'] = kesto
                 hinta = self.selvita_hinnat(row.xpath("tr[1]/td[contains(@class, 'ticketOption')]"), hintojen_rakenne)
                 yhteyden_tiedot['hinnat'] = hinta
+                if all(v is None for v in hinta):
+                    continue;
                 lista_yhteyksista.append(yhteyden_tiedot)
                 if saapumisaika:
                     yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], saapumisaika)
                 if lahtoaika:
                     yhteyden_tiedot['vaihdot'] = self.hae_vaihtojen_tiedot(row.xpath("tr[2]")[0][1], lahtoaika)
                 yhteyden_tiedot['url'] = urli
+
+            if len(lista_yhteyksista) == 0:
+                return None
 
             return lista_yhteyksista
         else:
@@ -360,7 +370,7 @@ def main():
                 if mista != mihin:
                     break
             paiva = randint(1, 28)
-            kuukausi = randint(5, 8)
+            kuukausi = randint(6, 8)
             vuosi = "2013"
             tunnit = randint(0, 23)
             minuutit = randint(0, 59)
@@ -369,9 +379,11 @@ def main():
             if lahto_vai_saapu == 0:
                 print "Annetut hakuehdot. mista: " + mista + " mihin: " + mihin + " lahtoaika: " + haku_pvm
                 pprint.pprint(screipperi.hae_matka(mista, mihin, haku_pvm, None))
+                #webbrowser.open_new(screipperi.muodosta_url(mista, mihin, haku_pvm, None))
             if lahto_vai_saapu == 1:
                 print "Annetut hakuehdot. mista: " + mista + " mihin: " + mihin + " saapumisaika: " + haku_pvm
                 pprint.pprint(screipperi.hae_matka(mista, mihin, None, haku_pvm))
+                #webbrowser.open_new(screipperi.muodosta_url(mista, mihin, None, haku_pvm))
             print ""
             print "****************"
             print "EI KAATUNUT! ^_^"
