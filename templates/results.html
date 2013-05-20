@@ -118,16 +118,16 @@ var data = [
 
 $if "auto" in matkat and not "virhe" in matkat["auto"]:
     $ m = matkat["auto"]
-    {"luokka":"auto","lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto"},
+    {"luokka":"auto","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto","js_hinnat":"$m["js_hinnat"]"},
 
 $code:
     mh_ja_vr = []
     for x in ["juna", "bussi"]:
-        if x in matkat and not "virhe" in matkat[x]:
+        if x in matkat and matkat[x] and not "virhe" in matkat[x]:
             mh_ja_vr += matkat[x]
 
 $for m in mh_ja_vr:
-    {"luokka":"$m["luokka"]","lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":$m["vaihdot_lkm"],"tyyppi":"$m["tyyppi"]"},
+    {"luokka":"$m["luokka"]","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":$m["vaihdot_lkm"],"tyyppi":"$m["tyyppi"]","js_hinnat":"$m["js_hinnat"]","lahtoaika":"$m["lahtoaika"]","saapumisaika":"$m["saapumisaika"]"},
 ];
 
 init(data, query_date);

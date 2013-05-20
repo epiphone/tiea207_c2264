@@ -39,6 +39,9 @@ class ScraperWrapper:
     """Käärii scraperit yhden rajapinnan alle."""
 
     def __init__(self):
+        """
+        Alustaa wrapperin.
+        """
         self.vr_scraper = VRScraper()
         self.mh_scraper = MHScraper()
         self.auto_scraper = AutoScraper()
@@ -46,13 +49,15 @@ class ScraperWrapper:
             self.vr_scraper,
             self.mh_scraper,
             self.auto_scraper]
+
+        # Luetaan paikkatiedot erillisestä tiedostosta:
         paikat = json.load(open("paikat.json", "r"))
         for k, v in paikat.iteritems():
             paikat[k] = [p.encode("utf-8") if p else None for p in v]
         self.paikat = paikat
 
     def hae_matka(self, mista=None, mihin=None, lahtoaika=None, saapumisaika=None,
-            bussi=True, juna=True, auto=True, alennusluokka=0, max_lkm=6,
+            bussi=True, juna=True, auto=True, aleluokka=0, max_lkm=6,
             polttoaine=0, kulutus=6.5):
         """
         Palauttaa valitulle matkalle löytyneet yhteydet.
@@ -85,8 +90,10 @@ class ScraperWrapper:
         pvm = dt.split()[0]
 
         def f(scraper):
-            """Apufunktio, joka tarkistaa välimuistin ja hakee tarvittaessa
-            uuden tuloksen skreipperiltä."""
+            """
+            Apufunktio, joka tarkistaa välimuistin ja hakee tarvittaessa
+            uuden tuloksen skreipperiltä.
+            """
             # Määritetään skreipperistä riippuva välimuistin avain:
             if scraper is self.mh_scraper:
                 mista, mihin = mista_mh, mihin_mh
@@ -103,7 +110,7 @@ class ScraperWrapper:
                 cache_avain = "auto_%s_%s" % (mista, mihin)
 
             if not mista or not mihin:
-                return {"virhe": "paikkakunnalla ei ole asemaa"}, tyyppi
+                return None, tyyppi
 
             tulos = memcache.get(cache_avain)
             if tulos is not None:
@@ -123,16 +130,30 @@ class ScraperWrapper:
                 except IOError:
                     tulos = {"virhe": "sivun avaaminen epäonnistui"}
 
-            if tyyppi != "auto" and not "virhe" in tulos:
+            # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
+            if tyyppi == "auto":
+                if tulos and "matkanpituus" in tulos:
+                    hinta = self.hae_bensan_hinnat()[polttoaine]
+                    pit = tulos["matkanpituus"]
+                    tulos["polttoaineen_hinta"] = hinta
+                    tulos["hinta"] = round(pit * (kulutus / 100.0) * hinta, 2)
+
+            elif not "virhe" in tulos:
                 tulos = self.rajaa_tulokset(tulos, max_lkm, lahtoaika,
                     saapumisaika)
+                ale = aleluokka
+                if tyyppi == "juna":
+                    f = lambda x, y: self.vr_scraper.laske_alennus(x, ale)
+                else:
+                    f = lambda x, y: self.mh_scraper.laske_alennus(x, ale, y)
 
-            # Jos haetaan automatkaa, lasketaan polttoaineen hinta:
-            if tyyppi == "auto" and tulos and "matkanpituus" in tulos:
-                hinta = self.hae_bensan_hinnat()[polttoaine]
-                pit = tulos["matkanpituus"]
-                tulos["polttoaineen_hinta"] = hinta
-                tulos["hinta"] = round(pit * (kulutus / 100.0) * hinta, 2)
+                for matka in tulos:
+                    if "hinnat" in matka:
+                        if tyyppi == "bussi":
+                            mh_tyyppi = matka["vaihdot"][0]["tyyppi"].lower()
+                        else:
+                            mh_tyyppi = None
+                        matka["hinnat"] = f(matka["hinnat"], mh_tyyppi)
 
             assert tulos is not None  # TODO debug
             return tulos, tyyppi
@@ -181,12 +202,17 @@ class ScraperWrapper:
 
         ret = None
 
+        # max_lkm = 3
+        # 0 1 2 3 4 5 6 7 8 9
+
         for i, matka in enumerate(tulos):
             if matka[attr] > aika:
-                askeleet_vas = min(int(ceil((max_lkm - 1) / 2.0)), i)
-                askeleet_oik = max_lkm - 1 - askeleet_vas
-                askeleet_vas += (i + askeleet_oik + 1) - len(tulos)
-                ret = tulos[i - askeleet_vas:i + askeleet_oik + 1]
+                vas = min(int(ceil((max_lkm - 1) / 2.0)), i)
+                oik = min(len(tulos) - 1 - i, max_lkm - 1 - vas)
+                # vas += (i + oik + 1) - len(tulos)
+                vas += max_lkm - vas - oik - 1
+                ret = tulos[i - vas:i + oik + 1]
+                break
 
         if not ret:
             ret = tulos[-max_lkm:]

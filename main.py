@@ -56,6 +56,7 @@ class Haku:
         # Poimitaan parametrit URLista:
         inp = web.input(h=None, min=None, pvm=None, juna=False, bussi=False,
             auto=False, tyyppi="saapumisaika", debug=False, ale=0, kulutus=0)
+
         mista, mihin = inp.mista, inp.mihin
         h, mins, pvm = inp.h, inp.min, inp.pvm
         juna, bussi, auto = inp.juna, inp.bussi, inp.auto
@@ -90,12 +91,12 @@ class Haku:
             bussi=bussi,
             juna=juna,
             auto=auto,
-            alennusluokka=ale,
+            aleluokka=ale,
             polttoaine=polttoaine,
             kulutus=kulutus)
 
-        logging.info(str(params))  # TODO debug
         matkat = scraper.hae_matka(**params)
+        # TODO virheenkäsittely
         taydenna_matkatiedot(matkat, pvm, laika, saika)
 
         # TODO turhat parametrit pois
@@ -131,22 +132,23 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
     mm. lasketaan kestomerkkijonosta tunnit, ja lisätään javascriptin
     Date-luokan ymmärtämiä aikamerkkijonoja.
     """
-    aika_js = lambda x: "T".join(x.split())
-
-    if "auto" in matkat and not "virhe" in matkat["auto"]:
+    if "auto" in matkat and matkat["auto"] and not "virhe" in matkat["auto"]:
         auto = matkat["auto"]
         auto["luokka"] = "auto"
+        auto["js_hinnat"] = str(auto["hinta"]) + "€"
 
         auto["tunnit"] = kesto_tunneiksi(auto["kesto"])
         if lahtoaika:
-            auto["js_aika"] = aika_js(lahtoaika)
+            auto["js_aika"] = "T".join(lahtoaika.split())
         else:
             dt = datetime.strptime(saapumisaika, SOVELLUS_PVM_FORMAATTI)
             dt -= timedelta(hours=auto["tunnit"])
             auto["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
 
     for luokka in ["juna", "bussi"]:
-        if not luokka in matkat or "virhe" in matkat[luokka]:
+        if not luokka in matkat or not matkat[luokka]:
+            continue
+        if "virhe" in matkat[luokka]:
             continue
 
         for matka in matkat[luokka]:
@@ -161,9 +163,11 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
             pvm_str = " ".join([pvm, matka["lahtoaika"]])
             dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
             matka["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
+            hinnat = "/".join([str(h) + "€" if h else "-" for h in matka["hinnat"]])
+            matka["js_hinnat"] = hinnat or "-"
             matka["vaihdot_lkm"] = len(matka["vaihdot"]) - 1
             matka["tunnit"] = kesto_tunneiksi(matka["kesto"])
-            matka["tyyppi"] = " - ".join(v["tunnus"] for v in matka["vaihdot"])
+            matka["tyyppi"] = "-".join(v["tyyppi"] for v in matka["vaihdot"])
 
 
 def formatoi_aika(h, mins, pvm):

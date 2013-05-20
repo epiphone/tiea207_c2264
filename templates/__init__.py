@@ -277,16 +277,16 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
     extend_([u'\n'])
     if "auto" in matkat and not "virhe" in matkat["auto"]:
         m = matkat["auto"]
-        extend_([u'{"luokka":"auto","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":0,"tyyppi":"Auto"},\n'])
+        extend_([u'{"luokka":"auto","js_lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":0,"tyyppi":"Auto","js_hinnat":"', escape_(m["js_hinnat"], True), u'"},\n'])
         extend_([u'\n'])
     
     mh_ja_vr = []
     for x in ["juna", "bussi"]:
-        if x in matkat and not "virhe" in matkat[x]:
+        if x in matkat and matkat[x] and not "virhe" in matkat[x]:
             mh_ja_vr += matkat[x]
     
     for m in loop.setup(mh_ja_vr):
-        extend_([u'{"luokka":"', escape_(m["luokka"], True), u'","lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":', escape_(m["vaihdot_lkm"], True), u',"tyyppi":"', escape_(m["tyyppi"], True), u'"},\n'])
+        extend_([u'{"luokka":"', escape_(m["luokka"], True), u'","js_lahtoaika":"', escape_(m["js_aika"], True), u'","tunnit":', escape_(m["tunnit"], True), u',"kesto":"', escape_(m["kesto"], True), u'","hinta":', escape_(m["hinta"], True), u',"vaihdot_lkm":', escape_(m["vaihdot_lkm"], True), u',"tyyppi":"', escape_(m["tyyppi"], True), u'","js_hinnat":"', escape_(m["js_hinnat"], True), u'","lahtoaika":"', escape_(m["lahtoaika"], True), u'","saapumisaika":"', escape_(m["saapumisaika"], True), u'"},\n'])
     extend_([u'];\n'])
     extend_([u'\n'])
     extend_([u'init(data, query_date);\n'])
