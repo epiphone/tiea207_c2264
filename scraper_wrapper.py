@@ -202,14 +202,10 @@ class ScraperWrapper:
 
         ret = None
 
-        # max_lkm = 3
-        # 0 1 2 3 4 5 6 7 8 9
-
         for i, matka in enumerate(tulos):
             if matka[attr] > aika:
                 vas = min(int(ceil((max_lkm - 1) / 2.0)), i)
                 oik = min(len(tulos) - 1 - i, max_lkm - 1 - vas)
-                # vas += (i + oik + 1) - len(tulos)
                 vas += max_lkm - vas - oik - 1
                 ret = tulos[i - vas:i + oik + 1]
                 break

@@ -135,9 +135,7 @@ window.onload = function() {
     monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]
   };
 
-  $( "#datepicker" ).datepicker(dpSettings);
-
-  // $$("#inputPvm").datepicker(dpSettings);
+  $$( "#datepicker" ).datepicker(dpSettings);
 
   // Autocomplete
   $$("input[name='mista'],input[name='mihin']").typeahead({source: paikat});
