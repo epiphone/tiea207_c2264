@@ -353,7 +353,7 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
     extend_([u'    <div class="breaker"></div>\n'])
     extend_([u'    <br>\n'])
     extend_([u'    <label>Alennusluokka</label>\n'])
-    extend_([u'    <select class="input input-large" name="ale">\n'])
+    extend_([u'    <select class="input span11" name="ale">\n'])
     for val, luokka in loop.setup(aleluokat):
         if aleluokka == val:
             extend_(['      ', u'<option value="', escape_(val, True), u'" selected>', escape_(luokka, True), u'</option>\n'])
@@ -361,7 +361,7 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
             extend_(['      ', u'<option value="', escape_(val, True), u'">', escape_(luokka, True), u'</option>\n'])
     extend_([u'    </select>\n'])
     extend_([u'    <label>Auton keskikulutus</label>\n'])
-    extend_([u'    <select id="inputKeskikulutus" class="input input-large" name="kulutus">\n'])
+    extend_([u'    <select id="inputKeskikulutus" class="input span11" name="kulutus">\n'])
     extend_([u'      <option value="0">95E, Pieni (4,5l/100km)</option>\n'])
     extend_([u'      <option value="1">95E, Keski(6,5l/100km)</option>\n'])
     extend_([u'      <option value="2">95E, Suuri (8,5l/100km)</option>\n'])
@@ -408,17 +408,33 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
     extend_([u'  </div>\n'])
     extend_([u'</div>\n'])
     extend_([u'\n'])
+    extend_([u'<!-- VISUALISAATIO -->\n'])
     extend_([u'<div class="results"></div>\n'])
+    extend_([u'\n'])
+    extend_([u'<!-- TULOSTAULUKKO -->\n'])
     extend_([u'<table class="table table-condensed table-results">\n'])
-    extend_([u'  <tr>\n'])
-    extend_([u'    <th>&nbsp;</th>\n'])
-    extend_([u'     <th>L\xe4ht\xf6aika</th>\n'])
-    extend_([u'     <th>Perill\xe4</th>\n'])
-    extend_([u'     <th>Kesto</th>\n'])
-    extend_([u'     <th>Pituus</th>\n'])
-    extend_([u'     <th>Hinta</th>\n'])
-    extend_([u'     <th>&nbsp;</th>\n'])
-    extend_([u'  </tr>\n'])
+    if matkat["auto"]:
+        extend_(['  ', u'<tr>\n'])
+        extend_(['  ', u'  <th>&nbsp;</th>\n'])
+        extend_(['  ', u'  <td>L\xe4ht\xf6aika</td>\n'])
+        extend_(['  ', u'  <td>Perill\xe4</td>\n'])
+        extend_(['  ', u'  <td>Kesto</td>\n'])
+        extend_(['  ', u'  <td>Pituus</td>\n'])
+        extend_(['  ', u'  <td>Hinta</td>\n'])
+        extend_(['  ', u'  <td>&nbsp;</td>\n'])
+        extend_(['  ', u'</tr>\n'])
+        extend_(['  ', u'<tr>\n'])
+        extend_(['  ', u'  <td><img src="/static/icon-auto.png"></td>\n'])
+        extend_(['  ', u'  <td>', escape_(matkat["auto"]["lahtoaika"], True), u'</td>\n'])
+        extend_(['  ', u'  <td>', escape_(matkat["auto"]["saapumisaika"], True), u'</td>\n'])
+        extend_(['  ', u'  <td>', escape_(matkat["auto"]["kesto"], True), u'</td>\n'])
+        extend_(['  ', u'  <td>', escape_(matkat["auto"]["matkanpituus"], True), u'</td>\n'])
+        extend_(['  ', u'  <td>', escape_(matkat["auto"]["hinnat"], True), u'</td>\n'])
+        extend_(['  ', u'  <td>14.21\u20ac (95E10), 14.68\u20ac (98E), 13.09\u20ac (Diesel)</td>\n'])
+        extend_(['  ', u'  <td><a href="', escape_(matkat["auto"]["url"], True), u'" target="_blank">Kartalle</a></td>\n'])
+        extend_(['  ', u'</tr>\n'])
+        extend_(['  ', u'\n'])
+        extend_(['  ', u'\n'])
     extend_([u'</table>\n'])
     extend_([u'</div> <!-- /.span* -->\n'])
     extend_([u'</div> <!-- /.container -->\n'])
@@ -469,4 +485,62 @@ def results (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluok
 
 results = CompiledTemplate(results, 'templates\\results.html')
 join_ = results._join; escape_ = results._escape
+
+# coding: utf-8
+def results_debug (matkat, params, t):
+    __lineoffset__ = -4
+    loop = ForLoop()
+    self = TemplateResult(); extend_ = self.extend
+    extend_([u'\n'])
+    extend_([u'<strong>', escape_(t, True), u' s</strong>\n'])
+    for k, v in loop.setup(params.iteritems()):
+        extend_([escape_(k, True), u'=<strong>', escape_(v, True), u'</strong>\n'])
+        extend_([u'\n'])
+    if len(matkat) == 0 or matkat is None:
+        extend_([u'<h1>Ei tuloksia</h1>\n'])
+        extend_([u'\n'])
+    else:
+        if "juna" in matkat:
+            extend_([u'<h2>Junayhteydet:</h2>\n'])
+            if "virhe" in matkat["juna"]:
+                extend_([u'<strong>Virhe! ', escape_(matkat["juna"]["virhe"], True), u'</strong>\n'])
+            else:
+                for yhteys in loop.setup(matkat["juna"]):
+                    extend_([u'<strong>#', escape_(loop.index, True), u' ', escape_(yhteys["mista"], True), u' - ', escape_(yhteys["mihin"], True), u'</strong> (', escape_(yhteys["lahtoaika"], True), u' - ', escape_(yhteys["saapumisaika"], True), u') - Kesto: ', escape_(yhteys["kesto"], True), u' Hinta: ', escape_(yhteys["hinnat"][0], True), u'\u20ac<br>\n'])
+                    for vaihto in loop.setup(yhteys["vaihdot"]):
+                        if "lahtopaikka" in vaihto:
+                            extend_([u'<small> - ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["lahtopaikka"], True), u' - ', escape_(vaihto["saapumispaikka"], True), u' (', escape_(vaihto["lahtoaika"], True), u' - ', escape_(vaihto["saapumisaika"], True), u')</small><br>\n'])
+                        elif "mista" in vaihto:
+                            extend_([u'<small> - ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"], True), u' - ', escape_(vaihto["saapumisaika"], True), u')</small><br>\n'])
+                    extend_([u'<br>\n'])
+                    extend_([u'\n'])
+        if "bussi" in matkat:
+            extend_([u'<h2>Bussiyhteydet:</h2>\n'])
+            if "virhe" in matkat["bussi"]:
+                extend_([u'<strong>Virhe!</strong> ', escape_(matkat["bussi"]["virhe"], True), u'\n'])
+            else:
+                for yhteys in loop.setup(matkat["bussi"]):
+                    extend_([u'<strong>#', escape_(loop.index, True), u' ', escape_(yhteys["mista"], True), u' - ', escape_(yhteys["mihin"], True), u'</strong> (', escape_(yhteys["lahtoaika"], True), u' - ', escape_(yhteys["saapumisaika"], True), u') - Kesto: ', escape_(yhteys["kesto"], True), u' Hinta: ', escape_(yhteys["hinnat"][0], True), u'\u20ac<br>\n'])
+                    for vaihto in loop.setup(yhteys["vaihdot"]):
+                        extend_([u'<small> - ', escape_(vaihto["tyyppi"], True), u' ', escape_(vaihto["mista"], True), u' - ', escape_(vaihto["mihin"], True), u' (', escape_(vaihto["lahtoaika"], True), u' - ', escape_(vaihto["saapumisaika"], True), u')</small><br>\n'])
+                    extend_([u'<br>\n'])
+                    extend_([u'\n'])
+        if "auto" in matkat:
+            extend_([u'<h2>Autoyhteydet:</h2>\n'])
+            if "virhe" in matkat["auto"]:
+                extend_([u'<strong>Virhe!</strong> ', escape_(matkat["auto"]["virhe"], True), u'\n'])
+            else:
+                extend_([u'<strong>', escape_(matkat["auto"]["mista"], True), u' - ', escape_(matkat["auto"]["mihin"], True), u'</strong><br>\n'])
+                extend_([u'Matkan pituus: ', escape_(matkat["auto"]["matkanpituus"], True), u' km<br>\n'])
+                extend_([u'Kesto: ', escape_(matkat["auto"]["kesto"], True), u'<br>\n'])
+                extend_([u'Hinta: ', escape_(matkat["auto"]["hinta"], True), u'<br>\n'])
+                extend_([u'Polttoaineen hinta: ', escape_(matkat["auto"]["polttoaineen_hinta"], True), u'\n'])
+            extend_([u'<br>\n'])
+            extend_([u'\n'])
+    extend_([u'<a href="/">Takaisin</a>\n'])
+
+    return self
+
+results_debug = CompiledTemplate(results_debug, 'templates\\results_debug.html')
+join_ = results_debug._join; escape_ = results_debug._escape
 

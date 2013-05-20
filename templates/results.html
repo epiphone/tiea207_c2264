@@ -38,7 +38,7 @@ $#dt=<strong>$dt</strong>
     <div class="breaker"></div>
     <br>
     <label>Alennusluokka</label>
-    <select class="input input-large" name="ale">
+    <select class="input span11" name="ale">
       $for val, luokka in aleluokat:
         $if aleluokka == val:
           <option value="$val" selected>$luokka</option>
@@ -46,7 +46,7 @@ $#dt=<strong>$dt</strong>
           <option value="$val">$luokka</option>
     </select>
     <label>Auton keskikulutus</label>
-    <select id="inputKeskikulutus" class="input input-large" name="kulutus">
+    <select id="inputKeskikulutus" class="input span11" name="kulutus">
       <option value="0">95E, Pieni (4,5l/100km)</option>
       <option value="1">95E, Keski(6,5l/100km)</option>
       <option value="2">95E, Suuri (8,5l/100km)</option>
@@ -93,17 +93,33 @@ $#dt=<strong>$dt</strong>
   </div>
 </div>
 
+<!-- VISUALISAATIO -->
 <div class="results"></div>
+
+<!-- TULOSTAULUKKO -->
 <table class="table table-condensed table-results">
-  <tr>
-    <th>&nbsp;</th>
-     <th>Lähtöaika</th>
-     <th>Perillä</th>
-     <th>Kesto</th>
-     <th>Pituus</th>
-     <th>Hinta</th>
-     <th>&nbsp;</th>
-  </tr>
+  $if matkat["auto"]:
+    <tr>
+      <th>&nbsp;</th>
+      <td>Lähtöaika</td>
+      <td>Perillä</td>
+      <td>Kesto</td>
+      <td>Pituus</td>
+      <td>Hinta</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><img src="/static/icon-auto.png"></td>
+      <td>$matkat["auto"]["lahtoaika"]</td>
+      <td>$matkat["auto"]["saapumisaika"]</td>
+      <td>$matkat["auto"]["kesto"]</td>
+      <td>$matkat["auto"]["matkanpituus"]</td>
+      <td>$matkat["auto"]["hinnat"]</td>
+      <td>14.21€ (95E10), 14.68€ (98E), 13.09€ (Diesel)</td>
+      <td><a href="$matkat["auto"]["url"]" target="_blank">Kartalle</a></td>
+    </tr>
+
+
 </table>
 </div> <!-- /.span* -->
 </div> <!-- /.container -->
