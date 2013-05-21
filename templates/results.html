@@ -182,7 +182,7 @@ var dpSettings = {
     altField: "#inputPvm",
     minDate: 0,
     altFormat: "d.m.yy",
-    dayNamesMin: ["Ma","Ti","Ke","To","Pe","La","Su"],
+    dayNamesMin: ["Su","Ma","Ti","Ke","To","Pe","La"],
     monthNames: ["Tammi","Helmi","Maalis","Huhti","Touko","Kesä", "Heinä","Elo","Syys","Loka","Marras","Joulu"]
 };
 $$("#inputPvm").datepicker(dpSettings);
@@ -193,7 +193,7 @@ var data = [
 
 $if "auto" in matkat and not "virhe" in matkat["auto"] and matkat["auto"]:
     $ m = matkat["auto"]
-    {"luokka":"auto","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto","js_hinnat":"$m["js_hinnat"]","saapumisaika":"$m["saapumisaika"]","lahtoaika":"$m["lahtoaika"]","row_id":"$m["id"]"},
+    {"luokka":"auto","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto","js_hinnat":"$m["js_hinnat"]","saapumisaika":"$m["saapumisaika"]","lahtoaika":"$m["lahtoaika"]","row_id":"$m["id"]","pituus":"$m["matkanpituus"]"},
 
 $for m in mh_ja_vr:
     {"luokka":"$m["luokka"]","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":$m["vaihdot_lkm"],"tyyppi":"$m["tyyppi"]","js_hinnat":"$m["js_hinnat"]","lahtoaika":"$m["lahtoaika"]","saapumisaika":"$m["saapumisaika"]","row_id":"$m["id"]"},

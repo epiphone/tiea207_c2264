@@ -157,11 +157,17 @@ svg.selectAll(".bar")
 
 // TEKSTIT
 function generateContent(d) {
-    return "<div class='content middle'><span class='label'>" + d.lahtoaika +
+    var content = "<div class='content top'><span class='label'>" + d.lahtoaika +
     " - " + d.saapumisaika + " <strong>" + d.hinta+ "€</strong></span></div>" +
-    "<div class='content top'>" + d.tyyppi + "</div>" +
-    "<div class='content bottom'>Vaihtoja: <strong>" + d.vaihdot_lkm +
-    "</strong>";
+    "<div class='content middle'>" + d.tyyppi + "</div>";
+    if (d.luokka != "auto") {
+        content += "<div class='content bottom'>Vaihtoja: <strong>" + d.vaihdot_lkm +
+        "</strong>";
+    } else {
+        content += "<div class='content bottom'>Pituus: <strong>" + d.pituus +
+        "km</strong>";
+    }
+    return content;
 }
 
 g.append("foreignObject")
