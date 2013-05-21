@@ -1,4 +1,4 @@
-$def with (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat)
+$def with (matkat, params, t, dt, pvm, h, mins, aikatyyppi, aleluokka, aleluokat, mh_ja_vr)
 
 $#DEBUG
 $#<strong>$t s</strong>
@@ -98,29 +98,77 @@ $#dt=<strong>$dt</strong>
 
 <!-- TULOSTAULUKKO -->
 <table class="table table-condensed table-results">
-  $if matkat["auto"]:
-    <tr>
+  $if "auto" in matkat and matkat["auto"] and not "virhe" in matkat["auto"]:
+    $ m = matkat["auto"]
+    <tr class="row-header">
       <th>&nbsp;</th>
-      <td>Lähtöaika</td>
-      <td>Perillä</td>
-      <td>Kesto</td>
-      <td>Pituus</td>
-      <td>Hinta</td>
-      <td>&nbsp;</td>
+      <th>Lähtöaika</th>
+      <th>Perillä</th>
+      <th>Kesto</th>
+      <th>Pituus</th>
+      <th>Hinta</th>
+      <th>&nbsp;</th>
     </tr>
-    <tr>
-      <td><img src="/static/icon-auto.png"></td>
-      $#<td>$matkat["auto"]["lahtoaika"]</td>
-      $#<td>$matkat["auto"]["saapumisaika"]</td>
-      <td>$matkat["auto"]["kesto"]</td>
-      <td>$matkat["auto"]["matkanpituus"]</td>
-      $#<td>$matkat["auto"]["hinnat"]</td>
-      <td>14.21€ (95E10), 14.68€ (98E), 13.09€ (Diesel)</td>
+    <tr class="row-white" id="$m["id"]">
+      <td><img src="/static/img/icon-auto.png"></td>
+      <td>$m["lahtoaika"]</td>
+      <td>$m["saapumisaika"]</td>
+      <td>$m["kesto"]</td>
+      <td>$m["matkanpituus"]km</td>
+      <td>$m["hinta"]€ ($m["polttoaineen_hinta"]€/l)</td>
       <td><a href="$matkat["auto"]["url"]" target="_blank">Kartalle</a></td>
     </tr>
+  $if mh_ja_vr:
+    <tr class="row-header">
+      <th>&nbsp;</th>
+      <th>Lähtöaika</th>
+      <th>Perillä</th>
+      <th colspan="2">Kesto</th>
+      <th>Hinta</th>
+      <th>&nbsp;</th>
+    </tr>
+    $for m in mh_ja_vr:
+      <tr class="row-white" id="$m["id"]">
+        $if m["luokka"] == "juna":
+          <td><img src="/static/img/icon-juna.png"></td>
+        $else:
+          <td><img src="/static/img/icon-bussi.png"></td>
+        <td>$m["lahtoaika"]</td>
+        <td>$m["saapumisaika"]</td>
+        <td colspan="2">$m["kesto"]</td>
+        <td>
+          $if m["luokka"] == "juna":
+            $ lippuluokat = ["Ennakko", "Perus", "Joustava"]
+          $else:
+            $ lippuluokat = ["Perus", "Tarjous"]
+          $for lippu in lippuluokat:
+            $if m["hinnat"][loop.index0]:
+              $lippu: $m["hinnat"][loop.index0]€ <br>
+        </td>
 
 
+        <td><a href="$m["url"]" target="_blank">Ostosivulle</a></td>
+      </tr>
+
+      $for v in m["vaihdot"]:
+        $if loop.index0 == 0:
+          <tr class="">
+            <td id="vaihdot"> Vaihdot:</td>
+        $else:
+          <tr class="no-borders">
+            <td></td>
+        $if m["luokka"] == "juna":
+          <td colspan="3">$loop.index. $v["tunnus"] $v["mista"] - $v["mihin"] ($v["lahtoaika"] - $v["saapumisaika"])</td>
+          <td colspan="3">
+            $for palvelu in v["palvelut"]:
+              <img title="$palvelu" alt="$palvelu" src=$hae_ikonin_url(palvelu)>
+          </td>
+        $else:
+          <td colspan="3">$loop.index. $v["mista"] - $v["mihin"] ($v["lahtoaika"] - $v["saapumisaika"])</td>
+          <td colspan="3"></td>
+      </tr>
 </table>
+
 </div> <!-- /.span* -->
 </div> <!-- /.container -->
 </div> <!-- /.row -->
@@ -143,18 +191,12 @@ $$("#inputPvm").datepicker(dpSettings);
 var query_date = "$dt";
 var data = [
 
-$if "auto" in matkat and not "virhe" in matkat["auto"]:
+$if "auto" in matkat and not "virhe" in matkat["auto"] and matkat["auto"]:
     $ m = matkat["auto"]
-    {"luokka":"auto","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto","js_hinnat":"$m["js_hinnat"]"},
-
-$code:
-    mh_ja_vr = []
-    for x in ["juna", "bussi"]:
-        if x in matkat and matkat[x] and not "virhe" in matkat[x]:
-            mh_ja_vr += matkat[x]
+    {"luokka":"auto","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":0,"tyyppi":"Auto","js_hinnat":"$m["js_hinnat"]","saapumisaika":"$m["saapumisaika"]","lahtoaika":"$m["lahtoaika"]","row_id":"$m["id"]"},
 
 $for m in mh_ja_vr:
-    {"luokka":"$m["luokka"]","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":$m["vaihdot_lkm"],"tyyppi":"$m["tyyppi"]","js_hinnat":"$m["js_hinnat"]","lahtoaika":"$m["lahtoaika"]","saapumisaika":"$m["saapumisaika"]"},
+    {"luokka":"$m["luokka"]","js_lahtoaika":"$m["js_aika"]","tunnit":$m["tunnit"],"kesto":"$m["kesto"]","hinta":$m["hinta"],"vaihdot_lkm":$m["vaihdot_lkm"],"tyyppi":"$m["tyyppi"]","js_hinnat":"$m["js_hinnat"]","lahtoaika":"$m["lahtoaika"]","saapumisaika":"$m["saapumisaika"]","row_id":"$m["id"]"},
 ];
 
 init(data, query_date);

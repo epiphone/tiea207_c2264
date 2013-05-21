@@ -110,6 +110,34 @@
 }
 
 
+/* TULOSSIVUN TAULUKKO */
+.table-results td {
+    vertical-align: middle;
+}
+
+.table-results #vaihdot {
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+}
+
+.no-borders td {
+    border-top: none;
+    background-color: #F5F5F5;
+}
+
+.vaihdot td {
+    background-color: #F5F5F5;
+}
+
+.row-white {
+    background-color: white;
+}
+
+.row-header {
+    background-color: #DFDFDF;
+}
+
 /* DATEPICKER */
 .ui-datepicker {
     background-color: white;

@@ -219,11 +219,10 @@ class ScraperWrapper:
 
 # Testaamisen nopeuttamiseksi:
 wrapper = ScraperWrapper()
-tdt = "2013-05-22 22:22"
+tdt = "2013-05-21 11:08"
 oulu = u"oulu"
 tampere = u"tampere"
 
 
 def test(aika="15:00"):
-    matkat = wrapper.hae_matka(oulu, tampere, tdt)
-    return matkat, wrapper.rajaa_tulokset(matkat["bussi"], 6, "asd " + aika, None)
+    return wrapper.hae_matka(u"helsinki", u"jyväskylä", lahtoaika=tdt)
