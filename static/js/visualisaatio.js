@@ -174,6 +174,7 @@ function generateContent(d) {
 }
 
 g.append("foreignObject")
+    .attr("class", "bar-content")
     .attr("x", function (d) { return x(d.dt1); })
     .attr("y", function(d, i) { return y(i); })
     .attr("width", function(d) { return width - x(d.dt1); })
@@ -237,7 +238,7 @@ function sortBars(sort_func, btn) {
             d3.select(this).attr("pointer-events", "null");
         });
 
-    svg.selectAll(".bar-g foreignObject")
+    svg.selectAll(".bar-g .bar-content")
     .sort(sort_func)
         .transition(transition)
         .delay(delay)
