@@ -39,7 +39,7 @@ transfersBtn = btns[4];
 
 // ASETUKSET
 var margin = {top: 40, right: 10, bottom: 40, left:10},
-    width = $(".results").width() - 20 || 850,
+    width = ($(".results").width() - 20) || 850,
     barHeight = 60,
     barMargin = 5,
     height = d3.max([margin.top + margin.bottom + data.length * (barHeight + barMargin), 400]);
@@ -50,7 +50,7 @@ var firstDt = d3.min(data, function(d) { return d.dt1; }),
     lastDt = d3.max(data, function(d) { return d.dt2; });
 
 var x = d3.time.scale()
-    .domain([d3.time.hour.offset(firstDt, -1), d3.time.hour.offset(lastDt, 1)])
+    .domain([d3.time.minute.offset(firstDt, -30), d3.time.hour.offset(lastDt, 2)])
     .rangeRound([0, width - margin.left - margin.right]);
 
 y = d3.scale.linear()
@@ -133,8 +133,7 @@ var rectEnter = g.append("rect")
     .attr("rx", "4")
     .attr("ry", "4")
     .attr("width", 0)
-    .attr("height", function(d) { return barHeight; })
-    .attr("data-placement", "top")
+    .attr("height", barHeight)
     .attr("opacity", 0.9)
     .attr("pointer-events", "none");
 
@@ -158,16 +157,8 @@ svg.selectAll(".bar")
 
 // TEKSTIT
 function generateContent(d) {
-    var dep, arr;
-    if ("lahtoaika" in d && "saapumisaika" in d) {
-        dep = d.lahtoaika;
-        arr = d.saapumisaika;
-    }
-    else {
-        dep = d.dt1.toTimeString().substr(0, 5),
-        arr = d.dt2.toTimeString().substr(0, 5);
-    }
-    return "<div class='content middle'><span class='label'>" + dep + " - " + arr + " <strong>" + d.hinta+ "€</strong></span></div>" +
+    return "<div class='content middle'><span class='label'>" + d.lahtoaika +
+    " - " + d.saapumisaika + " <strong>" + d.hinta+ "€</strong></span></div>" +
     "<div class='content top'>" + d.tyyppi + "</div>" +
     "<div class='content bottom'>Vaihtoja: <strong>" + d.vaihdot_lkm +
     "</strong>";

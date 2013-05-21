@@ -36,7 +36,28 @@ urls = (
 )
 
 scraper = ScraperWrapper()
-render = web.template.render("templates/", base="base")
+
+
+### TEMPLATET ###
+
+
+def hae_ikonin_url(palvelu):
+    """
+    Palauttaa VR:n palvelua vastaavaan ikonin URLin.
+    """
+    def f(char):
+        if char == u"ä":
+            return u"a"
+        if char == u"ö":
+            return u"o"
+        return char
+
+    url = palvelu.lower().strip().replace(" ", "_")
+    url = "".join([f(c) for c in url])
+    return "/static/img/vr_ikonit/" + url + ".gif"
+
+template_globs = {"hae_ikonin_url": hae_ikonin_url}
+render = web.template.render("templates/", base="base", globals=template_globs)
 
 
 ### SIVUT ###
@@ -102,6 +123,12 @@ class Haku:
             return "virhe: " + matkat["virhe"]  # TODO virheenkäsittely
         taydenna_matkatiedot(matkat, pvm, laika, saika)
 
+        mh_ja_vr = []
+        for x in ["juna", "bussi"]:
+            if x in matkat and matkat[x] and not "virhe" in matkat[x]:
+                mh_ja_vr += matkat[x]
+        mh_ja_vr = sorted(mh_ja_vr, key=lambda x: x["lahtoaika"])
+
         # TODO turhat parametrit pois
         t = str(round(time.time() - t, 2))
         if debug_view:
@@ -111,7 +138,7 @@ class Haku:
         dt = dt.split()[0] + "T" + dt.split()[1]
         return render.results(matkat=matkat, params=params, t=t, dt=dt,
             pvm=pvm, h=h, mins=mins, aikatyyppi=aikatyyppi,
-            aleluokka=ale, aleluokat=ALENNUSLUOKAT)
+            aleluokka=ale, aleluokat=ALENNUSLUOKAT, mh_ja_vr=mh_ja_vr)
 
 
 class Info:
@@ -153,16 +180,23 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
     """
     if "auto" in matkat and matkat["auto"] and not "virhe" in matkat["auto"]:
         auto = matkat["auto"]
+        auto["id"] = "row-auto"
         auto["luokka"] = "auto"
         auto["js_hinnat"] = str(auto["hinta"]) + "€"
 
         auto["tunnit"] = kesto_tunneiksi(auto["kesto"])
         if lahtoaika:
-            auto["js_aika"] = "T".join(lahtoaika.split())
+            dt = datetime.strptime(lahtoaika, SOVELLUS_PVM_FORMAATTI)
+            auto["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
+            auto["lahtoaika"] = dt.strftime("%H:%M")
+            dt += timedelta(hours=auto["tunnit"])
+            auto["saapumisaika"] = dt.strftime("%H:%M")
         else:
             dt = datetime.strptime(saapumisaika, SOVELLUS_PVM_FORMAATTI)
+            auto["saapumisaika"] = dt.strftime("%H:%M")
             dt -= timedelta(hours=auto["tunnit"])
             auto["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
+            auto["lahtoaika"] = dt.strftime("%H:%M")
 
     for luokka in ["juna", "bussi"]:
         if not luokka in matkat or not matkat[luokka]:
@@ -170,7 +204,7 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
         if "virhe" in matkat[luokka]:
             continue
 
-        for matka in matkat[luokka]:
+        for i, matka in enumerate(matkat[luokka]):
             matka["luokka"] = luokka
 
             # TODO tulevaisuudessa vain yksi hinta
@@ -179,6 +213,7 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
                     matka["hinta"] = hinta
                     break
 
+            matka["id"] = "row-%s%d" % (luokka, i)
             pvm_str = " ".join([pvm, matka["lahtoaika"]])
             dt = datetime.strptime(pvm_str, LOMAKE_PVM_FORMAATTI)
             matka["js_aika"] = dt.strftime(JS_PVM_FORMAATTI)
