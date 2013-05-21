@@ -50,9 +50,13 @@ def hae_ikonin_url(palvelu):
             return u"a"
         if char == u"ö":
             return u"o"
+        if char == " ":
+            return "_"
+        if char in [" ", ",", "."]:
+            return ""
         return char
 
-    url = palvelu.lower().strip().replace(" ", "_")
+    url = palvelu.lower()
     url = "".join([f(c) for c in url])
     return "/static/img/vr_ikonit/" + url + ".gif"
 
