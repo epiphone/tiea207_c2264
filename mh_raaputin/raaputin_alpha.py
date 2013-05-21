@@ -77,7 +77,7 @@ class MHScraper:
 
         if (alennusluokka == 1 or alennusluokka == 2
             or alennusluokka == 5 or alennusluokka == 7):
-            if hinta < 15.50 and linja.lower() == "vakio" or linja.lower() == "local":
+            if hinta < 15.50 and (linja.lower() == "vakio" or linja.lower() == "local"):
                 
                 if alennusluokka == 1:
                     try:
@@ -86,7 +86,7 @@ class MHScraper:
                         try:
                             return [self.pika_hinnat[hinta][0], tarjous]
                         except KeyError:
-                            return None
+                            return perus_hinta
                     
                 else:
                     try:
@@ -95,9 +95,9 @@ class MHScraper:
                         try:
                             return [self.pika_hinnat[hinta][1], tarjous]
                         except KeyError:
-                            return None
+                            return perus_hinta
                 
-            if hinta < 18.80 and linja.lower() == "pika" or linja.lower() == "express":
+            if hinta < 18.80 and (linja.lower() == "pika" or linja.lower() == "express"):
                 
                 if alennusluokka == 1:
                     try:
@@ -106,7 +106,7 @@ class MHScraper:
                         try:
                             return [self.vakio_hinnat[hinta][0], tarjous]
                         except KeyError:
-                            return None
+                            return perus_hinta
                 else:
                     try:
                         return [self.pika_hinnat[hinta][1], tarjous]            
@@ -114,37 +114,37 @@ class MHScraper:
                         try:
                             return [self.vakio_hinnat[hinta][1], tarjous] 
                         except KeyError:
-                            return None
+                            return perus_hinta
 
             uusihinta = hinta/2
             return [round(uusihinta, 1), tarjous]
 
         if alennusluokka == 3 or alennusluokka == 4 or alennusluokka == 6:
             
-            if hinta < 15.50 and linja.lower() == "vakio" or linja.lower() == "local":
+            if hinta < 15.50 and (linja.lower() == "vakio" or linja.lower() == "local"):
                 try:
                     return [self.vakio_hinnat[hinta][2], tarjous]                
                 except KeyError:
                     try:
                         return [self.pika_hinnat[hinta][2], tarjous]
                     except KeyError:
-                        return None
+                        return perus_hinta
                      
                 
-            if hinta < 18.80 and linja.lower() == "pika" or linja.lower() == "express":
+            if hinta < 18.80 and (linja.lower() == "pika" or linja.lower() == "express"):
                 try:
                     return [self.pika_hinnat[hinta][2], tarjous]                    
                 except KeyError:
                     try:
                         return [self.vakio_hinnat[hinta][2], tarjous]
                     except KeyError:
-                        return None
+                        return perus_hinta
 
             uusihinta = hinta - (hinta*0.3)
             return [round(uusihinta, 1), tarjous]            
 
         else:
-            return None
+            return perus_hinta
 
     def hae_matka(self, mista, mihin, lahtoaika=None, saapumisaika=None):
         """luetaan skreipatut rivit, ja sijoitetaan ne 'Matka' -olioina
@@ -220,7 +220,9 @@ class MHScraper:
 
                 if len(children) == 2:
                     continue
-
+                hinnat = self.hae_hinnat(children[10].text_content(), children[11].text_content())
+                if not hinnat or hinnat == [None, None]:
+                    continue
                 matka = {'url': url,
                          'lahtoaika': children[1].text_content(),
                          'saapumisaika': children[3].text_content(),
@@ -228,7 +230,7 @@ class MHScraper:
                          'mihin': asema_mihin,
                          'laituri': children[4].text_content(),
                          'kesto': self.keston_vaihto(children[5].text_content()),
-                         'hinnat': self.hae_hinnat(children[10].text_content(), children[11].text_content()),
+                         'hinnat': hinnat, 
                          'vaihdot': [
                                 # 1. vaihtoyhteys
                                 {'lahtoaika': children[1].text_content(),
@@ -318,6 +320,10 @@ class MHScraper:
                     continue
 
                 if len(children) == 2:
+                    continue
+                
+                hinnat = self.hae_hinnat(children[10].text_content(), children[11].text_content())
+                if not hinnat or hinnat == [None, None]:
                     continue
 
                 matka = {
@@ -558,8 +564,8 @@ def main():
 
     scraper = MHScraper()
 
-    matka = scraper.hae_matka("helsinki", "espoo ikea (espoo)",
-                              None, "2013-05-21 12:01")
+    matka = scraper.hae_matka("kuopio", "siilinjärvi",
+                              None, "2013-06-11 12:01")
     
     if matka is not None:
         for rivi in matka:
