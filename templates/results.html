@@ -203,6 +203,10 @@ init(data, query_date);
 
 // Autocomplete
 $$("input[name='mista'],input[name='mihin']").typeahead({source: paikat});
+$$(".bar").click(function() {
+    document.location = "#" + $$(this).attr("data-href");
+});
+
 }
 </script>
 <script src="/static/js/d3.v3.min.js"></script>

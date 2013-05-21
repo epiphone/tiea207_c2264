@@ -132,6 +132,7 @@ var rectEnter = g.append("rect")
     .attr("y", function(d, i) { return y(i); })
     .attr("rx", "4")
     .attr("ry", "4")
+    .attr("data-href", function(d) { return d.row_id; })
     .attr("width", 0)
     .attr("height", barHeight)
     .attr("opacity", 0.9)
@@ -164,8 +165,8 @@ function generateContent(d) {
         content += "<div class='content bottom'>Vaihtoja: <strong>" + d.vaihdot_lkm +
         "</strong>";
     } else {
-        content += "<div class='content bottom'>Pituus: <strong>" + d.pituus +
-        "km</strong>";
+        content += "<div class='content bottom'>Pituus: " + d.pituus +
+        "km</div>";
     }
     return content;
 }
