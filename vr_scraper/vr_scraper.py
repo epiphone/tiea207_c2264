@@ -185,7 +185,7 @@ class VRScraper:
                     lista_hinnoista.append(None)
             for hinta in hinnat:
                 elementit = hinta.getchildren()
-                if hinta.text_content().find("Matka") != -1 or hinta.text_content().find("Ei") != -1 or len(hinta.text_content()) < 1:
+                if hinta.text_content().find("Matka") != -1 or hinta.text_content().find("Ei") != -1 or hinta.text_content().find("JunaBussi-liput") != -1 or len(hinta.text_content()) < 1:
                     lista_hinnoista.append(None)
                     continue
                 if len(elementit) >= 1:
@@ -348,7 +348,8 @@ def main():
             pprint.pprint(tiedot)
     # Valmiilla haulla testaus
     if testataanko == "N":
-        tiedot = screipperi.hae_matka("Jyväskylä", "Ähtäri", None, "2013-06-05 15:50",)
+        tiedot = screipperi.hae_matka("Kuopio", "Jyväskylä", "2013-05-22 12:50", None,)
+        webbrowser.open_new(screipperi.muodosta_url("Kuopio", "Jyväskylä", "2013-05-22 12:50", None,))
         pprint.pprint(tiedot)
     #Alennusluokan testaaminen
     if testataanko == "A":
