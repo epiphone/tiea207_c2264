@@ -77,7 +77,7 @@ class MHScraper:
 
         if (alennusluokka == 1 or alennusluokka == 2
             or alennusluokka == 5 or alennusluokka == 7):
-            if linja.lower() == "vakio" or linja.lower() == "local" and hinta < 15.50:
+            if hinta < 15.50 and linja.lower() == "vakio" or linja.lower() == "local":
                 
                 if alennusluokka == 1:
                     try:
@@ -97,7 +97,7 @@ class MHScraper:
                         except KeyError:
                             return None
                 
-            if linja.lower() == "pika" or linja.lower() == "express" and hinta < 18.80:
+            if hinta < 18.80 and linja.lower() == "pika" or linja.lower() == "express":
                 
                 if alennusluokka == 1:
                     try:
@@ -121,7 +121,7 @@ class MHScraper:
 
         if alennusluokka == 3 or alennusluokka == 4 or alennusluokka == 6:
             
-            if linja.lower() == "vakio" or linja.lower() == "local" and hinta < 15.50:
+            if hinta < 15.50 and linja.lower() == "vakio" or linja.lower() == "local":
                 try:
                     return [self.vakio_hinnat[hinta][2], tarjous]                
                 except KeyError:
@@ -131,7 +131,7 @@ class MHScraper:
                         return None
                      
                 
-            if linja.lower() == "pika" or linja.lower() == "express" and hinta < 18.80:
+            if hinta < 18.80 and linja.lower() == "pika" or linja.lower() == "express":
                 try:
                     return [self.pika_hinnat[hinta][2], tarjous]                    
                 except KeyError:
@@ -558,8 +558,8 @@ def main():
 
     scraper = MHScraper()
 
-    matka = scraper.hae_matka("kuopio", "siilinjärvi",
-                              None, "2013-05-20 12:01")
+    matka = scraper.hae_matka("helsinki", "espoo ikea (espoo)",
+                              None, "2013-05-21 12:01")
     
     if matka is not None:
         for rivi in matka:
