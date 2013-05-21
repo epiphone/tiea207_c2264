@@ -98,7 +98,8 @@ class Haku:
             max_lkm=5)
 
         matkat = scraper.hae_matka(**params)
-        # TODO virheenkäsittely
+        if "virhe" in matkat:
+            return "virhe: " + matkat["virhe"]  # TODO virheenkäsittely
         taydenna_matkatiedot(matkat, pvm, laika, saika)
 
         # TODO turhat parametrit pois
