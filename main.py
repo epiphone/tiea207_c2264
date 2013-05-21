@@ -212,10 +212,13 @@ def taydenna_matkatiedot(matkat, pvm, lahtoaika, saapumisaika):
             matka["luokka"] = luokka
 
             # TODO tulevaisuudessa vain yksi hinta
-            for hinta in matka["hinnat"] + [999.9]:
-                if hinta:
-                    matka["hinta"] = hinta
-                    break
+            if matka["hinnat"]:
+                for hinta in matka["hinnat"] + [999.9]:
+                    if hinta:
+                        matka["hinta"] = hinta
+                        break
+            else:
+                matka["hinta"] = 999.9
 
             matka["id"] = "row-%s%d" % (luokka, i)
             pvm_str = " ".join([pvm, matka["lahtoaika"]])
