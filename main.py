@@ -89,7 +89,7 @@ class Haku:
         # Validoitaan parametrit:
         if not mista or not mihin:
             return "Lähtö- ja saapumispaikka tulee määrittää."  # TODO
-        if not ale in range(7):
+        if not ale in range(8):
             return "Virheellinen alennusluokka."  # TODO
         if not kulutusluokka in range(9):
             return "Virheellinen kulutusluokka."  # TODO
